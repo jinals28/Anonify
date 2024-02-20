@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@id/onboardFragment">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -24,5 +24,30 @@
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
 
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.anonifydemo.ui.login.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/onboardFragment"
+        android:name="com.example.anonifydemo.ui.onboard.OnboardFragment"
+        android:label="fragment_onboard"
+        tools:layout="@layout/fragment_onboard">
+
+        <action
+            android:id="@+id/action_onboardFragment_to_login_frgament"
+            app:destination="@id/loginFragment"/>
+
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.anonifydemo.ui.signin.SignInFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_in" />
 
 </navigation>
