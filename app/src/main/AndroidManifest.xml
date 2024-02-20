@@ -13,9 +13,23 @@
         android:theme="@style/Theme.Anonifydemo"
         tools:targetApi="31">
         <activity
-            android:name=".onboard"
-            android:theme="@style/SplashApi"
-            android:exported="true">
+            android:name=".ui.activity.account_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.signupActivity"
+            android:exported="false"
+            android:label="@string/title_activity_signup"
+            android:theme="@style/Theme.Anonifydemo" />
+        <activity
+            android:name=".ui.activity.Login_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.Login_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.onboard"
+            android:exported="true"
+            android:theme="@style/SplashApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,10 +37,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:exported="false" />
-
-
     </application>
 
 </manifest>

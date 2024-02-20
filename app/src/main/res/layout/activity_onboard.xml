@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#8EBBFF"
-    tools:context=".onboard">
+    tools:context=".ui.activity.onboard">
 
     <TextView
         android:id="@+id/textView"
@@ -24,8 +24,8 @@
         android:id="@+id/getstart"
         android:layout_width="243dp"
         android:layout_height="56dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="0dp"
         android:background="#24293E"
         android:text="Get Started"
         android:textSize="24sp"
