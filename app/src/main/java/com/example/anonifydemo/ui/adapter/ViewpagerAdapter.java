@@ -1,4 +1,4 @@
-package com.example.anonifydemo;
+package com.example.anonifydemo.ui.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
