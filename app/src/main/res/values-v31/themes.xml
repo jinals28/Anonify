@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<style name="SplashApi" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/windowBackground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.Anonifydemo</item>
+
+    </style>
+
+    <!--  <style name="SplashApi" parent="Theme.SplashScreen">
+      <item name="windowSplashScreenBackground">@color/windowBackground</item>
+      <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
+      <item name="postSplashScreenTheme">@style/Theme.Anonifydemo</item>
+
+  </style>-->
+</resources>

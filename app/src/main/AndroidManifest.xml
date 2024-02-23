@@ -6,31 +6,13 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Anonifydemo"
         tools:targetApi="31">
-        <activity
-            android:name=".ui.activity.account_Activity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.signupActivity"
-            android:exported="false"
-            android:label="@string/title_activity_signup"
-            android:theme="@style/Theme.Anonifydemo" />
 
-        <activity
-            android:name=".ui.activity.Login_Activity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.activity.onboard"
-            android:exported="false"
-            android:theme="@style/SplashApi">
-
-        </activity>
 
         <activity
             android:name=".ui.activity.MainActivity"

@@ -19,7 +19,8 @@
 android:background="@drawable/circal2"
 android:layout_width="112dp"
 android:layout_height="93dp"
-android:layout_marginTop="640dp" android:layout_marginRight="300dp">
+android:layout_marginTop="640dp"
+    android:layout_marginRight="300dp">
 
 </LinearLayout>
 
@@ -100,7 +101,7 @@ android:layout_marginLeft="55dp"
     />
 
 <Button
-android:id="@+id/btncon"
+android:id="@+id/btnSignIn"
 style="@style/Widget.Material3.Button"
 android:layout_width="286dp"
 android:layout_height="71dp"
