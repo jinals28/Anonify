@@ -48,6 +48,24 @@
         android:id="@+id/signUpFragment"
         android:name="com.example.anonifydemo.ui.signin.SignInFragment"
         android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_in" />
+        tools:layout="@layout/fragment_sign_in" >
+        <action
+            android:id="@+id/action_signUpFragment_to_chooseAvatarFragment"
+            app:destination="@id/chooseAvatarFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseAvatarFragment"
+        android:name="com.example.anonifydemo.ui.ChooseAvatar.chooseAvatarFragment"
+        android:label="fragment_choose_avatar"
+        tools:layout="@layout/fragment_choose_avatar" >
+        <action
+            android:id="@+id/action_chooseAvatarFragment_to_chooseTopic"
+            app:destination="@id/chooseTopic" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseTopic"
+        android:name="com.example.anonifydemo.ui.ChooseTopics.chooseTopic"
+        android:label="fragment_choose_topic"
+        tools:layout="@layout/fragment_choose_topic" />
 
 </navigation>

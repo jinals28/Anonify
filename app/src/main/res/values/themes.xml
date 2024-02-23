@@ -16,8 +16,9 @@
 
     <style name="SplashApi" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/windowBackground</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/icon</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
         <item name="postSplashScreenTheme">@style/Theme.Anonifydemo</item>
+
     </style>
     <!-- Base application theme. -->
     <style name="Base.Theme.Anonifydemo" parent="Theme.Material3.DayNight.NoActionBar">
