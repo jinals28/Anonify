@@ -54,11 +54,11 @@
 
                 <ImageButton
                     android:id="@+id/imageButton2"
-                    android:layout_width="11dp"
+                    android:layout_width="33dp"
                     android:layout_height="25dp"
                     android:layout_gravity="bottom"
                     android:backgroundTint="@color/windowBackground"
-                    android:src="@drawable/options" />
+                    android:src="@drawable/options2" />
 
             </LinearLayout>
 
@@ -151,7 +151,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:background="@color/windowBackground"
-            app:srcCompat="@drawable/save" />
+            app:srcCompat="@drawable/save2" />
 
 
         </LinearLayout>

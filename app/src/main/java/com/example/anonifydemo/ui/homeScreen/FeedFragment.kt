@@ -7,26 +7,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.anonifydemo.R
+import com.example.anonifydemo.databinding.FragmentChooseTopicBinding
+import com.example.anonifydemo.databinding.FragmentFeedBinding
 
 class FeedFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = FeedFragment()
-    }
+    private var _binding : FragmentFeedBinding? = null
 
-    private lateinit var viewModel: FeedViewModel
-
+    private val binding get() = _binding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_feed, container, false)
+        _binding=FragmentFeedBinding.inflate(layoutInflater, container, false)
+        return binding!!.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FeedViewModel::class.java)
-        // TODO: Use the ViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
 }

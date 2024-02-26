@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentAddTopicBinding
+import com.example.anonifydemo.databinding.FragmentChooseTopicBinding
 import com.example.anonifydemo.databinding.FragmentLoginBinding
 
 class fragment_add_topic : Fragment() {
@@ -19,21 +20,17 @@ class fragment_add_topic : Fragment() {
 
 //    private lateinit var viewModel: LoginViewModel
 
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_topic, container, false)
+        _binding = FragmentAddTopicBinding.inflate(layoutInflater, container, false)
+        return binding!!.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
     }
 
 

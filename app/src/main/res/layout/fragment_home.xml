@@ -45,6 +45,7 @@
 
             <Button
                 android:id="@+id/toolbar_button"
+                style="@style/Widget.Material3.Button.TonalButton.Icon"
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="220dp"
@@ -53,8 +54,8 @@
                 android:fontFamily="@font/montserrat"
                 android:padding="8dp"
                 android:text="#"
-                android:textColor="@color/btn"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/btn"
                 android:textStyle="bold" /> <!-- Add margin between TextView and Button -->
 
 
