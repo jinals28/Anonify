@@ -8,6 +8,7 @@
     tools:context=".ui.ChooseTopics.chooseTopic">
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="86dp"
         android:layout_height="62dp"
         android:background="@drawable/circle"
@@ -35,6 +36,7 @@
         tools:ignore="MissingConstraints" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="404dp"
         android:layout_height="674dp"
         android:scrollbars="vertical"
@@ -45,5 +47,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
+    <Button
+        android:id="@+id/btntopic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

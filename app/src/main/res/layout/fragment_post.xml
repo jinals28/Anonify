@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground"
+    tools:context=".ui.home.postFragment">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:visibility="visible"
+        android:backgroundTint="@color/windowBackground"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="25dp"
+                android:paddingTop="8dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="8dp">
+
+
+                <TextView
+                    android:id="@+id/txtHashtag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/montserrat_extralight"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="#entertainment"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="#D9D9D9"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/imageButton2"
+                    android:layout_width="11dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:backgroundTint="@color/windowBackground"
+                    android:src="@drawable/options" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_usr"
+                android:layout_width="30dp"
+                android:src="@mipmap/ic_launcher_round"
+                android:layout_height="30dp"
+                >
+            </de.hdodenhof.circleimageview.CircleImageView>
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="0dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtusrnm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:gravity="center_vertical"
+                    android:text="Bsilico Eat"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="#F4F5FC"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtpost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/montserrat"
+                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur ipsum in placerat molestie.  Fusce quis mauris a enim sollicitudin"
+                    android:textColor="#F4F5FC"
+                    android:textSize="13sp"
+                    android:textStyle="normal" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <View
+                android:layout_width="40dp"
+                android:layout_height="0dp" />
+
+            <ImageButton
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@color/windowBackground"
+
+            app:srcCompat="@drawable/like" />
+            <View
+                android:layout_width="20dp"
+                android:layout_height="0dp" />
+
+        <ImageButton
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@color/windowBackground"
+
+            app:srcCompat="@drawable/comment" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@color/windowBackground"
+            app:srcCompat="@drawable/save" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:background="2B324A" />
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
+
+
+
+</FrameLayout>

@@ -14,9 +14,9 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_addPic"
-        android:layout_width="200dp"
+        android:layout_width="113dp"
         android:src="@drawable/menu_category_img"
-        android:layout_height="200dp">
+        android:layout_height="118dp">
 
     </de.hdodenhof.circleimageview.CircleImageView>
 

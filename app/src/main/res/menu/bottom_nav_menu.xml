@@ -8,14 +8,23 @@
 
     <item
         android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:icon="@mipmap/post"
+        android:title="Post" />
 
     <item
         android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@mipmap/notification"
         android:title="@string/title_notifications" />
 
-    
+    <item
+        android:id="@+id/navigation_user"
+        android:icon="@mipmap/user"
+        android:title="My Account"
+        />
 
+    <!--<item
+        android:id="@+id/nnavigation_journal"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="Journal"
+        />-->
 </menu>
