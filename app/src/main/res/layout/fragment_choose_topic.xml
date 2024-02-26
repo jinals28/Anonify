@@ -11,6 +11,7 @@
         android:id="@+id/linearLayout2"
         android:layout_width="86dp"
         android:layout_height="62dp"
+        android:orientation="horizontal"
         android:background="@drawable/circle"
         app:layout_constraintBottom_toTopOf="@+id/textView4"
         app:layout_constraintEnd_toEndOf="parent"
