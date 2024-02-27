@@ -30,6 +30,9 @@
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
         <action
+            android:id="@+id/action_loginFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
     </fragment>
@@ -45,14 +48,18 @@
 
     </fragment>
     <fragment
-        android:id="@+id/signUpFragment"
+        android:id="@+id/signInFragment"
         android:name="com.example.anonifydemo.ui.signin.SignInFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_sign_in" >
         <action
-            android:id="@+id/action_signUpFragment_to_chooseAvatarFragment"
+            android:id="@+id/action_signInFragment_to_chooseAvatarFragment"
             app:destination="@id/chooseAvatarFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/chooseAvatarFragment"
         android:name="com.example.anonifydemo.ui.ChooseAvatar.chooseAvatarFragment"
@@ -62,10 +69,21 @@
             android:id="@+id/action_chooseAvatarFragment_to_chooseTopic"
             app:destination="@id/chooseTopic" />
     </fragment>
+
     <fragment
         android:id="@+id/chooseTopic"
         android:name="com.example.anonifydemo.ui.ChooseTopics.chooseTopic"
         android:label="fragment_choose_topic"
         tools:layout="@layout/fragment_choose_topic" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.anonifydemo.ui.signup.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+    </fragment>
+
 
 </navigation>

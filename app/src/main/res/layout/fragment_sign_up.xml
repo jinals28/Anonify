@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -5,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#24293E"
-    tools:context=".ui.signin.SignInFragment">
+    tools:context=".ui.signup.SignUpFragment">
 
     <LinearLayout
         android:id="@+id/circleLayout"
@@ -18,7 +19,7 @@
         tools:ignore="Orientation"
         android:padding="16dp">
 
-     <!-- Content for the circular layout can go here -->
+        <!-- Content for the circular layout can go here -->
 
     </LinearLayout>
 
@@ -45,10 +46,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="Welcome Back"
+            android:text="Create Your Account"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:padding="4dp"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -85,9 +85,25 @@
             android:minHeight="48dp"
             android:textColor="@color/white"
             android:textSize="14sp" />
+        <EditText
+            android:id="@+id/txtConPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/white"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:gravity="center"
+            android:hint="Re-Enter Password"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
 
         <Button
-            android:id="@+id/btnSignIn"
+            android:id="@+id/btnSignUp"
             style="@style/Widget.Material3.Button"
             android:layout_width="267dp"
             android:layout_height="54dp"
@@ -101,59 +117,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:orientation="horizontal">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:background="@color/white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" Or "
-                        android:textColor="@color/white" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:background="@color/white" />
-                </LinearLayout>
-
-                <com.google.android.gms.common.SignInButton
-                    android:id="@+id/googleSignInBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="2dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Don't Have An Account?"
+                android:text="Already Have An Account?"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/txtSignUp"
+                android:id="@+id/txtLogIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" Sign Up"
+                android:text=" Log In"
                 android:textColor="@color/light_blue"
                 android:textSize="16sp" />
 
