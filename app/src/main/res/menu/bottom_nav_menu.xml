@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/navigation_home"
@@ -9,7 +10,8 @@
     <item
         android:id="@+id/navigation_dashboard"
         android:icon="@mipmap/post"
-        android:title="Post" />
+        android:title="Post"
+        tools:ignore="HardcodedText" />
 
     <item
         android:id="@+id/navigation_notifications"
@@ -20,7 +22,7 @@
         android:id="@+id/navigation_user"
         android:icon="@mipmap/user"
         android:title="My Account"
-        />
+        tools:ignore="HardcodedText" />
 
     <!--<item
         android:id="@+id/nnavigation_journal"

@@ -11,14 +11,14 @@
         android:id="@+id/circleLayout"
         android:layout_width="86dp"
         android:layout_height="62dp"
-        android:gravity="right"
         android:background="@drawable/circle"
+        android:gravity="right"
+        android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="Orientation"
-        android:padding="16dp">
+        tools:ignore="Orientation">
 
-     <!-- Content for the circular layout can go here -->
+        <!-- Content for the circular layout can go here -->
 
     </LinearLayout>
 
@@ -62,7 +62,8 @@
             android:inputType="textEmailAddress"
             android:minHeight="48dp"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:autofillHints="" />
 
         <EditText
             android:id="@+id/txtPassword"
@@ -76,7 +77,8 @@
             android:inputType="textPassword"
             android:minHeight="48dp"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:autofillHints="" />
 
 
         <Button
