@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentLoginBinding
@@ -24,6 +26,10 @@ class LoginFragment : Fragment() {
 
     private lateinit var loginBtn : Button
 
+    private lateinit var signUpWithEmail : LinearLayout
+
+    private lateinit var signUpWithGoogle : LinearLayout
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,11 +46,26 @@ class LoginFragment : Fragment() {
 
         loginBtn = binding!!.loginbtn
 
+        signUpWithEmail = binding!!.signUpWithEmail
+
+        signUpWithGoogle = binding!!.signInWithGoogle
+
         loginBtn.setOnClickListener {
 
             if (findNavController().currentDestination!!.id == R.id.loginFragment){
-                findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
+                findNavController().navigate(R.id.action_loginFragment_to_signInFragment)
             }
+
+        }
+
+        signUpWithEmail.setOnClickListener {
+            if (findNavController().currentDestination!!.id == R.id.loginFragment){
+                val action = LoginFragmentDirections.actionLoginFragmentToSignInFragment()
+                findNavController().navigate(action)
+            }
+        }
+
+        signUpWithGoogle.setOnClickListener {
 
         }
 

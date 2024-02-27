@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="windowBackground">#24293E</color>
     <color name="btn">#8EBBFF</color>
+    <color name="light_blue">#8EBBFF</color>
 </resources>

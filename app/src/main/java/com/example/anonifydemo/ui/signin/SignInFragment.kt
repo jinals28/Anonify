@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentLoginBinding
@@ -20,6 +21,8 @@ class SignInFragment : Fragment() {
     private val binding get() = _binding
 
     private lateinit var btnSignIn : Button
+
+    private lateinit var signUpTxt : TextView
 
     //private lateinit var viewModel: SignInViewModel
 
@@ -35,14 +38,26 @@ class SignInFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         btnSignIn = binding!!.btnSignIn
+
+        signUpTxt = binding!!.txtSignUp
 
         btnSignIn.setOnClickListener {
 
-            if (findNavController().currentDestination!!.id == R.id.signUpFragment){
-                findNavController().navigate(R.id.action_signUpFragment_to_chooseAvatarFragment)
+            if (findNavController().currentDestination!!.id == R.id.signInFragment){
+                findNavController().navigate(R.id.action_signInFragment_to_chooseAvatarFragment)
             }
 
+        }
+
+        signUpTxt.setOnClickListener {
+
+            if (findNavController().currentDestination!!.id == R.id.signInFragment){
+
+                val action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
+                findNavController().navigate(action)
+            }
         }
     }
 
