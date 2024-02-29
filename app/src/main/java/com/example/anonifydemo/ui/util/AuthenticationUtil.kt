@@ -15,11 +15,12 @@ import com.example.anonifydemo.ui.login.LoginFragment
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import kotlinx.coroutines.launch
 
-class AuthenticationUtil(private val context : Context) {
+class AuthenticationUtil(private val context : Context) : Utils {
 
     companion object {
         private const val TAG = "AuthenticationUtil"
@@ -29,7 +30,7 @@ class AuthenticationUtil(private val context : Context) {
 
     private val credentialManager = CredentialManager.create(context)
 
-    private fun handleSignIn(result: GetCredentialResponse, onSuccess: () -> Unit) {
+    private fun handleSignIn(result: GetCredentialResponse, onSuccess: (FirebaseUser) -> Unit) {
 
         // Handle the successfully returned credential.
 
@@ -61,7 +62,7 @@ class AuthenticationUtil(private val context : Context) {
                                 if (task.isSuccessful){
                                     // Sign in success, update UI with the signed-in user's information
                                     val user = auth.currentUser
-                                    onSuccess()
+                                    onSuccess(user!!)
                                 }else {
                                     // If sign in fails, display a message to the user.
 
@@ -86,7 +87,7 @@ class AuthenticationUtil(private val context : Context) {
         }
     }
 
-    fun signInWithGoogle(fragment : Fragment, serverClientId : String, onSuccess : () -> Unit, onFailure : (Exception) -> Unit){
+    fun signInWithGoogle(fragment : Fragment, serverClientId : String, onSuccess : (FirebaseUser) -> Unit, onFailure : (Exception) -> Unit){
 
         val googleIdOptions = GetSignInWithGoogleOption.Builder(serverClientId)
             .build()

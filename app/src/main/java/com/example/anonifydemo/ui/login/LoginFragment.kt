@@ -67,27 +67,42 @@ class LoginFragment : Fragment(), Utils {
 
 
         loginBtn.setOnClickListener {
-
-            if (findNavController().currentDestination!!.id == R.id.loginFragment){
-                findNavController().navigate(R.id.action_loginFragment_to_signInFragment)
-            }
-
+            goToSignInFragment()
         }
 
         signUpWithEmail.setOnClickListener {
-            if (findNavController().currentDestination!!.id == R.id.loginFragment){
-                val action = LoginFragmentDirections.actionLoginFragmentToSignUpFragment()
-                findNavController().navigate(action)
-            }
+            goToSignUpFragment()
         }
 
         signUpWithGoogle.setOnClickListener {
 
-            authUtil.signInWithGoogle(this, serverClientId = getString(R.string.web_client_id), onSuccess = {
-                toast(requireContext(), "Welcome user!")
+            authUtil.signInWithGoogle(this, serverClientId = getString(R.string.web_client_id), onSuccess = { user ->
+                toast(requireContext(), "Welcome ${user.displayName}!")
+                goToChooseAvatarFragment()
             }, onFailure = { e ->
                 handleFailure(requireContext(), e)
             })
+        }
+    }
+
+    private fun goToChooseAvatarFragment() {
+
+        if (findNavController().currentDestination!!.id == R.id.loginFragment){
+            val action = LoginFragmentDirections.actionLoginFragmentToChooseAvatarFragment()
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun goToSignInFragment(){
+        if (findNavController().currentDestination!!.id == R.id.loginFragment){
+            findNavController().navigate(R.id.action_loginFragment_to_signInFragment)
+        }
+    }
+
+    private fun goToSignUpFragment(){
+        if (findNavController().currentDestination!!.id == R.id.loginFragment){
+            val action = LoginFragmentDirections.actionLoginFragmentToSignUpFragment()
+            findNavController().navigate(action)
         }
     }
 

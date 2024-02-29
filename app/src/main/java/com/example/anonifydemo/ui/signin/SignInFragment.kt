@@ -57,31 +57,39 @@ class SignInFragment : Fragment(), Utils{
 
         btnSignIn.setOnClickListener {
 
-            if (findNavController().currentDestination!!.id == R.id.signInFragment){
-                findNavController().navigate(R.id.action_signInFragment_to_chooseAvatarFragment)
-            }
-
+            goToChooseAvatarFragment()
         }
 
         signUpTxt.setOnClickListener {
 
-            if (findNavController().currentDestination!!.id == R.id.signInFragment){
-
-                val action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
-                findNavController().navigate(action)
-            }
+            goToSignUpFragment()
         }
 
         signInWithGoogle.setOnClickListener {
 
-            authUtil.signInWithGoogle(this, getString(R.string.web_client_id), onSuccess = {
-                toast(requireContext(), "Welcome User!")
+            authUtil.signInWithGoogle(this, getString(R.string.web_client_id), onSuccess = { user ->
+                toast(requireContext(), "Welcome ${user.displayName}")
+                goToChooseAvatarFragment()
+
             }, onFailure = { e ->
                 handleFailure(requireContext(), e)
             })
         }
     }
 
+    private fun goToChooseAvatarFragment(){
+        if (findNavController().currentDestination!!.id == R.id.signInFragment){
+            val action = SignInFragmentDirections.actionSignInFragmentToChooseAvatarFragment()
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun goToSignUpFragment(){
+        if (findNavController().currentDestination!!.id == R.id.signInFragment){
+            val action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
+            findNavController().navigate(action)
+        }
+    }
 
 
 }

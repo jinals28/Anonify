@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_chooseAvatarFragment"
+            app:destination="@id/chooseAvatarFragment" />
     </fragment>
     <fragment
         android:id="@+id/onboardFragment"
