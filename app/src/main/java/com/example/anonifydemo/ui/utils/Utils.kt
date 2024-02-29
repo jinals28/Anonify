@@ -1,11 +1,10 @@
-package com.example.anonifydemo.ui.util
+package com.example.anonifydemo.ui.utils
 
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
-import com.example.anonifydemo.ui.login.LoginFragment
 
 interface Utils {
 

@@ -1,6 +1,5 @@
 package com.example.anonifydemo.ui.signin
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,13 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
-import com.example.anonifydemo.databinding.FragmentLoginBinding
 import com.example.anonifydemo.databinding.FragmentSignInBinding
-import com.example.anonifydemo.ui.util.AuthenticationUtil
-import com.example.anonifydemo.ui.util.Utils
+import com.example.anonifydemo.ui.utils.AuthenticationUtil
+import com.example.anonifydemo.ui.utils.Utils
 import com.google.android.gms.common.SignInButton
 
 class SignInFragment : Fragment(), Utils{

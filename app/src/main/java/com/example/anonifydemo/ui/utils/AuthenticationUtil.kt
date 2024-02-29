@@ -1,4 +1,4 @@
-package com.example.anonifydemo.ui.util
+package com.example.anonifydemo.ui.utils
 
 import android.content.Context
 import android.util.Log
@@ -11,7 +11,6 @@ import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.anonifydemo.ui.login.LoginFragment
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException

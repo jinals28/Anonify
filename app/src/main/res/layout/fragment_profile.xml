@@ -202,6 +202,7 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="#F4F5FC"
                         android:textSize="16sp" />
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -217,24 +218,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#80516790" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="5dp">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/windowBackground"
+                    android:fontFamily="@font/montserrat_extralight"
+                    android:gravity="center"
+                    android:singleLine="false"
+                    android:text="Posts"
+                    android:textColor="@drawable/button_selector_file"
+                    android:textSize="14sp"
+                    app:strokeColor="@color/btn" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Saved"
+                    android:layout_gravity="center"
+                    android:textColor="@drawable/button_selector_file"
+                    android:fontFamily="@font/montserrat_extralight"
+                    android:backgroundTint="@color/windowBackground"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#80516790" />
         </LinearLayout>
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:background="@color/windowBackground"
-            android:clickable="true"
-            android:textAlignment="center"
-            app:tabGravity="center"
-            app:tabIndicator="@color/btn"
-            app:tabIndicatorColor="@color/btn"
-            app:tabIndicatorGravity="center"
-            app:tabMode="scrollable"
-            android:elevation="10dp"
-            app:tabSelectedTextColor="@color/white"
-            app:tabTextColor="#D9D9D9">
-        </com.google.android.material.tabs.TabLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
