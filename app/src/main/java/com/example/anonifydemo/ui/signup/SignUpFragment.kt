@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentSignUpBinding
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 
 class SignUpFragment : Fragment() {
 
