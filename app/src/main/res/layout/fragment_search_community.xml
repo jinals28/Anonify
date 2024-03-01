@@ -4,7 +4,80 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/windowBackground"
+    android:orientation="vertical"
     tools:context=".ui.community.searchCommunityFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:animateLayoutChanges="true"
+        android:background="#24293E"
+        android:elevation="10dp"
+        android:gravity="top">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="fill_horizontal"
+            android:orientation="horizontal">
+
+            <ImageButton
+                style="@android:style/Widget.DeviceDefault.ImageButton"
+                android:layout_width="40dp"
+                android:layout_height="28dp"
+
+                android:layout_gravity="center_vertical"
+                android:backgroundTint="#24293E"
+                android:src="@drawable/baseline_arrow_back_24" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Search or create your own #"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <ImageButton
+                style="@android:style/Widget.DeviceDefault.ImageButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="end"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="end|center"
+                android:backgroundTint="#24293E"
+                android:src="@drawable/add" />
+
+
+        </LinearLayout>
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <SearchView
+        style="@android:style/Widget.Material.SearchView"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:elevation="5dp"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:queryHint="Search topics or hashtags"
+        android:searchIcon="@drawable/baseline_search_24" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:padding="20dp"/>
 
 </LinearLayout>

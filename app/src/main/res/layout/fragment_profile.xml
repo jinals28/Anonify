@@ -198,7 +198,7 @@
                         android:fontFamily="@font/montserrat"
                         android:gravity="center_vertical"
                         android:layout_gravity="center"
-                        android:text="Posts Views"
+                        android:text="Advice Points"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="#F4F5FC"
                         android:textSize="16sp" />

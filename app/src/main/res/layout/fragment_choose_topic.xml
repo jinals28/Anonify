@@ -7,6 +7,7 @@
     android:background="#24293E"
     tools:context=".ui.ChooseTopics.chooseTopic">
 
+
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="86dp"
@@ -45,7 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
@@ -55,9 +56,10 @@
         android:text="Next"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.523"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.112" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
