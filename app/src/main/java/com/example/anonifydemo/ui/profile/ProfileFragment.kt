@@ -1,15 +1,11 @@
 package com.example.anonifydemo.ui.profile
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
-import androidx.navigation.fragment.findNavController
-import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {
