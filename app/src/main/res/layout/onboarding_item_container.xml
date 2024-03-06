@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+
         android:contentDescription="@string/app_name"/>
 
     <TextView
@@ -18,12 +19,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:gravity="center"
+        android:text=""
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"/>
     <TextView
         android:id="@+id/tv_desc"
         android:layout_width="match_parent"
+        android:text=""
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"

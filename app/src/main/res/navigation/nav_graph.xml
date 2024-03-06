@@ -10,8 +10,5 @@
         android:name="com.example.anonifydemo.ui.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
-    <fragment
-        android:id="@+id/feedFragment"
-        android:name="com.example.anonifydemo.ui.homeScreen.FeedFragment"
-        android:label="FeedFragment" />
+
 </navigation>
