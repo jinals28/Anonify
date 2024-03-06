@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 
-class OnboardingItemsAdapter(private val onboardingItems: List<OnboardingItem>):
+class OnboardingItemsAdapter(private val onboardingItems: List<OnboardingItem>) :
     RecyclerView.Adapter<OnboardingItemsAdapter.OnboardingItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OnboardingItemViewHolder {
@@ -23,10 +23,12 @@ class OnboardingItemsAdapter(private val onboardingItems: List<OnboardingItem>):
 
     override fun getItemCount(): Int {
         return onboardingItems.size
+
     }
 
     override fun onBindViewHolder(holder: OnboardingItemViewHolder, position: Int) {
         holder.bind(onboardingItems[position])
+
     }
     inner class OnboardingItemViewHolder(view: View) : RecyclerView.ViewHolder(view)
     {

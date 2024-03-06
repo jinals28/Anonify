@@ -62,6 +62,7 @@ class OnboardFragment : Fragment() {
             Handler().postDelayed({
                 dialog.dismiss()
             }, SPLASH_DELAY)
+
             setOnboardingItems()
             setupIndicators()
 
