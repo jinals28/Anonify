@@ -36,10 +36,10 @@
         app:layout_constraintVertical_bias="0.29">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/iconpng" />
+            android:src="@drawable/icon" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -52,7 +52,11 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-
+        <LinearLayout
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center">
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ed_login_user_email"
             android:layout_width="match_parent"
@@ -66,7 +70,7 @@
             app:boxStrokeColor="@color/btn"
             app:cursorColor="@color/btn"
             app:hintTextColor="@color/white">
-
+            <!--            -->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtemail"
                 android:layout_width="match_parent"
@@ -81,6 +85,7 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
                 android:textColorLink="#4894D1" />
+            <!--               -->
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -97,20 +102,23 @@
             app:cursorColor="@color/btn"
             app:endIconMode="password_toggle"
             app:hintTextColor="@color/white">
-
+            <!--           -->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtPassword"
                 android:layout_width="match_parent"
+                android:backgroundTint="#338EBBFF"
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
                 android:drawablePadding="8dp"
                 android:hint="Password"
-                android:drawableLeft="@drawable/baseline_lock_24"
+                android:drawableStart="@drawable/baseline_lock_24"
                 android:inputType="textPassword"
                 android:padding="8dp"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
+            <!--                -->
         </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 <!--        <EditText-->
 <!--            android:id="@+id/txtemail"-->
 <!--            android:layout_width="match_parent"-->
@@ -223,7 +231,16 @@
 
 
     </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="86dp"
+        android:layout_height="62dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/circal2"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

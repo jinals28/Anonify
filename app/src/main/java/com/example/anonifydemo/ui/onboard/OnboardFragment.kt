@@ -54,17 +54,6 @@ class OnboardFragment : Fragment() {
                 findNavController().navigate(R.id.action_onboardFragment_to_login_frgament)
             }
 
-//            val builder = AlertDialog.Builder(requireContext())
-//            builder.setView(view)
-//            val dialog = builder.create()
-//            dialog.show()
-//            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-//            Handler().postDelayed({
-//                dialog.dismiss()
-//            }, SPLASH_DELAY)
-//
-//            setOnboardingItems()
-//            setupIndicators()
         }
         val builder = AlertDialog.Builder(requireContext())
         val dialogView = layoutInflater.inflate(R.layout.onboarding_item_container, null)
