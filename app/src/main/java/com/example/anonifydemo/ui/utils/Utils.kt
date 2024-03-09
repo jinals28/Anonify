@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 
 interface Utils {
 
@@ -23,6 +24,9 @@ interface Utils {
             }
             is GetCredentialCancellationException -> {
 
+            }
+            is FirebaseAuthInvalidCredentialsException -> {
+                toast(context, "Invalid email or password, Try again!!")
             }
             else -> {
 

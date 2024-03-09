@@ -19,13 +19,18 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import kotlinx.coroutines.launch
 
-class AuthenticationUtil(private val context : Context) : Utils {
+class AuthenticationUtil private constructor(private val context : Context) : Utils {
 
     companion object {
         private const val TAG = "AuthenticationUtil"
-    }
 
-    private val auth = com.google.firebase.ktx.Firebase.auth
+        private val auth = com.google.firebase.ktx.Firebase.auth
+
+        fun getInstance(context: Context) : AuthenticationUtil{
+            return AuthenticationUtil(context)
+        }
+
+    }
 
     private val credentialManager = CredentialManager.create(context)
 
@@ -33,7 +38,7 @@ class AuthenticationUtil(private val context : Context) : Utils {
 
         // Handle the successfully returned credential.
 
-        when(val credential = result.credential){
+        when (val credential = result.credential) {
 
             is PublicKeyCredential -> {
                 // Share responseJson such as a GetCredentialResponse on your server to
@@ -48,30 +53,31 @@ class AuthenticationUtil(private val context : Context) : Utils {
             }
 
             is CustomCredential -> {
-                if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
+                if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     try {
 
                         // Use googleIdTokenCredential and extract id to validate and
                         // authenticate on your server.
                         val googleIdTokenCredential = GoogleIdTokenCredential
                             .createFrom(credential.data)
-                        val firebaseCredential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
+                        val firebaseCredential =
+                            GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
                         auth.signInWithCredential(firebaseCredential)
                             .addOnCompleteListener { task ->
-                                if (task.isSuccessful){
+                                if (task.isSuccessful) {
                                     // Sign in success, update UI with the signed-in user's information
                                     val user = auth.currentUser
                                     onSuccess(user!!)
-                                }else {
+                                } else {
                                     // If sign in fails, display a message to the user.
 
                                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                                 }
                             }
-                    }catch (e : GoogleIdTokenParsingException){
+                    } catch (e: GoogleIdTokenParsingException) {
                         Log.e(TAG, "Received an invalid google id token response", e)
                     }
-                }else{
+                } else {
                     // Catch any unrecognized custom credential type here.
                     Log.e(TAG, "Unexpected type of credential")
                 }
@@ -86,28 +92,66 @@ class AuthenticationUtil(private val context : Context) : Utils {
         }
     }
 
-    fun signInWithGoogle(fragment : Fragment, serverClientId : String, onSuccess : (FirebaseUser) -> Unit, onFailure : (Exception) -> Unit){
+    fun signInWithGoogle(
+        fragment: Fragment,
+        serverClientId: String,
+        onSuccess: (FirebaseUser) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
 
         val googleIdOptions = GetSignInWithGoogleOption.Builder(serverClientId)
             .build()
 
-        val request : GetCredentialRequest = GetCredentialRequest.Builder()
+        val request: GetCredentialRequest = GetCredentialRequest.Builder()
             .addCredentialOption(googleIdOptions)
             .build()
 
         fragment.lifecycleScope.launch {
             try {
-                
-                val result = credentialManager.getCredential(request = request, context = fragment.requireActivity())
+
+                val result = credentialManager.getCredential(
+                    request = request,
+                    context = fragment.requireActivity()
+                )
                 handleSignIn(result, onSuccess)
 
-            }catch (e : GetCredentialException){
+            } catch (e: GetCredentialException) {
                 onFailure(e)
             }
         }
+    }
+
+    fun signUpWithEmailAndPassword(
+        email: String,
+        password: String,
+        onSuccess: (FirebaseUser) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onSuccess(auth.currentUser!!)
+                    auth.signOut()
+                } else {
+                    onFailure(task.exception!!)
+                }
+
+            }
+    }
+
+    fun signInWithEmailAndPassword(email: String,
+                                   password: String,
+                                   onSuccess: (FirebaseUser) -> Unit,
+                                   onFailure: (Exception) -> Unit) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener{task ->
+                if (task.isSuccessful){
+                    onSuccess(auth.currentUser!!)
+                }else{
+                    onFailure(task.exception!!)
+                }
+            }
 
 
     }
-
-
 }

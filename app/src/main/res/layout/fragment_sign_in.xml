@@ -102,7 +102,6 @@
             app:cursorColor="@color/btn"
             app:endIconMode="password_toggle"
             app:hintTextColor="@color/white">
-            <!--           -->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtPassword"
                 android:layout_width="match_parent"
@@ -116,44 +115,8 @@
                 android:padding="8dp"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
-            <!--                -->
         </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
-<!--        <EditText-->
-<!--            android:id="@+id/txtemail"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textColorHint="@color/white"-->
-<!--            android:layout_marginTop="26dp"-->
-<!--            android:ems="10"-->
-<!--            android:padding="4dp"-->
-<!--            android:layout_marginStart="4dp"-->
-<!--            android:layout_marginEnd="4dp"-->
-<!--            android:layout_marginBottom="4dp"-->
-<!--            android:gravity="center"-->
-<!--            android:hint="Email Address"-->
-<!--            android:inputType="textEmailAddress"-->
-<!--            android:minHeight="48dp"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:textSize="14sp"-->
-<!--            android:autofillHints="" />-->
-
-<!--        <EditText-->
-<!--            android:id="@+id/txtPassword"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textColorHint="@color/white"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:ems="10"-->
-<!--            android:padding="4dp"-->
-<!--            android:layout_margin="4dp"-->
-<!--            android:gravity="center"-->
-<!--            android:hint="Password"-->
-<!--            android:inputType="textPassword"-->
-<!--            android:minHeight="48dp"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:textSize="14sp"-->
-<!--            android:autofillHints="" />-->
 
         <Button
             android:id="@+id/btnSignIn"
