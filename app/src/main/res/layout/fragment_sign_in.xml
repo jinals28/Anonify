@@ -75,24 +75,26 @@
                 android:id="@+id/txtemail"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:backgroundTint="#338EBBFF"
                 android:drawablePadding="8dp"
                 android:hint="Enter Email Id"
                 android:drawableLeft="@drawable/baseline_email_24"
                 android:inputType="textEmailAddress"
                 android:padding="8dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/montserrat_extralight"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
                 android:textColorLink="#4894D1" />
-            <!--               -->
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ed_login_user_Password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:textColorHint="@color/white"
             app:boxCornerRadiusBottomEnd="40dp"
             app:boxCornerRadiusBottomStart="40dp"
@@ -107,9 +109,11 @@
                 android:layout_width="match_parent"
                 android:backgroundTint="#338EBBFF"
                 android:layout_height="60dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:drawablePadding="8dp"
                 android:hint="Password"
+                android:textSize="14sp"
+                android:fontFamily="@font/montserrat_extralight"
                 android:drawableStart="@drawable/baseline_lock_24"
                 android:inputType="textPassword"
                 android:padding="8dp"

@@ -51,61 +51,170 @@
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/txtEmail"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:textColorHint="@color/white"
-            android:layout_marginTop="26dp"
-            android:ems="10"
-            android:padding="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            android:gravity="center"
-            android:hint="Email Address"
-            android:inputType="textEmailAddress"
-            android:minHeight="48dp"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:orientation="vertical"
+            android:layout_gravity="center">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ed_login_user_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="30dp"
+                android:textColorHint="@color/white"
+                app:boxCornerRadiusBottomEnd="40dp"
+                app:boxCornerRadiusBottomStart="40dp"
+                app:boxCornerRadiusTopEnd="40dp"
+                app:boxCornerRadiusTopStart="40dp"
+                app:boxStrokeColor="@color/btn"
+                app:cursorColor="@color/btn"
+                app:hintTextColor="@color/white">
 
-        <EditText
-            android:id="@+id/txtPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="@color/white"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:padding="4dp"
-            android:layout_margin="4dp"
-            android:gravity="center"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:minHeight="48dp"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="#338EBBFF"
+                    android:drawablePadding="8dp"
+                    android:hint="Enter Email Id"
+                    android:drawableLeft="@drawable/baseline_email_24"
+                    android:inputType="textEmailAddress"
+                    android:padding="8dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/montserrat_extralight"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textColorLink="#4894D1" />
+                <!--               -->
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ed_login_user_Password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:textColorHint="@color/white"
+                app:boxCornerRadiusBottomEnd="40dp"
+                app:boxCornerRadiusBottomStart="40dp"
+                app:boxCornerRadiusTopEnd="40dp"
+                app:boxCornerRadiusTopStart="40dp"
+                app:boxStrokeColor="@color/btn"
+                app:cursorColor="@color/btn"
+                app:endIconMode="password_toggle"
+                app:hintTextColor="@color/white">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtPassword"
+                    android:layout_width="match_parent"
+                    android:backgroundTint="#338EBBFF"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
+                    android:drawablePadding="8dp"
+                    android:hint="Password"
+                    android:drawableStart="@drawable/baseline_lock_24"
+                    android:inputType="textPassword"
+                    android:padding="8dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/montserrat_extralight"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ed_login_user_Pass"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:textColorHint="@color/white"
+                app:boxCornerRadiusBottomEnd="40dp"
+                app:boxCornerRadiusBottomStart="40dp"
+                app:boxCornerRadiusTopEnd="40dp"
+                app:boxCornerRadiusTopStart="40dp"
+                app:boxStrokeColor="@color/btn"
+                app:cursorColor="@color/btn"
+                app:endIconMode="password_toggle"
+                app:hintTextColor="@color/white">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtConPassword"
+                    android:layout_width="match_parent"
+                    android:backgroundTint="#338EBBFF"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
+                    android:drawablePadding="8dp"
+                    android:hint="Re-Enter Password"
+                    android:drawableStart="@drawable/baseline_lock_24"
+                    android:inputType="textPassword"
+                    android:padding="8dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/montserrat_extralight"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+<!--        <EditText-->
+<!--            android:id="@+id/txtEmail"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textColorHint="@color/white"-->
+<!--            android:layout_marginTop="26dp"-->
+<!--            android:ems="10"-->
+<!--            android:padding="4dp"-->
+<!--            android:layout_marginStart="4dp"-->
+<!--            android:layout_marginEnd="4dp"-->
+<!--            android:layout_marginBottom="4dp"-->
+<!--            android:gravity="center"-->
+<!--            android:hint="Email Address"-->
+<!--            android:inputType="textEmailAddress"-->
+<!--            android:minHeight="48dp"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="14sp" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/txtPassword"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textColorHint="@color/white"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:ems="10"-->
+<!--            android:padding="4dp"-->
+<!--            android:layout_margin="4dp"-->
+<!--            android:gravity="center"-->
+<!--            android:hint="Password"-->
+<!--            android:inputType="textPassword"-->
+<!--            android:minHeight="48dp"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="14sp" />-->
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:padding="4dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Password should be of min. 6 character, including one alphabet, on eneumber, and one special character"-->
+<!--            android:textColor="@android:color/darker_gray"/>-->
+<!--        <EditText-->
+<!--            android:id="@+id/txtConPassword"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textColorHint="@color/white"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:ems="10"-->
+<!--            android:layout_margin="4dp"-->
+<!--            android:padding="4dp"-->
+<!--            android:gravity="center"-->
+<!--            android:hint="Re-Enter Password"-->
+<!--            android:inputType="textPassword"-->
+<!--            android:minHeight="48dp"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="14sp" />-->
         <TextView
             android:layout_width="wrap_content"
             android:padding="4dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
             android:text="Password should be of min. 6 character, including one alphabet, on eneumber, and one special character"
             android:textColor="@android:color/darker_gray"/>
-        <EditText
-            android:id="@+id/txtConPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="@color/white"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:layout_margin="4dp"
-            android:padding="4dp"
-            android:gravity="center"
-            android:hint="Re-Enter Password"
-            android:inputType="textPassword"
-            android:minHeight="48dp"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
 
 
         <Button

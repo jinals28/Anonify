@@ -1,23 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp"
+    android:backgroundTint="@color/windowBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="20dp"
-    android:layout_marginLeft="25dp"
-    android:layout_marginRight="25dp"
-    android:backgroundTint="#AE3E4563"
-    app:cardCornerRadius="40dp"
-    app:cardElevation="10dp">
+    android:layout_margin="10dp"
 
+    app:cardElevation="10dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <FrameLayout
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_margin="10dp"
+        android:layout_gravity="center_vertical">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/hashtag"
+            android:layout_gravity="center" />
+        <TextView
+            android:id="@+id/t"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="#"
+            android:fontFamily="@font/montserrat"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/btn"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </FrameLayout>
     <TextView
         android:id="@+id/addhashtag"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="#entertainment"
         android:textAlignment="center"
+        android:fontFamily="@font/montserrat"
+        android:layout_gravity="center_vertical"
         android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="14sp"
+        tools:ignore="RtlCompat" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/txtmembers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3K"
+            android:layout_margin="20dp"
+            android:textAlignment="center"
+            android:fontFamily="@font/montserrat_extralight"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:ignore="RtlCompat" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:background="?android:attr/listDivider" />
 </androidx.cardview.widget.CardView>
