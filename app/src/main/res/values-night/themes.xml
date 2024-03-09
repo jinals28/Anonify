@@ -15,6 +15,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
         <!-- Customize your theme here. -->
+        <item name="android:textViewStyle">@style/AppTheme.TextView</item>
     </style>
     <!-- Base application theme. -->
     <style name="Base.Theme.Anonifydemo" parent="Theme.Material3.DayNight.NoActionBar">

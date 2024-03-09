@@ -45,21 +45,25 @@
         </LinearLayout>
 
     </androidx.appcompat.widget.Toolbar>
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/hashtag"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:src="@drawable/hashtag" />
+
         <TextView
             android:id="@+id/t"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="#"
             android:fontFamily="@font/montserrat"
+            android:text="#"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/btn"
