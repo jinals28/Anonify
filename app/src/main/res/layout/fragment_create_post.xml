@@ -118,6 +118,7 @@
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:autofillHints="" />
+
                 <EditText
                     android:id="@+id/pickahash"
                     android:layout_width="wrap_content"
