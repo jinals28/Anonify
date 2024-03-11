@@ -5,15 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="16dp"
-    tools:context=".ui.ChooseAvatar.Add_avatar_Fragment">
+    android:padding="16dp"></LinearLayout>
+<!--&lt;!&ndash;    tools:context=".ui.ChooseAvatar.Add_avatar_Fragment">&ndash;&gt;-->
 
-    <!-- TODO: Update blank fragment layout -->
+<!--    &lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;-->
 
 
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_addPic"
-        android:layout_width="113dp"
-        android:src="@drawable/menu_category_img"
-        android:layout_height="118dp">
+<!--<de.hdodenhof.circleimageview.CircleImageView-->
+<!--android:id="@+id/img_addPic"-->
+<!--android:layout_width="113dp"-->
+<!--android:src="@drawable/menu_category_img"-->
+<!--android:layout_height="118dp" />-->

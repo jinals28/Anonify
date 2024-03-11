@@ -135,6 +135,12 @@
                     android:backgroundTint="#338EBBFF"
                     app:chipBackgroundColor="@android:color/transparent"
                     app:closeIconEnabled="false"/>
+                <EditText
+                    android:id="@+id/text_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Type your hashtag here"
+                    android:visibility="gone"/>
 
 <!--                <EditText-->
 <!--                    android:id="@+id/pickahash"-->
@@ -159,13 +165,19 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/suggestions_recycler_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="horizontal" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/suggestions_recycler_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="horizontal"/>
+
+        </HorizontalScrollView>
 
     </LinearLayout>
 </FrameLayout>
