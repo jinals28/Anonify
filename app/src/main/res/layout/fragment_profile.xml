@@ -27,13 +27,15 @@
                 android:orientation="horizontal"
                 android:gravity="end"
                 android:padding="10dp">
-            <ImageButton
-                android:id="@+id/imageButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:backgroundTint="@color/windowBackground"
-                android:src="@drawable/option" />
+
+                <ImageButton
+                    android:id="@+id/imageButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:backgroundTint="@color/windowBackground"
+                    android:rotation="90"
+                    android:src="@drawable/option" />
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
     <LinearLayout
