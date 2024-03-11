@@ -14,10 +14,14 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ActivityMainBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity()  {
 
     private lateinit var binding: ActivityMainBinding
+
+    private var auth = Firebase.auth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -31,6 +35,17 @@ class MainActivity : AppCompatActivity()  {
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
             insets.consumeSystemWindowInsets()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+//       if (auth.currentUser != null){
+//           Log
+//            findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_onboardFragment_to_chooseAvatarFragment)
+//       }
+
+
     }
 
 }

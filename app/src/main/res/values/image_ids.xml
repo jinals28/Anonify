@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="image_id">
+<!--        <item>gs://anonify-2673b.appspot.com/bear.png</item>-->
+<!--        <item>gs://anonify-2673b.appspot.com/cat.png</item>-->
+<!--        <item>gs://anonify-2673b.appspot.com/dinosaur.png</item>-->
+<!--        <item>gs://anonify-2673b.appspot.com/dog.png</item>-->
+<!--        <item>gs://anonify-2673b.appspot.com/panda.png</item>-->
+<!--        <item>gs://anonify-2673b.appspot.com/rabbit.png</item>-->
+        <item>R.drawable.bear</item>
+        <item>R.drawable.rabbit</item>
+    </string-array>
+</resources>

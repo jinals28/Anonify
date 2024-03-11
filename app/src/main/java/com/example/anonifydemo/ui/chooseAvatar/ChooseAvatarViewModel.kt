@@ -1,4 +1,4 @@
-package com.example.anonifydemo.ui.ChooseAvatar
+package com.example.anonifydemo.ui.chooseAvatar
 
 import androidx.lifecycle.ViewModel
 
