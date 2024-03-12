@@ -3,14 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#24293E"
-    tools:context=".ui.ChooseTopics.fragment_add_topic">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- TODO: Update blank fragment layout -->
     <androidx.cardview.widget.CardView
-
-        app:cardBackgroundColor="#AE3E4563"
+        app:cardBackgroundColor="#808EBBFF"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="10dp"
@@ -19,13 +15,12 @@
         android:layout_marginBottom="10dp"
         app:cardCornerRadius="40dp"
         app:cardElevation="10dp">
-
+<!--        app:cardBackgroundColor="#AE3E4563"-->
         <TextView
             android:id="@+id/addtopic"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="#entertainment"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="16sp" />

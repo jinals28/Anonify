@@ -1,4 +1,4 @@
-package com.example.anonifydemo.ui.ChooseTopics
+package com.example.anonifydemo.ui.choosetopics
 
 import androidx.lifecycle.ViewModel
 

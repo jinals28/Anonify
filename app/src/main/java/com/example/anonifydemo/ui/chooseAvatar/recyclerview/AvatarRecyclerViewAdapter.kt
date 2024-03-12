@@ -62,11 +62,6 @@ class AvatarRecyclerViewAdapter(private val context: Context, private val imageI
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val imageUrl = imageIds[position]
-//        Log.d("Rv", imageUrl)
-
-//        Log.d(
-//            "Rv", storageRef.toString()
-//        )
         holder.onBind(holder.itemView.context, imageUrl)
 
         holder.imgAvatar.setOnClickListener {
@@ -77,9 +72,5 @@ class AvatarRecyclerViewAdapter(private val context: Context, private val imageI
             }
 
         }
-//        Glide.with(holder.itemView.context)
-//            .load(gsRef)
-//            .centerCrop()
-//            .into(holder.binding.imgAvatar)
     }
 }

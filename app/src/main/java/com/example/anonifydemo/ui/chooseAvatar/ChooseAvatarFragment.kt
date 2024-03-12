@@ -42,20 +42,10 @@ class ChooseAvatarFragment : Fragment() {
                     Pair(R.drawable.rabbit,"Zink"),
                     Pair(R.drawable.bear,"Loki"),
                     Pair(R.drawable.cat,"Yolo"))
-//
-
-            val imageUrls = resources.getIntArray(R.array.image_id).toList()
 
             val adapter = AvatarRecyclerViewAdapter(requireContext(), imageId)
 
             avatarRv.adapter = adapter
 
-//            btnavatar = binding!!.btnavatar
-//            btnavatar.setOnClickListener{
-//                if(findNavController().currentDestination!!.id==R.id.chooseAvatarFragment){
-//                    findNavController().navigate(R.id.action_chooseAvatarFragment_to_chooseTopic)
-//
-//                }
-//            }
         }
     }

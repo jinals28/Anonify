@@ -78,7 +78,7 @@
 
     <fragment
         android:id="@+id/chooseTopic"
-        android:name="com.example.anonifydemo.ui.ChooseTopics.chooseTopic"
+        android:name="com.example.anonifydemo.ui.choosetopics.ChooseTopicFragment"
         android:label="fragment_choose_topic"
         tools:layout="@layout/fragment_choose_topic" />
 
