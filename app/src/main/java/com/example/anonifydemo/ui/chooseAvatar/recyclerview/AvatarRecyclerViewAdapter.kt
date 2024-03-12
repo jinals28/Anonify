@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemAvatarBinding
 import com.example.anonifydemo.ui.chooseAvatar.ChooseAvatarFragmentDirections
 import com.google.firebase.storage.FirebaseStorage
@@ -70,8 +71,11 @@ class AvatarRecyclerViewAdapter(private val context: Context, private val imageI
 
         holder.imgAvatar.setOnClickListener {
                 Toast.makeText(holder.itemView.context, "Welcome ${imageUrl.second}", Toast.LENGTH_LONG).show()
-//            val action = ChooseAvatarFragmentDirections.actionChooseAvatarFragmentToChooseTopic()
-//            holder.itemView.findNavController().navigate(action)
+            if (holder.itemView.findNavController().currentDestination!!.id == R.id.chooseAvatarFragment){
+                val action = ChooseAvatarFragmentDirections.actionChooseAvatarFragmentToChooseTopic()
+                holder.itemView.findNavController().navigate(action)
+            }
+
         }
 //        Glide.with(holder.itemView.context)
 //            .load(gsRef)
