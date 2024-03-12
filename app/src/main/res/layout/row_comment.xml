@@ -91,14 +91,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="3dp">
+                android:padding="8dp">
                 <View
                     android:layout_width="40dp"
                     android:layout_height="0dp" />
 
                 <ImageButton
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:background="@color/windowBackground"
 
                     app:srcCompat="@drawable/like" />
@@ -107,13 +107,31 @@
                     android:layout_height="0dp" />
 
                 <ImageButton
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:background="@color/windowBackground"
 
                     app:srcCompat="@drawable/comment" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@color/windowBackground"
+                    app:srcCompat="@drawable/baseline_star_border_24" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="3dp"
+                android:background="#2B324A" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
