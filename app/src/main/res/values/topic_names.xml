@@ -2,12 +2,12 @@
 <resources>
     <string-array name="topic_names">
         <item>#Entertainment</item>
+        <item>#Social</item>
         <item>#FashionAndBeauty</item>
         <item>#Mentalhealth</item>
         <item>#InternshipAndJobs</item>
         <item>#CollegeStories</item>
         <item>#TravelTopics</item>
-        <item>#Social</item>
         <item>#Technology</item>
         <item>#Career</item>
         <item>#Anxiety</item>
