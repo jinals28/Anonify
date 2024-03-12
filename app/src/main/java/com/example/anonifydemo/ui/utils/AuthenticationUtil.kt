@@ -120,7 +120,7 @@ class AuthenticationUtil private constructor(private val context : Context) : Ut
                 )
                 handleSignIn(result, onSuccess)
 
-            } catch (e: GetCredentialException) {
+            } catch (e: Exception) {
                 onFailure(e)
             }
         }
