@@ -68,12 +68,17 @@ class AuthenticationUtil private constructor(private val context : Context) : Ut
                                     // Sign in success, update UI with the signed-in user's information
                                     val user = auth.currentUser
                                     onSuccess(user!!)
-                                } else {
+                                } else if (task.isCanceled){
                                     // If sign in fails, display a message to the user.
 
                                     Log.w(TAG, "signInWithCredential:failure", task.exception)
+                                }else if (task.isComplete){
+                                    Log.w(TAG, task.exception)
+                                }else {
+                                    Log.w(TAG, task.exception)
                                 }
                             }
+
                     } catch (e: GoogleIdTokenParsingException) {
                         Log.e(TAG, "Received an invalid google id token response", e)
                     }
