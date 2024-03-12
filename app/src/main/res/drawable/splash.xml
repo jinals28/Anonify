@@ -2,10 +2,10 @@
     xmlns:aapt="http://schemas.android.com/aapt">
     <aapt:attr name="android:drawable">
     <vector
-        android:height="1920dp"
-        android:width="1080dp"
-        android:viewportHeight="1920"
-        android:viewportWidth="1080">
+        android:width="432dp"
+        android:height="432dp"
+        android:viewportWidth="432"
+        android:viewportHeight="432">
         <group android:name="_R_G"/>
         <group android:name="time_group"/>
     </vector></aapt:attr>
@@ -20,3 +20,5 @@
                     android:valueTo="1"
                     android:valueType="floatType"/>
             </set></aapt:attr></target></animated-vector>
+    <!--        android:height="1920dp"-->
+    <!--        android:width="1080dp"-->

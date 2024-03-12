@@ -4,5 +4,22 @@
         <item>#Entertainment</item>
         <item>#FashionAndBeauty</item>
         <item>#Mentalhealth</item>
+        <item>#InternshipAndJobs</item>
+        <item>#CollegeStories</item>
+        <item>#TravelTopics</item>
+        <item>#Social</item>
+        <item>#Technology</item>
+        <item>#Career</item>
+        <item>#Anxiety</item>
+        <item>#Family</item>
+        <item>#Sports</item>
+        <item>#Addiction</item>
+        <item>#Advice</item>
+        <item>#Aging</item>
+        <item>#BadHabits</item>
+        <item>#BodyShaming</item>
+        <item>#TimeManagement</item>
+        <item>#Racism</item>
+        <item>#Other</item>
     </string-array>
 </resources>
