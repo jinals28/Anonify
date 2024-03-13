@@ -3,14 +3,17 @@ package com.example.anonifydemo.ui.choosetopics.topicRecyclerView
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemAddTopicBinding
+import com.example.anonifydemo.ui.choosetopics.ChooseTopicFragment
 import com.example.anonifydemo.ui.dataClasses.Topics
 
-class TopicRecyclerViewAdapter(val context: Context, val topicList: MutableList<Topics>) : RecyclerView.Adapter<TopicRecyclerViewAdapter.ViewHolder>() {
+    class TopicRecyclerViewAdapter(val context: Context, val topicList: MutableList<Topics>) : RecyclerView.Adapter<TopicRecyclerViewAdapter.ViewHolder>() {
     inner class ViewHolder(val binding : ItemAddTopicBinding) : RecyclerView.ViewHolder(binding.root) {
         private val topicName = binding.addtopic
         private val card = binding.card
@@ -59,7 +62,14 @@ class TopicRecyclerViewAdapter(val context: Context, val topicList: MutableList<
         return topicList.count { it.isSelected }
 
     }
-
+        fun updateNextButtonVisibility(next: ImageButton) {
+            val selectedTopicsCount = getSelectedTopicsCount()
+            if (selectedTopicsCount >= 3) {
+                next.visibility = View.VISIBLE
+            } else {
+                next.visibility = View.GONE
+            }
+        }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemAddTopicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +19,7 @@ class ChooseTopicFragment : Fragment() {
     private var _binding : FragmentChooseTopicBinding? = null
 
     private val binding get() = _binding
-
+    private lateinit var next : ImageButton
     private lateinit var topicRv : RecyclerView
 
     //   private lateinit var viewModel: ChooseTopicViewModel
@@ -36,6 +37,7 @@ class ChooseTopicFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         topicRv = binding!!.recyclerView
+        next = binding!!.btnnext
 
         val topicList = resources.getStringArray(R.array.topic_names).toList()
 
@@ -53,8 +55,8 @@ class ChooseTopicFragment : Fragment() {
             layoutManager = staggeredStaggeredGridLayoutManager
             adapter = topicAdapter
         }
-
-
+//        next.visibility=View.VISIBLE
+        topicAdapter.updateNextButtonVisibility(next)
     }
 
 }
