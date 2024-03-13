@@ -92,7 +92,7 @@ class ChooseTopicFragment : Fragment(), Utils {
 
     private fun goToFeedFragment() {
         if (findNavController().currentDestination!!.id == R.id.chooseTopic){
-            val action = ChooseTopicFragmentDirections.actionChooseTopicToFeedFragment()
+            val action = ChooseTopicFragmentDirections.actionChooseTopicToNavigationHome()
             findNavController().navigate(action)
         }
     }

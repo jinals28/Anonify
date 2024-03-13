@@ -14,52 +14,62 @@
         android:layout_height="?attr/actionBarSize"
         android:animateLayoutChanges="true"
         android:background="#24293E"
-        android:elevation="10dp"
-        android:gravity="top">
+        android:elevation="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="62dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-
-                android:elevation="4dp"
-                android:paddingTop="8dp"
+                android:scaleType="fitXY"
+                android:paddingStart="8dp"
                 android:paddingBottom="8dp"
-                android:rotationX="15"
-                app:srcCompat="@drawable/icon" />
+                android:paddingTop="8dp"
+                app:srcCompat="@drawable/icon_tool" />
 
             <TextView
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:fontFamily="@font/montserrat"
                 android:text="nonify"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                android:layout_marginStart="2dp"
+                android:padding="2dp"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/toolbar_button"
-                style="@style/Widget.Material3.Button.TonalButton.Icon"
-                android:layout_width="40dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="220dp"
-                android:backgroundTint="#338EBBFF"
-                android:elevation="5dp"
-                android:fontFamily="@font/montserrat"
-                android:padding="0dp"
-                android:text="#"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/btn"
-                android:textSize="20sp"
-                android:textStyle="bold" /> <!-- Add margin between TextView and Button -->
+            <ImageButton
+                android:id="@+id/toolbar_communityIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/hash_icon"
+                android:backgroundTint="@android:color/transparent"
+                android:layout_gravity="end"/>
+
+<!--            <Button-->
+<!--                android:id="@+id/toolbar_button"-->
+<!--                style="@style/Widget.Material3.Button.TonalButton.Icon"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_marginStart="220dp"-->
+<!--                android:backgroundTint="#338EBBFF"-->
+<!--                android:elevation="5dp"-->
+<!--                android:fontFamily="@font/montserrat"-->
+<!--                android:padding="0dp"-->
+<!--                android:text="#"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+<!--                android:textColor="@color/btn"-->
+<!--                android:textSize="20sp"-->
+<!--                android:textStyle="bold" />
+ &lt;!&ndash; Add margin between TextView and Button &ndash;&gt;-->
 
 
         </LinearLayout>
@@ -70,8 +80,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        />
+        android:scrollbars="vertical"/>
 
 
 </LinearLayout>

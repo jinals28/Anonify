@@ -18,8 +18,9 @@ class FeedFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding=FragmentFeedBinding.inflate(layoutInflater, container, false)
+
         return binding!!.root
     }
 

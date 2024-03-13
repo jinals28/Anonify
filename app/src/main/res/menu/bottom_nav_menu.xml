@@ -8,7 +8,7 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_post"
         android:icon="@mipmap/post"
         android:title="Post"
         tools:ignore="HardcodedText" />
@@ -19,7 +19,7 @@
         android:title="@string/title_notifications" />
 
     <item
-        android:id="@+id/navigation_user"
+        android:id="@+id/navigation_profile"
         android:icon="@mipmap/user"
         android:title="My Account"
         tools:ignore="HardcodedText" />

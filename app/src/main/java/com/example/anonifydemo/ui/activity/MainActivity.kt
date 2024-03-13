@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.credentials.CredentialManager
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -24,6 +26,10 @@ class MainActivity : AppCompatActivity()  {
 
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var bottomNavigationView: BottomNavigationView
+
+    private lateinit var navController: NavController
+
     private var auth = Firebase.auth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +40,7 @@ class MainActivity : AppCompatActivity()  {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
 //        WindowCompat.setDecorFitsSystemWindows(window, false)
 //        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
 //            insets.consumeSystemWindowInsets()
@@ -42,6 +49,30 @@ class MainActivity : AppCompatActivity()  {
 
     override fun onStart() {
         super.onStart()
+
+        navController = findNavController(R.id.nav_host_fragment_activity_main)
+
+        bottomNavigationView = binding.navView
+
+        bottomNavigationView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener{ _, destination, _ ->
+            when(destination.id){
+
+                R.id.onboardFragment,
+                R.id.loginFragment,
+                R.id.signInFragment,
+                R.id.chooseAvatarFragment,
+                R.id.chooseTopic,
+                R.id.signUpFragment, -> {
+                    bottomNavigationView.visibility = View.GONE
+                }
+                else -> {
+                    bottomNavigationView.visibility = View.VISIBLE
+                }
+            }
+
+        }
 
 //       if (auth.currentUser != null){
 //           Log
