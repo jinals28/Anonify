@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemAddTopicBinding
 import com.example.anonifydemo.ui.choosetopics.ChooseTopicFragment
@@ -83,5 +86,8 @@ import com.example.anonifydemo.ui.dataClasses.Topics
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val topicName = topicList[position]
         holder.onBind(topicName)
+//        val layoutParams = holder.itemView.layoutParams as LinearLayoutManager.LayoutParams
+//        layoutParams.width = LinearLayoutManager.LayoutParams.WRAP_CONTENT
+//        holder.itemView.layoutParams = layoutParams
     }
 }

@@ -18,6 +18,10 @@ import com.example.anonifydemo.ui.choosetopics.topicRecyclerView.TopicRecyclerVi
 import com.example.anonifydemo.ui.dataClasses.Topics
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.utils.Utils
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayout
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ChooseTopicFragment : Fragment(), Utils {
@@ -47,7 +51,7 @@ class ChooseTopicFragment : Fragment(), Utils {
         super.onViewCreated(view, savedInstanceState)
 
         topicRv = binding!!.recyclerView
-        next = binding!!.btnnext
+        fabNext = binding!!.btnnext
 
         userViewModel.user.observe(viewLifecycleOwner){
 
@@ -65,16 +69,19 @@ class ChooseTopicFragment : Fragment(), Utils {
         }
         val topicAdapter = TopicRecyclerViewAdapter(requireContext(), topics)
 
-        val staggeredStaggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
-
+        //val staggeredStaggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+        topicRv.layoutManager = FlexboxLayoutManager(context).apply {
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
         topicRv.apply {
-            layoutManager = staggeredStaggeredGridLayoutManager
+           // layoutManager = staggeredStaggeredGridLayoutManager
             adapter = topicAdapter
         }
 //        next.visibility=View.VISIBLE
 //        topicAdapter.updateNextButtonVisibility(next)
 
-        next.setOnClickListener {
+        fabNext.setOnClickListener {
             if (topicAdapter.getSelectedTopicsCount() < 3){
                 toast(requireContext(), "Select upto 3 topics to continue")
             }else{

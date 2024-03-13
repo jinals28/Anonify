@@ -68,6 +68,8 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("androidx.credentials:credentials:1.3.0-alpha01")
     implementation("com.firebaseui:firebase-ui-storage:7.2.0")
+    implementation ("com.google.android.flexbox:flexbox:3.0.0")
+
 
     // optional - needed for credentials support from play services, for devices running
     // Android 13 and below.
@@ -84,5 +86,6 @@ dependencies {
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
 
 }

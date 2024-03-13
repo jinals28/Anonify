@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto">-->
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:padding="16dp"
-        app:cardBackgroundColor="@color/unselected_topic"
-        app:cardCornerRadius="40dp"
-        app:cardElevation="10dp">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:padding="16dp"
+    app:cardBackgroundColor="@color/unselected_topic"
+    app:cardCornerRadius="40dp"
+    app:cardElevation="10dp">
         <!--         app:cardBackgroundColor="#668EBBFF"-->
         <TextView
             android:id="@+id/addtopic"
@@ -21,6 +22,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="8dp"
+            android:singleLine="true"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="16sp" />
@@ -28,4 +30,4 @@
     </androidx.cardview.widget.CardView>
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+<!--</LinearLayout>-->

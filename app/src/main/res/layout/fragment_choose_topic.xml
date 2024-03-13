@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#24293E"
+    android:background="@color/windowBackground"
+    android:orientation="vertical"
     tools:context=".ui.choosetopics.ChooseTopicFragment">
 
     <LinearLayout
@@ -13,6 +14,7 @@
         android:layout_height="62dp"
         android:background="@drawable/circle"
         android:orientation="horizontal"
+        android:layout_gravity="end"
         app:layout_constraintBottom_toTopOf="@+id/textView4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.987"
@@ -27,6 +29,7 @@
         android:layout_marginTop="68dp"
         android:text="Choose any three topics"
         android:textColor="@color/white"
+        android:layout_gravity="center"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,52 +38,58 @@
         app:layout_constraintTop_toBottomOf="@id/linearLayout2"
         tools:ignore="MissingConstraints" />
 
+    <!--    <ImageButton-->
+<!--        android:id="@+id/btnnext"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom"-->
+<!--        android:backgroundTint="@color/windowBackground"-->
+<!--        android:padding="32dp"-->
+<!--        android:layout_margin="32dp"-->
+<!--        android:clickable="true"-->
+<!--        android:visibility="visible"-->
+<!--        android:src="@drawable/baseline_arrow_circle_right_24"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.987"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/recyclerView"-->
+<!--        app:layout_constraintVertical_bias="0.597" />-->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="32dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:layout_constraintVertical_bias="0.269"
+        app:layout_constraintVertical_bias="0.114"
         tools:listitem="@layout/item_add_topic" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
-    <ImageButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnnext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:backgroundTint="@color/windowBackground"
-        android:padding="32dp"
-        android:layout_margin="32dp"
-        android:clickable="true"
-        android:visibility="visible"
-        android:src="@drawable/baseline_arrow_circle_right_24"
+        android:layout_gravity="bottom|end"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="52dp"
+        android:backgroundTint="@color/btn"
+        android:contentDescription="next arrow"
+        android:src="@drawable/baseline_arrow_forward_24"
+        android:tint="@color/unselected_topic"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.987"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
-        app:layout_constraintVertical_bias="0.597" />
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/nextBtn"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="64dp"-->
-<!--        android:tint="@color/unselected_topic"-->
-<!--        android:backgroundTint="@color/btn"-->
-<!--        android:src="@drawable/baseline_arrow_forward_24"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="1"-->
-<!--        app:layout_constraintVertical_bias="1"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/textView4"-->
-<!--        android:contentDescription="next arrow" />-->
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

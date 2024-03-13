@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity()  {
         bottomNavigationView = binding.navView
 
         bottomNavigationView.setupWithNavController(navController)
-
+        //bottomNavigationView.itemIconTintList = getColorStateList(R.color.bottom_navigation_icon_selector)
         navController.addOnDestinationChangedListener{ _, destination, _ ->
             when(destination.id){
 

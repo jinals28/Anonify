@@ -84,7 +84,8 @@
                 android:id="@+id/img_usr"
                 android:layout_width="45dp"
                 android:src="@mipmap/ic_launcher_round"
-                android:layout_height="match_parent">
+                android:layout_gravity="top"
+                android:layout_height="45dp">
             </de.hdodenhof.circleimageview.CircleImageView>
 
             <LinearLayout
@@ -103,23 +104,27 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
+                    android:autofillHints=""
                     android:ems="10"
-                    android:textColor="@color/white"
                     android:fontFamily="@font/montserrat_extralight"
                     android:hint="write fearlessliy...
 (write more than 50 charchters for best reach)"
                     android:inputType="textMultiLine"
+                    android:backgroundTint="@color/btn"
+                    app:boxStrokeColor="@color/btn"
+                    app:cursorColor="@color/btn"
+                    android:textColorLink="@color/btn"
+                    android:textColor="@color/white"
                     android:textColorHint="#D9D9D9"
                     android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:autofillHints="" />
+                    android:textStyle="bold" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/hashtag_chip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pick a #"
-                    app:chipIcon="@drawable/hash"
+
                     app:chipIconTint="@color/btn"
                     android:textColor="@color/white"
                     android:textSize="14sp"
@@ -131,15 +136,21 @@
                     android:backgroundTint="#338EBBFF"
                     app:chipBackgroundColor="@android:color/transparent"
                     app:closeIconEnabled="false"/>
+<!--                app:chipIcon="@drawable/hash"-->
 
                 <EditText
                     android:id="@+id/text_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="#D9D9D9"
-                    android:textColor="@color/white"
                     android:hint="#Type your hashtag here"
-                    android:visibility="gone"/>
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textColorHint="#D9D9D9"
+                    android:backgroundTint="@color/btn"
+                    app:boxStrokeColor="@color/btn"
+                    app:cursorColor="@color/btn"
+                    android:textColorLink="@color/btn"
+                    android:visibility="gone" />
 
 <!--                <EditText-->
 <!--                    android:id="@+id/pickahash"-->
