@@ -59,19 +59,18 @@ import com.example.anonifydemo.ui.dataClasses.Topics
         Log.d("Trv", priorityList.toString())
         notifyDataSetChanged()
     }
-
-    private fun getSelectedTopicsCount(): Int {
+        fun getSelectedTopicsCount(): Int {
         return topicList.count { it.isSelected }
 
     }
-        fun updateNextButtonVisibility(next: ImageButton) {
-            val selectedTopicsCount = getSelectedTopicsCount()
-            if (selectedTopicsCount >= 3) {
-                next.visibility = View.VISIBLE
-            } else {
-                next.visibility = View.GONE
-            }
-        }
+//        fun updateNextButtonVisibility(next: ImageButton) {
+//            val selectedTopicsCount = getSelectedTopicsCount()
+//            if (selectedTopicsCount >= 3) {
+//                next.visibility = View.VISIBLE
+//            } else {
+//                next.visibility = View.GONE
+//            }
+//        }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemAddTopicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)

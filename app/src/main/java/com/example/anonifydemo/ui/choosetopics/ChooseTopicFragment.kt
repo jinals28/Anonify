@@ -15,9 +15,10 @@ import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentChooseTopicBinding
 import com.example.anonifydemo.ui.choosetopics.topicRecyclerView.TopicRecyclerViewAdapter
 import com.example.anonifydemo.ui.dataClasses.Topics
+import com.example.anonifydemo.ui.utils.Utils
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class ChooseTopicFragment : Fragment() {
+class ChooseTopicFragment : Fragment(), Utils {
 
     private var _binding : FragmentChooseTopicBinding? = null
 
@@ -44,7 +45,7 @@ class ChooseTopicFragment : Fragment() {
         topicRv = binding!!.recyclerView
         next = binding!!.btnnext
 
-        fabNext = binding!!.nextBtn
+//        fabNext = binding!!.nextBtn
 
         val topicList = resources.getStringArray(R.array.topic_names).toList()
 
@@ -63,15 +64,29 @@ class ChooseTopicFragment : Fragment() {
             adapter = topicAdapter
         }
 //        next.visibility=View.VISIBLE
-        topicAdapter.updateNextButtonVisibility(next)
+//        topicAdapter.updateNextButtonVisibility(next)
 
-        fabNext.setOnClickListener {
+        next.setOnClickListener {
+            if (topicAdapter.getSelectedTopicsCount() < 3){
+                toast(requireContext(), "Select upto 3 topics to continue")
+            }else{
+                val priorityList = topicAdapter.topicList.filter { it.priority > 0 }.sortedBy { it.priority }
 
-            val priorityList = topicAdapter.topicList.filter { it.priority > 0 }.sortedBy { it.priority }
-
-            Log.d("Choose Topic", priorityList.toString())
-            goToFeedFragment()
+                Log.d("Choose Topic", priorityList.toString())
+                goToFeedFragment()
+            }
         }
+
+//        fabNext.setOnClickListener {
+//
+//
+//        }
+//
+//        next.setOnClickListener {
+//
+//
+//            goToFeedFragment()
+//        }
 
     }
 
