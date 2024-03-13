@@ -34,10 +34,10 @@ class MainActivity : AppCompatActivity()  {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
-            insets.consumeSystemWindowInsets()
-        }
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
+//        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
+//            insets.consumeSystemWindowInsets()
+//        }
     }
 
     override fun onStart() {

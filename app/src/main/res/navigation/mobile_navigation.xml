@@ -95,6 +95,7 @@
             android:id="@+id/action_signUpFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/feedFragment"
         android:name="com.example.anonifydemo.ui.homeScreen.FeedFragment"

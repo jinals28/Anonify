@@ -30,7 +30,7 @@ import com.example.anonifydemo.ui.dataClasses.Topics
                     }
                     selectedTopic.isSelected = !selectedTopic.isSelected
                     if (selectedTopic.isSelected){
-                        selectedTopic.priority = getSelectedTopicsCount() + 1
+                        selectedTopic.priority = getSelectedTopicsCount()
                         Log.d("Priority", selectedTopic.priority.toString())
                     }else {
                         selectedTopic.priority = 0
@@ -50,11 +50,13 @@ import com.example.anonifydemo.ui.dataClasses.Topics
 
     private fun reorderTopics() {
         val selectedTopics = topicList.filter { it.isSelected }.sortedBy { it.priority }
+        Log.d("Trv", "Reorder topics: $selectedTopics")
         selectedTopics.forEachIndexed { index, topic ->
             topic.priority = index + 1
         }
+        Log.d("Trv", "Reorder topics after incrementing: $selectedTopics")
         val priorityList = topicList.filter { it.priority > 0 }
-        Log.d("Priority", priorityList.toString())
+        Log.d("Trv", priorityList.toString())
         notifyDataSetChanged()
     }
 
