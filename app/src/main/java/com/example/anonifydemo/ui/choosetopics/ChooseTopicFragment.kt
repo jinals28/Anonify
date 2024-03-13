@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentChooseTopicBinding
 import com.example.anonifydemo.ui.choosetopics.topicRecyclerView.TopicRecyclerViewAdapter
 import com.example.anonifydemo.ui.dataClasses.Topics
+import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.utils.Utils
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -27,6 +29,8 @@ class ChooseTopicFragment : Fragment(), Utils {
     private lateinit var topicRv : RecyclerView
 
     private lateinit var fabNext : FloatingActionButton
+
+    private val userViewModel : UserViewModel by activityViewModels()
 
     //   private lateinit var viewModel: ChooseTopicViewModel
 
@@ -44,6 +48,10 @@ class ChooseTopicFragment : Fragment(), Utils {
 
         topicRv = binding!!.recyclerView
         next = binding!!.btnnext
+
+        userViewModel.user.observe(viewLifecycleOwner){
+
+        }
 
 //        fabNext = binding!!.nextBtn
 
@@ -72,6 +80,7 @@ class ChooseTopicFragment : Fragment(), Utils {
             }else{
                 val priorityList = topicAdapter.topicList.filter { it.priority > 0 }.sortedBy { it.priority }
 
+                userViewModel.updateUserTopic(priorityList)
                 Log.d("Choose Topic", priorityList.toString())
                 goToFeedFragment()
             }

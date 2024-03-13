@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#24293E"
-    tools:context=".ui.createPost.createPostFragment">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ui.createPost.CreatePostFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -30,24 +27,21 @@
                 style="@android:style/Widget.DeviceDefault.ImageButton"
                 android:layout_width="40dp"
                 android:layout_height="28dp"
-
                 android:layout_gravity="center_vertical"
                 android:backgroundTint="#24293E"
                 android:src="@drawable/baseline_arrow_back_24" />
 
             <TextView
                 android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:fontFamily="@font/montserrat"
                 android:text="Create Post"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/toolbar_button"
@@ -88,27 +82,29 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img_usr"
-                android:layout_width="40dp"
+                android:layout_width="45dp"
                 android:src="@mipmap/ic_launcher_round"
-                android:layout_height="40dp"
-                >
+                android:layout_height="match_parent">
             </de.hdodenhof.circleimageview.CircleImageView>
 
-            <View
-                android:layout_width="8dp"
-                android:layout_height="0dp" />
-
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+
                 <EditText
-                    android:layout_width="322dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:ems="10"
+                    android:textColor="@color/white"
                     android:fontFamily="@font/montserrat_extralight"
                     android:hint="write fearlessliy...
 (write more than 50 charchters for best reach)"
@@ -135,11 +131,14 @@
                     android:backgroundTint="#338EBBFF"
                     app:chipBackgroundColor="@android:color/transparent"
                     app:closeIconEnabled="false"/>
+
                 <EditText
                     android:id="@+id/text_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Type your hashtag here"
+                    android:textColorHint="#D9D9D9"
+                    android:textColor="@color/white"
+                    android:hint="#Type your hashtag here"
                     android:visibility="gone"/>
 
 <!--                <EditText-->
@@ -165,19 +164,15 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/suggestions_recycler_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
+                android:visibility="invisible"
+                tools:listitem="@layout/row_pickahashtag"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:orientation="horizontal"/>
 
-        </HorizontalScrollView>
-
-    </LinearLayout>
-</FrameLayout>
+</LinearLayout>

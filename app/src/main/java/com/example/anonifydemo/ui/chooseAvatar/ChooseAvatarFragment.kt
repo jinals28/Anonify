@@ -6,21 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentChooseAvatarBinding
 import com.example.anonifydemo.ui.chooseAvatar.recyclerview.AvatarRecyclerViewAdapter
+import com.example.anonifydemo.ui.dataClasses.Avatar
+import com.example.anonifydemo.ui.dataClasses.User
+import com.example.anonifydemo.ui.dataClasses.UserViewModel
 
 class ChooseAvatarFragment : Fragment() {
 
     private var _binding : FragmentChooseAvatarBinding? = null
 
+    private val userViewModel : UserViewModel by activityViewModels()
     private val binding get() = _binding
 
     //private lateinit var viewModel: ChooseAvatarViewModel
     private lateinit var btnavatar: Button
 
     private lateinit var avatarRv : RecyclerView
+
+    private lateinit var user : User
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,17 +42,21 @@ class ChooseAvatarFragment : Fragment() {
 
             avatarRv = binding!!.avatarRv
 
-            val imageId = listOf<Pair<Int, String>>(
-                Pair(R.drawable.dinosaur,"Moki"),
-                    Pair(R.drawable.dog,"Jinto"),
-                    Pair(R.drawable.panda,"Yarri"),
-                    Pair(R.drawable.rabbit,"Zink"),
-                    Pair(R.drawable.bear,"Loki"),
-                    Pair(R.drawable.cat,"Yolo"))
 
-            val adapter = AvatarRecyclerViewAdapter(requireContext(), imageId)
+
+            val imageId = listOf<Avatar>(
+                Avatar(R.drawable.dinosaur,"Moki"),
+                    Avatar(R.drawable.dog,"Jinto"),
+                    Avatar(R.drawable.panda,"Yarri"),
+                    Avatar(R.drawable.rabbit,"Zink"),
+                    Avatar(R.drawable.bear,"Loki"),
+                    Avatar(R.drawable.cat,"Yolo"))
+
+            val adapter = AvatarRecyclerViewAdapter(requireContext(), imageId, userViewModel)
 
             avatarRv.adapter = adapter
+
+
 
         }
     }

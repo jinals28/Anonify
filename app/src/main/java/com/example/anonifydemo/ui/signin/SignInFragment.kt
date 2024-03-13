@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentSignInBinding
+import com.example.anonifydemo.ui.dataClasses.User
+import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.Utils
 import com.google.android.gms.common.SignInButton
@@ -24,6 +27,8 @@ class SignInFragment : Fragment(), Utils{
     private val binding get() = _binding
 
     private lateinit var btnSignIn : Button
+
+    private val userViewModel : UserViewModel by activityViewModels()
 
     private lateinit var signUpTxt : TextView
 
@@ -85,12 +90,18 @@ class SignInFragment : Fragment(), Utils{
 
             authUtil.signInWithGoogle(this, getString(R.string.web_client_id), onSuccess = { user ->
                 toast(requireContext(), "Welcome ${user.displayName}")
+               setUser(user.uid, user.email)
                 goToChooseAvatarFragment()
 
             }, onFailure = { e ->
                 handleFailure(requireContext(), e)
             })
         }
+    }
+
+    private fun setUser(uid: String, email: String?){
+        val user = User(uid, email)
+        userViewModel.setUser(user)
     }
 
     private fun observeLivedata() {

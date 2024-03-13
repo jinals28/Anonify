@@ -1,7 +1,6 @@
 package com.example.anonifydemo.ui.createPost
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,34 +9,77 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentCreatePostBinding
 import com.google.android.material.chip.Chip
-import com.example.anonifydemo.ui.createPost.SuggestionItem
+import com.example.anonifydemo.ui.dataClasses.UserViewModel
+import de.hdodenhof.circleimageview.CircleImageView
 
-class createPostFragment : Fragment() {
+class CreatePostFragment : Fragment() {
     private var _binding: FragmentCreatePostBinding?=null
     private val binding get() = _binding
-    private lateinit var suggestionsAdapter: SuggestionsAdapter
+
+    private val userViewModel : UserViewModel by activityViewModels()
+
+    private lateinit var postViewModel : CreatePostViewModel
+
+
+    private lateinit var userAvatar : CircleImageView
+
+    private lateinit var suggestionList : List<String>
+
+    private lateinit var suggestionRv : RecyclerView
+
    private lateinit var hashtagChip: Chip
-    private lateinit var textinput: EditText
+
+    private lateinit var textInput: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding=FragmentCreatePostBinding.inflate(layoutInflater, container, false)
+
         return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val hashtagChip = binding!!.hashtagChip
-        val textInput = binding!!.textInput
-        setupSuggestionsRecyclerView()
+
+        postViewModel = ViewModelProvider(this).get(CreatePostViewModel::class.java)
+
+        suggestionList = resources.getStringArray(R.array.topic_names).toList()
+
+        postViewModel.set(suggestionList)
+
+        suggestionRv = binding!!.suggestionsRecyclerView
+
+        hashtagChip = binding!!.hashtagChip
+
+        textInput = binding!!.textInput
+
+        userAvatar = binding!!.imgUsr
+
+        postViewModel.topicList.observe(viewLifecycleOwner){ suggestionsList ->
+            val suggestionsAdapter = SuggestionsAdapter(suggestionsList) { suggestionItem ->
+                binding!!.textInput.setText("$suggestionItem")
+                hideSuggestions()
+            }
+            suggestionRv.adapter = suggestionsAdapter
+        }
+
+
+        userViewModel.user.observe(viewLifecycleOwner){
+            userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), it.avatarUrl.id))
+        }
+
+//        setupSuggestionsRecyclerView()
 
         hashtagChip.setOnClickListener {
             hashtagChip.visibility = View.GONE
@@ -50,6 +92,7 @@ class createPostFragment : Fragment() {
             if (!hasFocus) {
                 hashtagChip.visibility = View.VISIBLE
                 textInput.visibility = View.GONE
+                suggestionRv.visibility = View.INVISIBLE
                 hideKeyboard()
             }
         }
@@ -59,9 +102,11 @@ class createPostFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val input = s.toString().trim()
-                if (input.isNotEmpty() && input.startsWith("#")) {
-                    showSuggestions(input.substring(1))
+                if (input.isNotEmpty() && input.startsWith("#") ) {
+                    suggestionRv.visibility = View.VISIBLE
+                    showSuggestions(input)
                 } else {
+                    Toast.makeText(requireContext(), "hide", Toast.LENGTH_SHORT).show()
                     hideSuggestions()
                 }
             }
@@ -70,38 +115,36 @@ class createPostFragment : Fragment() {
         })
     }
 
-    private fun setupSuggestionsRecyclerView() {
-        suggestionsAdapter = SuggestionsAdapter(emptyList()) { suggestionItem ->
-            binding!!.textInput.setText("#${suggestionItem.text}")
-            hideSuggestions()
-        }
-        binding!!.suggestionsRecyclerView.adapter = suggestionsAdapter
-        binding!!.suggestionsRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-    }
+//    private fun setupSuggestionsRecyclerView() {
+//
+//        suggestionsAdapter = SuggestionsAdapter(suggestionsList) { suggestionItem ->
+//            binding!!.textInput.setText("#$suggestionItem")
+//            hideSuggestions()
+//        }
+//        suggestionRv.adapter = suggestionsAdapter
+//
+//    }
 
     private fun showSuggestions(input: String) {
-        val suggestions = generateSuggestions(input)
-        suggestionsAdapter = SuggestionsAdapter(suggestions) { suggestionItem ->
-            binding!!.textInput.setText("#${suggestionItem.text}")
-            hideSuggestions()
-        }
-        binding!!.suggestionsRecyclerView.adapter = suggestionsAdapter
-        binding!!.suggestionsRecyclerView.visibility = View.VISIBLE
+//
+        postViewModel.generateSuggestions(input)
+////        suggestionsAdapter = SuggestionsAdapter(suggestions) { suggestionItem ->
+////            binding!!.textInput.setText("#$suggestionItem")
+////            hideSuggestions()
+////        }
+//        binding!!.suggestionsRecyclerView.adapter = suggestionsAdapter
+//        binding!!.suggestionsRecyclerView.visibility = View.VISIBLE
     }
 
     private fun hideSuggestions() {
-        binding!!.suggestionsRecyclerView.visibility = View.GONE
+        suggestionRv.visibility = View.GONE
     }
 
-    private fun generateSuggestions(input: String): List<SuggestionItem> {
-        // Generate suggestions based on the input
-        // You can fetch suggestions from a database or use a hardcoded list
-        return listOf(
-            SuggestionItem("suggestion1"),
-            SuggestionItem("suggestion2"),
-            SuggestionItem("suggestion3")
-        ).filter { it.text.startsWith(input, ignoreCase = true) }
-    }
+//    private fun generateSuggestions(input: String): List<String> {
+//        // Generate suggestions based on the input
+//        // You can fetch suggestions from a database or use a hardcoded list
+//        return resources.getStringArray(R.array.topic_names).toList().filter { it.startsWith(input, ignoreCase = true) }
+//    }
 
     private fun showKeyboard() {
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

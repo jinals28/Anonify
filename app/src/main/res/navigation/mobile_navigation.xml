@@ -10,15 +10,19 @@
         android:name="com.example.anonifydemo.ui.login.LoginFragment"
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
+
         <action
             android:id="@+id/action_loginFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+
         <action
             android:id="@+id/action_loginFragment_to_chooseAvatarFragment"
             app:destination="@id/chooseAvatarFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/onboardFragment"
@@ -34,6 +38,7 @@
             app:destination="@id/chooseAvatarFragment" />
 
     </fragment>
+
     <fragment
         android:id="@+id/signInFragment"
         android:name="com.example.anonifydemo.ui.signin.SignInFragment"
@@ -102,7 +107,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_post"
-        android:name="com.example.anonifydemo.ui.createPost.createPostFragment"
+        android:name="com.example.anonifydemo.ui.createPost.CreatePostFragment"
         android:label="fragment_create_post"
         tools:layout="@layout/fragment_create_post" />
     <fragment

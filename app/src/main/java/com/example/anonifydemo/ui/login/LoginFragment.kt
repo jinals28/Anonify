@@ -7,9 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentLoginBinding
+import com.example.anonifydemo.ui.dataClasses.User
+import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.Utils
 
@@ -18,6 +21,8 @@ class LoginFragment : Fragment(), Utils {
     private var _binding : FragmentLoginBinding? = null
 
     private val binding get() = _binding
+
+    private val userViewModel : UserViewModel by activityViewModels()
 
 //    private lateinit var viewModel: LoginViewModel
 
@@ -65,6 +70,7 @@ class LoginFragment : Fragment(), Utils {
 
             authUtil.signInWithGoogle(this, serverClientId = getString(R.string.web_client_id), onSuccess = { user ->
                 toast(requireContext(), "Welcome ${user.displayName}!")
+                setUser(user.uid, user.email)
                 goToChooseAvatarFragment()
             }, onFailure = { e ->
                 handleFailure(requireContext(), e)
@@ -93,6 +99,11 @@ class LoginFragment : Fragment(), Utils {
             val action = LoginFragmentDirections.actionLoginFragmentToSignUpFragment()
             findNavController().navigate(action)
         }
+    }
+
+    private fun setUser(uid: String, email: String?){
+        val user = User(uid, email)
+        userViewModel.setUser(user)
     }
 
 

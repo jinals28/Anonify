@@ -12,10 +12,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemAvatarBinding
 import com.example.anonifydemo.ui.chooseAvatar.ChooseAvatarFragmentDirections
+import com.example.anonifydemo.ui.dataClasses.Avatar
+import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.google.firebase.storage.FirebaseStorage
 
 
-class AvatarRecyclerViewAdapter(private val context: Context, private val imageIds: List<Pair<Int, String>>) : RecyclerView.Adapter<AvatarRecyclerViewAdapter.ViewHolder>() {
+class AvatarRecyclerViewAdapter(
+    private val context: Context,
+    private val imageIds: List<Avatar>,
+    val userViewModel: UserViewModel
+) : RecyclerView.Adapter<AvatarRecyclerViewAdapter.ViewHolder>() {
 
     private val storage = FirebaseStorage.getInstance()
 
@@ -23,7 +29,7 @@ class AvatarRecyclerViewAdapter(private val context: Context, private val imageI
 
         val imgAvatar : ImageView = binding.imgAvatar
         val txtAvatar : TextView = binding.avatarName
-        fun onBind(context: Context, avatar: Pair<Int, String>){
+        fun onBind(context: Context, avatar: Avatar){
 
 //            val storageRef = storage.getReferenceFromUrl(url)
 //            val oneMegabyte = (1024 * 1024).toLong()
@@ -36,14 +42,14 @@ class AvatarRecyclerViewAdapter(private val context: Context, private val imageI
 //                .addOnFailureListener { exception ->
 //                    // Handle any errors
 //                }
-            val drawable = ContextCompat.getDrawable(context, avatar.first)
+            val drawable = ContextCompat.getDrawable(context, avatar.id)
             imgAvatar.setImageDrawable(drawable)
 //            Glide.with(context)
 //                .asBitmap()
 //                .load(url)
 //                .into(imgAvatar)
 
-            txtAvatar.text = avatar.second
+            txtAvatar.text = avatar.name
 
 
         }
@@ -61,11 +67,12 @@ class AvatarRecyclerViewAdapter(private val context: Context, private val imageI
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val imageUrl = imageIds[position]
-        holder.onBind(holder.itemView.context, imageUrl)
+        val avatar = imageIds[position]
+        holder.onBind(holder.itemView.context, avatar)
 
         holder.imgAvatar.setOnClickListener {
-                Toast.makeText(holder.itemView.context, "Welcome ${imageUrl.second}", Toast.LENGTH_LONG).show()
+                userViewModel.updateUserAvatarUrl(avatar)
+                Toast.makeText(holder.itemView.context, "Welcome ${avatar.name}", Toast.LENGTH_LONG).show()
             if (holder.itemView.findNavController().currentDestination!!.id == R.id.chooseAvatarFragment){
                 val action = ChooseAvatarFragmentDirections.actionChooseAvatarFragmentToChooseTopic()
                 holder.itemView.findNavController().navigate(action)

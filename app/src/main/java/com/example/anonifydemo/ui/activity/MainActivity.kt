@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -19,12 +20,15 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ActivityMainBinding
+import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity()  {
 
     private lateinit var binding: ActivityMainBinding
+
+    private val userViewModel : UserViewModel by viewModels()
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
