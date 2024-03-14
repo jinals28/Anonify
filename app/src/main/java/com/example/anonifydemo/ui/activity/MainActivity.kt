@@ -1,6 +1,7 @@
 package com.example.anonifydemo.ui.activity
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -59,6 +61,8 @@ class MainActivity : AppCompatActivity()  {
         bottomNavigationView = binding.navView
 
         bottomNavigationView.setupWithNavController(navController)
+        bottomNavigationView.itemIconTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.btn))
+
         //bottomNavigationView.itemIconTintList = getColorStateList(R.color.bottom_navigation_icon_selector)
         navController.addOnDestinationChangedListener{ _, destination, _ ->
             when(destination.id){
