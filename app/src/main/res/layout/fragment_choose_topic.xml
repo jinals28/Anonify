@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/windowBackground"
-    android:orientation="vertical"
     tools:context=".ui.choosetopics.ChooseTopicFragment">
 
     <LinearLayout
@@ -30,7 +29,7 @@
         android:text="Choose any three topics"
         android:textColor="@color/white"
         android:layout_gravity="center"
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -59,29 +58,29 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="32dp"
+        android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="32dp"
+        android:padding="32dp"
         app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnnext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:layout_constraintVertical_bias="0.114"
         tools:listitem="@layout/item_add_topic" />
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+<!--    <View-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1"/>-->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnnext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="52dp"
         android:backgroundTint="@color/btn"
@@ -91,5 +90,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
