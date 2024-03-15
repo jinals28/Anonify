@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#24293E"
+    android:background="@color/windowBackground"
     android:orientation="vertical"
     tools:context=".ui.createPost.CreatePostFragment">
 
@@ -23,13 +23,13 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageButton
-                style="@android:style/Widget.DeviceDefault.ImageButton"
-                android:layout_width="40dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center_vertical"
-                android:backgroundTint="#24293E"
-                android:src="@drawable/baseline_arrow_back_24" />
+<!--            <ImageButton-->
+<!--                style="@android:style/Widget.DeviceDefault.ImageButton"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="28dp"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:backgroundTint="#24293E"-->
+<!--                android:src="@drawable/baseline_arrow_back_24" />-->
 
             <TextView
                 android:id="@+id/toolbar_title"
@@ -45,7 +45,7 @@
 
             <Button
                 android:id="@+id/toolbar_button"
-                style="@style/Widget.Material3.Button.TonalButton.Icon"
+                style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:backgroundTint="@color/btn"
@@ -140,7 +140,7 @@
 
                 <EditText
                     android:id="@+id/text_input"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="#Type your hashtag here"
                     android:singleLine="true"
@@ -180,7 +180,7 @@
                 android:id="@+id/suggestions_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_marginTop="20dp"
                 android:visibility="invisible"
                 tools:listitem="@layout/row_pickahashtag"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

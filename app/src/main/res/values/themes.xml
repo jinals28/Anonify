@@ -15,6 +15,7 @@
 
         <!-- Customize your theme here. -->
         <item name="android:textViewStyle">@style/AppTheme.TextView</item>
+        <item name="colorPrimaryVariant">@color/btn</item>
     </style>
 
     <style name="SplashApi" parent="Theme.SplashScreen">

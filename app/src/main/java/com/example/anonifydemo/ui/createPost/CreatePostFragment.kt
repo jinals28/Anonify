@@ -69,6 +69,7 @@ class CreatePostFragment : Fragment() {
         postViewModel.topicList.observe(viewLifecycleOwner){ suggestionsList ->
             val suggestionsAdapter = SuggestionsAdapter(suggestionsList) { suggestionItem ->
                 binding!!.textInput.setText("$suggestionItem")
+                hashtagChip.text = suggestionItem
                 hideSuggestions()
             }
             suggestionRv.adapter = suggestionsAdapter
@@ -78,7 +79,8 @@ class CreatePostFragment : Fragment() {
         userViewModel.user.observe(viewLifecycleOwner){
             userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), it.avatarUrl.id))
         }
-
+        textInput.setText("#")
+        textInput.setSelection(1) // Set the cursor after the '#'
 //        setupSuggestionsRecyclerView()
 
         hashtagChip.setOnClickListener {
@@ -92,6 +94,7 @@ class CreatePostFragment : Fragment() {
             if (!hasFocus) {
                 hashtagChip.visibility = View.VISIBLE
                 textInput.visibility = View.GONE
+
                 suggestionRv.visibility = View.INVISIBLE
                 hideKeyboard()
             }

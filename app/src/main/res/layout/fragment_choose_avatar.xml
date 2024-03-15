@@ -67,8 +67,8 @@
         android:layout_gravity="center"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="8dp"
-        android:padding="32dp"
-        android:paddingBottom="20dp"
+        android:paddingTop="25dp"
+        android:paddingHorizontal="32dp"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2" />

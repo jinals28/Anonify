@@ -77,7 +77,7 @@
 
         <Button
             android:id="@+id/btnEdit"
-            style="@style/Widget.Material3.Button.TonalButton.Icon"
+            style="@style/Widget.Material3.Button.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -114,13 +114,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="4dp"
-                android:layout_gravity="center">
+                android:layout_gravity="center_horizontal">
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_gravity="center"
-                    android:paddingStart="20dp"
+                    android:paddingStart="0dp"
                     android:paddingEnd="20dp">
                     <TextView
                         android:id="@+id/txtfollowing"
@@ -129,10 +129,11 @@
                         android:fontFamily="@font/montserrat_semibold"
                         android:gravity="center_vertical"
                         android:text="0"
-                        android:layout_gravity="center"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="2dp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="#F4F5FC"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
                     <TextView
                         android:id="@+id/txtnnn"
@@ -140,11 +141,11 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat"
                         android:gravity="center_vertical"
-                        android:layout_gravity="center"
+                        android:layout_gravity="center_horizontal"
                         android:text="Following"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="#F4F5FC"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -157,12 +158,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_semibold"
-                        android:gravity="center_vertical"
                         android:text="0"
+                        android:layout_marginBottom="2dp"
                         android:layout_gravity="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="#F4F5FC"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
                     <TextView
                         android:id="@+id/txtus"
@@ -174,25 +175,25 @@
                         android:text="Post"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="#F4F5FC"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
+                    android:paddingEnd="0dp">
                     <TextView
                         android:id="@+id/txtviews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_semibold"
-                        android:gravity="center_vertical"
                         android:text="0"
-                        android:layout_gravity="center"
+                        android:layout_marginBottom="2dp"
+                        android:layout_gravity="center_horizontal"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="#F4F5FC"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
                     <TextView
                         android:id="@+id/txt"
@@ -204,7 +205,7 @@
                         android:text="Advice Points"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="#F4F5FC"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -214,7 +215,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:orientation="vertical">
 
             <View
@@ -237,7 +239,8 @@
                     android:gravity="center"
                     android:singleLine="false"
                     android:text="Posts"
-                    android:textColor="@drawable/button_selector_file"
+
+                    android:textColor="@color/button_selector_file"
                     android:textSize="12sp"
                     app:strokeColor="@color/btn" />
 
@@ -246,7 +249,7 @@
                     android:layout_height="wrap_content"
                     android:text="Saved"
                     android:layout_gravity="center"
-                    android:textColor="@drawable/button_selector_file"
+                    android:textColor="@color/button_selector_file"
                     android:fontFamily="@font/montserrat_extralight"
                     android:backgroundTint="@color/windowBackground"
                     android:textSize="12sp"/>
