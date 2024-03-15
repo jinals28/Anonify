@@ -15,5 +15,15 @@ class ValidationUtil {
         fun passwordsMatch(password: String, confirmPassword: String): Boolean {
             return password == confirmPassword
         }
+
+        fun isValidPostContent(content: String): Boolean {
+            return content.isNotBlank() // Check if the content is not null, empty, or blank
+        }
+
+        fun isHashtagValid(hashtag: String, suggestionList: List<String>): Boolean {
+            return suggestionList.contains(hashtag)
+        }
+
+
     }
 }

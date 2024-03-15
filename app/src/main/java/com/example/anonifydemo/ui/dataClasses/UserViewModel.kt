@@ -27,4 +27,8 @@ class UserViewModel : ViewModel() {
         val updatedUser = currentUser.copy(topics = topicList.toMutableList())
         _user.value = updatedUser
     }
+
+    fun getUser(): User? {
+        return _user.value
+    }
 }
