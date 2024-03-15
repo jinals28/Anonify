@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/windowBackground"
-    tools:context=".ui.home.postFragment">
+    android:background="@color/windowBackground">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -53,7 +52,7 @@
                     android:layout_weight="1" />
 
                 <ImageButton
-                    android:id="@+id/imageButton2"
+                    android:id="@+id/moreOptions"
                     android:layout_width="33dp"
                     android:layout_height="25dp"
                     android:layout_gravity="bottom"
@@ -118,7 +117,6 @@
                     android:id="@+id/txtpost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:fontFamily="@font/montserrat"
@@ -183,10 +181,4 @@
 
     </androidx.cardview.widget.CardView>
 
-
-
-
-
-
-
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

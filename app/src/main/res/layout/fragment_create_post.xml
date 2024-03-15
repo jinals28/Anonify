@@ -44,7 +44,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/toolbar_button"
+                android:id="@+id/toolbar_button_post"
                 style="@style/Widget.Material3.Button.TonalButton.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
@@ -100,6 +100,7 @@
                     android:visibility="gone"/>
 
                 <EditText
+                    android:id="@+id/postContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -124,7 +125,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pick a #"
-
                     app:chipIconTint="@color/btn"
                     android:textColor="@color/white"
                     android:textSize="14sp"

@@ -9,26 +9,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentCreatePostBinding
+import com.example.anonifydemo.ui.dataClasses.Post
 import com.google.android.material.chip.Chip
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import de.hdodenhof.circleimageview.CircleImageView
 
 class CreatePostFragment : Fragment() {
+
     private var _binding: FragmentCreatePostBinding?=null
     private val binding get() = _binding
 
     private val userViewModel : UserViewModel by activityViewModels()
 
     private lateinit var postViewModel : CreatePostViewModel
-
 
     private lateinit var userAvatar : CircleImageView
 
@@ -39,6 +42,13 @@ class CreatePostFragment : Fragment() {
    private lateinit var hashtagChip: Chip
 
     private lateinit var textInput: EditText
+
+    private lateinit var postContent : EditText
+
+    private lateinit var postBtn : Button
+
+    private lateinit var uid : String
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,7 +74,13 @@ class CreatePostFragment : Fragment() {
 
         textInput = binding!!.textInput
 
+        postContent = binding!!.postContent
+
         userAvatar = binding!!.imgUsr
+
+        postBtn = binding!!.toolbarButtonPost
+
+        uid = userViewModel.getUser()!!.uid
 
         postViewModel.topicList.observe(viewLifecycleOwner){ suggestionsList ->
             val suggestionsAdapter = SuggestionsAdapter(suggestionsList) { suggestionItem ->
@@ -97,54 +113,90 @@ class CreatePostFragment : Fragment() {
             }
         }
 
+
+        postContent.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                postContent.error = null
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+        })
+
         textInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                textInput.error = null
                 val input = s.toString().trim()
                 if (input.isNotEmpty() && input.startsWith("#") ) {
                     suggestionRv.visibility = View.VISIBLE
                     showSuggestions(input)
                 } else {
-                    Toast.makeText(requireContext(), "hide", Toast.LENGTH_SHORT).show()
                     hideSuggestions()
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {}
+
         })
+
+        postBtn.setOnClickListener {
+
+            val content = postContent.text.toString()
+
+            val hashtag = textInput.text.toString()
+
+            if (!postViewModel.isValidContent(content)){
+
+                postContent.error = "Post should contain words"
+
+            }
+
+            if (!postViewModel.isValidHashtag(hashtag)){
+                if (textInput.visibility == View.VISIBLE){
+                    textInput.error = "Choose a valid hashtag"
+                }else {
+                    hashtagChip.error = "Choose a valid hashtag"
+                }
+
+            }
+
+            if (postViewModel.isValidHashtag(hashtag) && postViewModel.isValidContent(content)){
+                postViewModel.addPost(Post(
+                    uid = uid,
+                    text = content,
+                    hashtag = hashtag
+                ))
+                textInput.setText("")
+                postContent.setText("")
+
+            }
+
+
+
+
+//            val post = Post(
+//                uid = uid,
+//                text = postContent.text.toString(),
+//                hashtag = textInput.
+//            )
+        }
     }
 
-//    private fun setupSuggestionsRecyclerView() {
-//
-//        suggestionsAdapter = SuggestionsAdapter(suggestionsList) { suggestionItem ->
-//            binding!!.textInput.setText("#$suggestionItem")
-//            hideSuggestions()
-//        }
-//        suggestionRv.adapter = suggestionsAdapter
-//
-//    }
-
     private fun showSuggestions(input: String) {
-//
         postViewModel.generateSuggestions(input)
-////        suggestionsAdapter = SuggestionsAdapter(suggestions) { suggestionItem ->
-////            binding!!.textInput.setText("#$suggestionItem")
-////            hideSuggestions()
-////        }
-//        binding!!.suggestionsRecyclerView.adapter = suggestionsAdapter
-//        binding!!.suggestionsRecyclerView.visibility = View.VISIBLE
     }
 
     private fun hideSuggestions() {
         suggestionRv.visibility = View.GONE
     }
-
-//    private fun generateSuggestions(input: String): List<String> {
-//        // Generate suggestions based on the input
-//        // You can fetch suggestions from a database or use a hardcoded list
-//        return resources.getStringArray(R.array.topic_names).toList().filter { it.startsWith(input, ignoreCase = true) }
-//    }
 
     private fun showKeyboard() {
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -157,46 +209,3 @@ class CreatePostFragment : Fragment() {
     }
 }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        val hashtagChip = binding.hashtagChip
-//        val textInputField = binding.textInputField
-//
-//        // Set up the text input field to show the keyboard and request focus when the hashtag chip is clicked
-//        hashtagChip.setOnClickListener {
-//            textInputField.requestFocus()
-//            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//            imm.showSoftInput(textInputField, InputMethodManager.SHOW_IMPLICIT)
-//        }
-//
-//        // Create a list of suggestions
-//        val suggestions = listOf(
-//            SuggestionItem(1, "suggestion1"),
-//            SuggestionItem(2, "suggestion2"),
-//            SuggestionItem(3, "suggestion3"),
-//            // Add more suggestions here
-//        )
-//
-//        // Create the adapter and set it for the RecyclerView
-//        suggestionsAdapter = SuggestionsAdapter(suggestions, ::onSuggestionItemClicked)
-//        binding.suggestionsRecyclerView.adapter = suggestionsAdapter
-//
-//        // Set up the text input field to filter the suggestions as the user types
-//        textInputField.addTextChangedListener {
-//            // Filter the suggestions based on the entered text
-//            val filteredSuggestions = suggestions.filter { suggestion ->
-//                suggestion.text.contains(textInputField.text.toString(), ignoreCase = true)
-//            }
-//            suggestionsAdapter.updateItems(filteredSuggestions)
-//        }
-//    }
-//
-//    private fun onSuggestionItemClicked(suggestionItem: SuggestionItem) {
-//        // Update the text input field with the selected suggestion
-//        binding.textInputField.setText(suggestionItem.text)
-//
-//        // Hide the suggestions RecyclerView
-//        binding.suggestionsRecyclerView.visibility = View.GONE
-//    }
-//
-//
