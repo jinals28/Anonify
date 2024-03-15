@@ -46,11 +46,23 @@ class ChooseAvatarFragment : Fragment() {
 
             val imageId = listOf<Avatar>(
                 Avatar(R.drawable.dinosaur,"Moki"),
-                    Avatar(R.drawable.dog,"Jinto"),
-                    Avatar(R.drawable.panda,"Yarri"),
-                    Avatar(R.drawable.rabbit,"Zink"),
-                    Avatar(R.drawable.bear,"Loki"),
-                    Avatar(R.drawable.cat,"Yolo"))
+                Avatar(R.drawable.dog,"Jinto"),
+                Avatar(R.drawable.panda,"Yarri"),
+                Avatar(R.drawable.rabbit,"Zink"),
+                Avatar(R.drawable.bear,"Loki"),
+                Avatar(R.drawable.cat,"Yolo"),
+                Avatar(R.drawable.octopus,"Kairo"),
+                Avatar(R.drawable.owl,"Lumi"),
+                Avatar(R.drawable.deer,"Yara"),
+                Avatar(R.drawable.tiger,"Lokai"),
+                Avatar(R.drawable.shark,"Soli"),
+                Avatar(R.drawable.elephant,"Juno"),
+                Avatar(R.drawable.lion,"Simba"),
+                Avatar(R.drawable.wolf,"Jinx"),
+                Avatar(R.drawable.sloth,"Zinna"),
+                Avatar(R.drawable.rabbit2,"Lexa"),
+                Avatar(R.drawable.llama,"Lyric"),
+                Avatar(R.drawable.penguin,"Zolar"))
 
             val adapter = AvatarRecyclerViewAdapter(requireContext(), imageId, userViewModel)
 
