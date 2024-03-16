@@ -140,6 +140,7 @@
                 android:layout_height="0dp" />
 
             <ImageButton
+                android:id="@+id/likeBtn"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:background="@color/windowBackground"
@@ -152,7 +153,6 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:background="@color/windowBackground"
-
             app:srcCompat="@drawable/comment" />
 
         <View
@@ -168,6 +168,7 @@
 
 
         </LinearLayout>
+
 
         <View
             android:layout_width="match_parent"

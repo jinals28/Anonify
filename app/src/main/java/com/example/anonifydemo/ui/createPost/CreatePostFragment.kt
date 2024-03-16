@@ -22,9 +22,10 @@ import com.example.anonifydemo.databinding.FragmentCreatePostBinding
 import com.example.anonifydemo.ui.dataClasses.Post
 import com.google.android.material.chip.Chip
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
+import com.example.anonifydemo.ui.utils.Utils
 import de.hdodenhof.circleimageview.CircleImageView
 
-class CreatePostFragment : Fragment() {
+class CreatePostFragment : Fragment(), Utils {
 
     private var _binding: FragmentCreatePostBinding?=null
     private val binding get() = _binding
@@ -167,7 +168,7 @@ class CreatePostFragment : Fragment() {
                 if (textInput.visibility == View.VISIBLE){
                     textInput.error = "Choose a valid hashtag"
                 }else {
-                    hashtagChip.error = "Choose a valid hashtag"
+                    toast(requireContext(), "Choose a valid hashtag")
                 }
 
             }

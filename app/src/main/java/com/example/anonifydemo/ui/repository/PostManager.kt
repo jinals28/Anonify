@@ -22,4 +22,11 @@ object PostManager {
     fun getPostList(): List<Post> {
         return postList
     }
+
+    fun updatePost(updatedPost: Post) {
+        val index = postList.indexOfFirst { it.uid == updatedPost.uid }
+        if (index != -1) {
+            postList[index] = updatedPost
+        }
+    }
 }
