@@ -66,7 +66,7 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Post>, 
                 // Replace "likedByUser1, likedByUser2, likedByUser3" with the actual user names
                 val likedByUsers = likedBy.subList(0, min(likedBy.size, 3)).joinToString(", ")
 //                likeButton.text =
-                    Log.d("Anonify : $TAG", "$likedByUsers and ${likeCount - likedBy.size} others")
+                Log.d("Anonify : $TAG", "$likedByUsers and ${likeCount - likedBy.size} others")
             }
         }
 
