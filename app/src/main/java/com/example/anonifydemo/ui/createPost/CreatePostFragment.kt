@@ -95,14 +95,15 @@ class CreatePostFragment : Fragment() {
         userViewModel.user.observe(viewLifecycleOwner){
             userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), it.avatarUrl.id))
         }
-        textInput.setText("#")
-        textInput.setSelection(1) // Set the cursor after the '#'
+       // Set the cursor after the '#'
 //        setupSuggestionsRecyclerView()
 
         hashtagChip.setOnClickListener {
             hashtagChip.visibility = View.GONE
             textInput.visibility = View.VISIBLE
             textInput.requestFocus()
+            textInput.setText("#")
+            textInput.setSelection(1)
             showKeyboard()
         }
 

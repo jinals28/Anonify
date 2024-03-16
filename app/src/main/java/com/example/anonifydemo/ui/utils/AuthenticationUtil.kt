@@ -159,4 +159,16 @@ class AuthenticationUtil private constructor(private val context : Context) : Ut
 
 
     }
+    fun sendPasswordResetEmail(userEmail: String,
+                               onSuccess: () -> Unit,
+                               onFailure: (Exception) -> Unit) {
+        auth.sendPasswordResetEmail(userEmail).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                onSuccess()
+            } else {
+                onFailure(task.exception!!)
+            }
+        }
+    }
+
 }

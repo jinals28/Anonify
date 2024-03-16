@@ -1,6 +1,10 @@
 package com.example.anonifydemo.ui.signin
 
+import android.app.AlertDialog
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -41,6 +45,7 @@ class SignInFragment : Fragment(), Utils{
     private lateinit var signInWithGoogle : SignInButton
 
     private lateinit var viewModel: SignInViewModel
+    private lateinit var ForgetPass: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +71,7 @@ class SignInFragment : Fragment(), Utils{
         txtEmail = binding!!.txtemail
 
         txtPassword = binding!!.txtPassword
+        ForgetPass =binding!!.ForgetPass
 
         authUtil = AuthenticationUtil.getInstance(requireContext())
 
@@ -86,6 +92,37 @@ class SignInFragment : Fragment(), Utils{
             goToSignUpFragment()
         }
 
+        ForgetPass.setOnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
+            val dialogView = layoutInflater.inflate(R.layout.dialog_forgot, null)
+            val emailBox = dialogView.findViewById<EditText>(R.id.emailBox)
+            val btnreset=dialogView.findViewById<Button>(R.id.btnreset)
+            builder.setView(dialogView)
+            val dialog = builder.create()
+
+            btnreset.setOnClickListener {
+                val userEmail = emailBox.text.toString()
+                if (TextUtils.isEmpty(userEmail) && !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+                    toast(requireContext(), "Enter your registered email id")
+                }
+                authUtil.sendPasswordResetEmail(userEmail,
+                    onSuccess = {
+                        toast(requireContext(), "Check your email")
+                        dialog.dismiss()
+                    },
+                    onFailure = { exception ->
+                        toast(requireContext(), "Unable to send ..failed")
+                    }
+                )
+
+            }
+            dialogView.findViewById<Button>(R.id.btnCancel).setOnClickListener {
+                dialog.dismiss()
+            }
+            dialog.window?.setBackgroundDrawable(ColorDrawable(0))
+            dialog.show()
+
+        }
         signInWithGoogle.setOnClickListener {
 
             authUtil.signInWithGoogle(this, getString(R.string.web_client_id), onSuccess = { user ->

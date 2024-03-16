@@ -64,7 +64,7 @@
                     android:text="Zara"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textColor="#F4F5FC"
-                    android:textSize="24sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
             <View

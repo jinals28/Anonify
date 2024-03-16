@@ -3,8 +3,8 @@
     android:shape="oval">
     <solid android:color="#338EBBFF" /> <!-- Circle color -->
     <size
-        android:width="100dp"
-        android:height="100dp" /> <!-- Circle diameter -->
+        android:width="80dp"
+        android:height="80dp" /> <!-- Circle diameter -->
     <padding
         android:left="10dp"
         android:top="10dp"

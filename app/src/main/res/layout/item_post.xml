@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp"
         android:visibility="visible"
@@ -27,9 +27,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingLeft="25dp"
-                android:paddingTop="8dp"
+                android:paddingTop="0dp"
                 android:paddingRight="10dp"
-                android:paddingBottom="8dp">
+                android:paddingBottom="5dp">
 
 
                 <TextView
@@ -53,11 +53,11 @@
 
                 <ImageButton
                     android:id="@+id/moreOptions"
-                    android:layout_width="33dp"
+                    android:layout_width="27dp"
                     android:layout_height="25dp"
                     android:layout_gravity="bottom"
                     android:backgroundTint="@color/windowBackground"
-                    android:src="@drawable/options2" />
+                    android:src="@drawable/baseline_more_horiz_24" />
 
             </LinearLayout>
 
@@ -118,7 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="5dp"
                     android:fontFamily="@font/montserrat"
                     android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur ipsum in placerat molestie.  Fusce quis mauris a enim sollicitudin"
                     android:textColor="#F4F5FC"
@@ -140,18 +140,17 @@
                 android:layout_height="0dp" />
 
             <ImageButton
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@color/windowBackground"
-
-            app:srcCompat="@drawable/like" />
+            app:srcCompat="@drawable/baseline_thumb_up_off_alt_24" />
             <View
                 android:layout_width="20dp"
                 android:layout_height="0dp" />
 
         <ImageButton
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@color/windowBackground"
 
             app:srcCompat="@drawable/comment" />
@@ -162,10 +161,10 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@color/windowBackground"
-            app:srcCompat="@drawable/save2" />
+            app:srcCompat="@drawable/baseline_bookmark_border_24" />
 
 
         </LinearLayout>
