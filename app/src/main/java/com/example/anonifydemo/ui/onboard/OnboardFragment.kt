@@ -75,20 +75,22 @@ class OnboardFragment : Fragment() {
         onboardingItemsAdapter = OnboardingItemsAdapter(
             listOf(
                 OnboardingItem(
-                    onboardingImage = R.drawable.welcome,
-                    title = "Get Ready to Embark!",
-                    description = "Explore hassle-free living with our app!\nDive into seamless order placement and stress-free deliveries."
+//                    onboardingImage = R.drawable.welcome,
+                    onboardingImage = R.drawable.pic2,
+                    title = "Welcome to Anonify!",
+                    description = " Where you can express yourself freely.\n Join a community where your identity is protected, and your voice is heard."
                 ),
                 OnboardingItem(
-                    onboardingImage = R.drawable.delivery,
-                    title = "Your Experience, Your Way",
-                    description = "Effortlessly customize your app experience.\nChoose goods, set dates, and enter your address—personalization made simple."
+//                    onboardingImage = R.drawable.delivery,
+                    onboardingImage = R.drawable.pic1,
+                    title = " Your Privacy Matters",
+                    description = "Share anonymously without fear of judgment.\n Your privacy matters to us, ensuring a secure and respectful environment for all users."
                 ),
                 OnboardingItem(
-                    onboardingImage = R.drawable.instant_delivery,
-                    title = "Instant Delight, Instant Delivery",
-                    description = "Need it now? We've got you covered!\n" +
-                            "Enjoy lightning-fast delivery, whether you prefer standard or instant—satisfaction at your doorstep."
+//                    onboardingImage = R.drawable.instant_delivery,
+                    onboardingImage = R.drawable.pic3,
+                    title = "Connect and Engage",
+                    description = "Connect and engage with like-minded individuals.\n Join our vibrant community to seek advice, share experiences, and discover the power of anonymous expression."
                 )
             )
         )
