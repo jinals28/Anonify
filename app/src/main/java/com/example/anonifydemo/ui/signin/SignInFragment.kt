@@ -163,7 +163,7 @@ class SignInFragment : Fragment(), Utils{
         }
 
         viewModel.isSuccessful.observe(viewLifecycleOwner){
-            toast(requireContext(), "Welcome !!")
+            toast(requireContext(), "Welcome User!!")
             goToChooseAvatarFragment()
         }
 

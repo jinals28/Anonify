@@ -64,7 +64,7 @@ class LoginFragment : Fragment(), Utils {
 //                    firebaseAuthWithGoogle(account.idToken!!)
 
                 } catch (e : Exception){
-
+                    Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
                 }
             }else if (result.resultCode == Activity.RESULT_CANCELED){
                 Toast.makeText(requireContext(), result.data!!.extras.toString(), Toast.LENGTH_LONG).show()
