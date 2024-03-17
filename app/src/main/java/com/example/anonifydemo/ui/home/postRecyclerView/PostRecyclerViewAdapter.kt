@@ -37,8 +37,8 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Post>, 
 
             if (user.uid == post.uid){
 
-                userAvatar.setImageDrawable(ContextCompat.getDrawable(context, user.avatarUrl.id))
-                userName.text = user.avatarUrl.name
+//                userAvatar.setImageDrawable(ContextCompat.getDrawable(context, user.avatarUrl.id))
+//                userName.text = user.avatarUrl.name
             }
 
             // Set the like button icon based on whether the user has liked the post

@@ -181,7 +181,7 @@ class SignInFragment : Fragment(), Utils{
 
     private fun goToSignUpFragment(){
         if (findNavController().currentDestination!!.id == R.id.signInFragment){
-            val action = SignInFragmentDirections.actionSignInFragmentToLoginFragment()
+            val action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment(email = "")
             findNavController().navigate(action)
         }
     }

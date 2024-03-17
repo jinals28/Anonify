@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.anonifydemo.ui.dataClasses.User
+import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.ValidationUtil
 
@@ -47,7 +49,13 @@ class SignUpViewModel : ViewModel() {
 
         auth = AuthenticationUtil.getInstance(context)
         auth.signUpWithEmailAndPassword(email = email, password = password, onSuccess = {
-        _isSuccessful.value = true
+            AppRepository.addUser(User(
+                userId = AppRepository.getUsers().size.toLong() + 1,
+                email = it.email!!,
+                uid = it.uid,
+                createdAt = System.currentTimeMillis()
+            ))
+            _isSuccessful.value = true
         }, onFailure = {
             _isFailure.value = it
         })

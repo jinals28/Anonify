@@ -45,13 +45,13 @@ class HomeFragment : Fragment() {
         postRv = binding.postRv
 
         homeViewModel.postList.observe(viewLifecycleOwner){ posts ->
-            val userTopics = userViewModel.getUser()?.topics ?: emptyList()
-            val filteredPosts = posts.filter { post ->
-                userTopics.any { topic ->
-                    post.hashtag == topic.name
-                }
-            }
-            val adapter = PostRecyclerViewAdapter(requireContext(), filteredPosts, userViewModel.getUser()!!)
+//            val userTopics = userViewModel.getUser()?.topics ?: emptyList()
+//            val filteredPosts = posts.filter { post ->
+//                userTopics.any { topic ->
+//                    post.hashtag == topic.name
+//                }
+//            }
+            val adapter = PostRecyclerViewAdapter(requireContext(), posts, userViewModel.getUser()!!)
             postRv.adapter = adapter
         }
 

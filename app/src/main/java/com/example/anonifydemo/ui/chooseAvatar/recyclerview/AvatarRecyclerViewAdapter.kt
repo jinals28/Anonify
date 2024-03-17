@@ -71,7 +71,7 @@ class AvatarRecyclerViewAdapter(
         holder.onBind(holder.itemView.context, avatar)
 
         holder.imgAvatar.setOnClickListener {
-                userViewModel.updateUserAvatarUrl(avatar)
+//                userViewModel.updateUserAvatarUrl(avatar)
                 Toast.makeText(holder.itemView.context, "Welcome ${avatar.name}", Toast.LENGTH_LONG).show()
             if (holder.itemView.findNavController().currentDestination!!.id == R.id.chooseAvatarFragment){
                 val action = ChooseAvatarFragmentDirections.actionChooseAvatarFragmentToChooseTopic()
