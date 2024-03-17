@@ -150,6 +150,7 @@
                 android:layout_height="0dp" />
 
         <ImageButton
+            android:id="@+id/commentBtn"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:background="@color/windowBackground"
@@ -166,9 +167,7 @@
             android:background="@color/windowBackground"
             app:srcCompat="@drawable/baseline_bookmark_border_24" />
 
-
         </LinearLayout>
-
 
         <View
             android:layout_width="match_parent"

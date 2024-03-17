@@ -25,9 +25,9 @@ class CreatePostViewModel : ViewModel() {
     }
 
     fun generateSuggestions(input: String) {
-        Log.d("Post View Model", input)
+        Log.d("com.example.anonifydemo.ui.dataClasses.Post View Model", input)
         _topicList.value = topics.filter { it.startsWith("$input", ignoreCase = true) }.toList()
-        Log.d("Post View Model", _topicList.value.toString())
+        Log.d("com.example.anonifydemo.ui.dataClasses.Post View Model", _topicList.value.toString())
     }
 
     fun isValidContent(content: String): Boolean {

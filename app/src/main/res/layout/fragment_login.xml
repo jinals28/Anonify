@@ -103,7 +103,7 @@
                 android:layout_height="44dp"
                 android:fontFamily="@font/montserrat"
                 android:gravity="center"
-                android:text="Sign Up With Email"
+                android:text="Sign In With Email"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
@@ -138,20 +138,20 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/loginbtn"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="247dp"
-            android:layout_height="53dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="60dp"
-            android:backgroundTint="#8EBBFF"
-            android:fontFamily="@font/montserrat"
-            android:gravity="center"
-            android:shadowRadius="20"
-            android:text="Log In"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+<!--        <Button-->
+<!--            android:id="@+id/loginbtn"-->
+<!--            style="@style/Widget.Material3.Button"-->
+<!--            android:layout_width="247dp"-->
+<!--            android:layout_height="53dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="60dp"-->
+<!--            android:backgroundTint="#8EBBFF"-->
+<!--            android:fontFamily="@font/montserrat"-->
+<!--            android:gravity="center"-->
+<!--            android:shadowRadius="20"-->
+<!--            android:text="Log In"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="20sp" />-->
 
 
     </LinearLayout>

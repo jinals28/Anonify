@@ -3,8 +3,8 @@ package com.example.anonifydemo.ui.utils
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.credentials.exceptions.GetCredentialCancellationException
-import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
+//import androidx.credentials.exceptions.GetCredentialCancellationException
+//import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 
 interface Utils {
@@ -19,12 +19,12 @@ interface Utils {
 
     fun handleFailure(context: Context, e: Exception){
         when(e){
-            is GetCredentialProviderConfigurationException -> {
-                toast(context, "No Google Account Found, Please Add a Gmail Account")
-            }
-            is GetCredentialCancellationException -> {
-
-            }
+//            is GetCredentialProviderConfigurationException -> {
+//                toast(context, "No Google Account Found, Please Add a Gmail Account")
+//            }
+//            is GetCredentialCancellationException -> {
+//
+//            }
             is FirebaseAuthInvalidCredentialsException -> {
                 toast(context, "Invalid email or password, Try again!!")
             }

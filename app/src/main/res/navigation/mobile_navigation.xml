@@ -148,9 +148,14 @@
         tools:layout="@layout/fragment_create_community" />
     <fragment
         android:id="@+id/commentFragment"
-        android:name="com.example.anonifydemo.ui.home.commentFragment"
+        android:name="com.example.anonifydemo.ui.comment.CommentFragment"
         android:label="fragment_comment"
-        tools:layout="@layout/fragment_comment" />
+        tools:layout="@layout/fragment_comment" >
+        <argument
+            android:name="postId"
+            app:argType="long"
+            android:defaultValue="0L" />
+    </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.example.anonifydemo.ui.profile.editProfileFragment"

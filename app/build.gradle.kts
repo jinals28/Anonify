@@ -66,15 +66,15 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
-    implementation("androidx.credentials:credentials:1.3.0-alpha01")
-    implementation("com.firebaseui:firebase-ui-storage:7.2.0")
+//    implementation("androidx.credentials:credentials:1.3.0-alpha01")
+//    implementation("com.firebaseui:firebase-ui-storage:7.2.0")
     implementation ("com.google.android.flexbox:flexbox:3.0.0")
 
 
     // optional - needed for credentials support from play services, for devices running
     // Android 13 and below.
-    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha01")
-    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+//    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha01")
+//    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.firebase:firebase-storage-ktx:20.3.0")

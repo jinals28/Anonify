@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.credentials.CredentialManager
+//import androidx.credentials.CredentialManager
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -73,7 +73,8 @@ class MainActivity : AppCompatActivity()  {
                 R.id.signInFragment,
                 R.id.chooseAvatarFragment,
                 R.id.chooseTopic,
-                R.id.signUpFragment, -> {
+                R.id.signUpFragment,
+                R.id.commentFragment-> {
                     bottomNavigationView.visibility = View.GONE
                 }
                 else -> {

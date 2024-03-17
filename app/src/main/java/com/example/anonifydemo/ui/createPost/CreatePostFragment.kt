@@ -22,6 +22,7 @@ import com.example.anonifydemo.databinding.FragmentCreatePostBinding
 import com.example.anonifydemo.ui.dataClasses.Post
 import com.google.android.material.chip.Chip
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
+import com.example.anonifydemo.ui.repository.PostManager
 import com.example.anonifydemo.ui.utils.Utils
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -93,9 +94,9 @@ class CreatePostFragment : Fragment(), Utils {
         }
 
 
-        userViewModel.user.observe(viewLifecycleOwner){
-            userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), it.avatarUrl.id))
-        }
+//        userViewModel.user.observe(viewLifecycleOwner){
+//            userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), it.avatarUrl.id))
+//        }
        // Set the cursor after the '#'
 //        setupSuggestionsRecyclerView()
 
@@ -160,7 +161,7 @@ class CreatePostFragment : Fragment(), Utils {
 
             if (!postViewModel.isValidContent(content)){
 
-                postContent.error = "Post should contain words"
+                postContent.error = "com.example.anonifydemo.ui.dataClasses.Post should contain words"
 
             }
 
@@ -174,11 +175,11 @@ class CreatePostFragment : Fragment(), Utils {
             }
 
             if (postViewModel.isValidHashtag(hashtag) && postViewModel.isValidContent(content)){
-                postViewModel.addPost(Post(
-                    uid = uid,
-                    text = content,
-                    hashtag = hashtag
-                ))
+//                postViewModel.addPost(Post(PostManager.getPostList().size.toLong() + 1,
+//                    uid = uid,
+//                    text = content,
+//                    hashtag = hashtag
+//                ))
                 textInput.setText("")
                 postContent.setText("")
 
@@ -187,7 +188,7 @@ class CreatePostFragment : Fragment(), Utils {
 
 
 
-//            val post = Post(
+//            val post = com.example.anonifydemo.ui.dataClasses.Post(
 //                uid = uid,
 //                text = postContent.text.toString(),
 //                hashtag = textInput.

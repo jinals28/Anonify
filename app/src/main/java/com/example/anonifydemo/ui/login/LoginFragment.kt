@@ -1,12 +1,18 @@
 package com.example.anonifydemo.ui.login
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
@@ -15,6 +21,9 @@ import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.Utils
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 
 class LoginFragment : Fragment(), Utils {
 
@@ -32,6 +41,8 @@ class LoginFragment : Fragment(), Utils {
 
     private lateinit var signUpWithGoogle : LinearLayout
 
+    private lateinit var resultLauncher : ActivityResultLauncher<Intent>
+
     private lateinit var authUtil : AuthenticationUtil
 
     override fun onCreateView(
@@ -41,6 +52,25 @@ class LoginFragment : Fragment(), Utils {
 
         _binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
 
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+
+            if (result.resultCode == Activity.RESULT_OK){
+
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)!!
+                    Log.d("Aonify : LoginFragment", account.email!!)
+                    goToSignInFragment()
+//                    firebaseAuthWithGoogle(account.idToken!!)
+
+                } catch (e : Exception){
+
+                }
+            }else if (result.resultCode == Activity.RESULT_CANCELED){
+                Toast.makeText(requireContext(), result.data!!.extras.toString(), Toast.LENGTH_LONG).show()
+            }
+        }
+
         return binding!!.root
 
     }
@@ -48,33 +78,42 @@ class LoginFragment : Fragment(), Utils {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loginBtn = binding!!.loginbtn
+//        loginBtn = binding!!.loginbtn
 
         signUpWithEmail = binding!!.signUpWithEmail
 
         signUpWithGoogle = binding!!.signInWithGoogle
 
-        authUtil = AuthenticationUtil.getInstance(requireContext())
+//        authUtil = AuthenticationUtil.getInstance(requireContext())
 
 
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.web_client_id))
+            .requestEmail()
+            .build()
 
-        loginBtn.setOnClickListener {
-            goToSignInFragment()
-        }
+        val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+
+//        loginBtn.setOnClickListener {
+//            goToSignInFragment()
+//        }
 
         signUpWithEmail.setOnClickListener {
-            goToSignUpFragment()
+//            goToSignUpFragment()
+            goToSignInFragment()
         }
 
         signUpWithGoogle.setOnClickListener {
 
-            authUtil.signInWithGoogle(this, serverClientId = getString(R.string.web_client_id), onSuccess = { user ->
-                toast(requireContext(), "Welcome ${user.displayName}!")
-                setUser(user.uid, user.email)
-                goToChooseAvatarFragment()
-            }, onFailure = { e ->
-                handleFailure(requireContext(), e)
-            })
+            val signInIntent = mGoogleSignInClient.signInIntent
+            resultLauncher.launch(signInIntent)
+//            authUtil.signInWithGoogle(this, serverClientId = getString(R.string.web_client_id), onSuccess = { user ->
+//                toast(requireContext(), "Welcome ${user.displayName}!")
+////                setUser(user.uid, user.email)
+//                goToChooseAvatarFragment()
+//            }, onFailure = { e ->
+//                handleFailure(requireContext(), e)
+//            })
         }
     }
 
@@ -101,10 +140,10 @@ class LoginFragment : Fragment(), Utils {
         }
     }
 
-    private fun setUser(uid: String, email: String?){
-        val user = User(uid, email)
-        userViewModel.setUser(user)
-    }
+//    private fun setUser(uid: String, email: String?){
+//        val user = User(uid, email)
+//        userViewModel.setUser(user)
+//    }
 
 
     companion object{

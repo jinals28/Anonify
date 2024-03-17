@@ -15,7 +15,7 @@ import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentSignUpBinding
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.Utils
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
+//import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.material.button.MaterialButton
 
 class SignUpFragment : Fragment(), Utils {

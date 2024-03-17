@@ -15,7 +15,7 @@ object PostManager {
     private val INSTANCE = PostManager
 
     fun addPost(post: Post) {
-        Log.d("Anonify: Post Manager", post.toString())
+        Log.d("Anonify: com.example.anonifydemo.ui.dataClasses.Post Manager", post.toString())
         postList.add(post)
     }
 
@@ -28,5 +28,9 @@ object PostManager {
         if (index != -1) {
             postList[index] = updatedPost
         }
+    }
+
+    fun getPostById(postId: Long): Post? {
+        return getPostList().find { it.postId == postId }
     }
 }

@@ -5,11 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemPostBinding
 import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.dataClasses.User
+import com.example.anonifydemo.ui.home.HomeFragmentDirections
 import com.example.anonifydemo.ui.repository.PostManager
 import kotlin.math.min
 
@@ -20,30 +22,45 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Post>, 
         private val txtPostContent = binding.txtpost
         private val userName = binding.txtusrnm
         private val userAvatar = binding.imgUsr
-        val likeButton = binding.likeBtn
+        private val likeButton = binding.likeBtn
+        private val commentButton = binding.commentBtn
+
+        init {
+
+        }
+
 
         fun bind(post: Post) {
 
             txtHashtag.text = post.hashtag
             txtPostContent.text = post.text
+
             if (user.uid == post.uid){
 
                 userAvatar.setImageDrawable(ContextCompat.getDrawable(context, user.avatarUrl.id))
                 userName.text = user.avatarUrl.name
             }
+
             // Set the like button icon based on whether the user has liked the post
             setLikeButtonState(post.likedBy.contains(user.uid))
+
             // Set the like count text
             setLikeCountText(post.likedBy, post.likeCount)
+
             // Handle like button click
             likeButton.setOnClickListener {
                 if (post.likedBy.contains(user.uid)) {
                     // Unlike the post
                     unlikePost(post)
                 } else {
-                    // Like the post
+                    // com.example.anonifydemo.ui.dataClasses.Like the post
                     likePost(post)
                 }
+            }
+
+            commentButton.setOnClickListener {
+                    val action = HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
+                    it.findNavController().navigate(action)
             }
 
         }
@@ -107,6 +124,7 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Post>, 
 
         val post = postList[position]
         holder.bind(post)
+
     }
 
     companion object {

@@ -1,126 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/windowBackground"
-    android:orientation="vertical"
-    tools:context=".ui.home.commentFragment">
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:animateLayoutChanges="true"
-        android:background="#24293E"
-        android:elevation="10dp"
-        android:gravity="top">
+    tools:context=".ui.comment.CommentFragment">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageButton
-                style="@android:style/Widget.DeviceDefault.ImageButton"
-                android:layout_width="40dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center_vertical"
-                android:backgroundTint="#24293E"
-                android:src="@drawable/baseline_arrow_back_24" />
-
-            <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:paddingStart="5dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat"
-                android:text="Comment"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-    </androidx.appcompat.widget.Toolbar>
-            <androidx.fragment.app.FragmentContainerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-            </androidx.fragment.app.FragmentContainerView>
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        app:dividerColor="#AE3E4563"/>
     <LinearLayout
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
-    <TextView
-        android:id="@+id/no"
-        android:layout_width="wrap_content"
-        android:paddingStart="5dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat"
-        android:text="5"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:paddingStart="5dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat"
-        android:text="Comments"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold" /></LinearLayout>
-        <androidx.recyclerview.widget.RecyclerView
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:orientation="vertical"/>
+            android:layout_height="?attr/actionBarSize"
+            android:animateLayoutChanges="true"
+            android:background="#24293E"
+            android:elevation="10dp"
+            android:gravity="top">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    style="@android:style/Widget.DeviceDefault.ImageButton"
+                    android:layout_width="40dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center_vertical"
+                    android:backgroundTint="#24293E"
+                    android:src="@drawable/baseline_arrow_back_24" />
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingStart="5dp"
+                    android:text="Comment"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+        <!--    provide post with the navigation-->
+        <include
+            layout="@layout/item_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></include>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:dividerColor="#AE3E4563" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="10dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/search_bg">
+            android:padding="10dp">
 
-            <EditText
-                android:id="@+id/commentEditText"
-                android:layout_width="match_parent"
-                android:layout_height="41dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/montserrat_extralight"
-                android:hint="Add a comment"
-                android:maxLines="10"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="16sp" />
-
-            <Button
-                android:id="@+id/postCommentButton"
-                style="@style/Widget.Material3.Button.IconButton.Outlined"
-                android:layout_width="80dp"
+            <TextView
+                android:id="@+id/noOfComments"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_gravity="end"
                 android:fontFamily="@font/montserrat"
-                android:text="Reply"
-                android:textColor="@color/btn"
-                app:strokeColor="@color/btn" />
+                android:paddingStart="5dp"
+                android:text="5"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:paddingStart="5dp"
+                android:text="Comments"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:padding="10dp"
+            tools:listitem="@layout/row_comment" />
+    </LinearLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/addCommentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/search_bg"
+        app:layout_constraintTop_toBottomOf="@+id/mainLayout"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1">
+
+        <EditText
+            android:id="@+id/commentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="41dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/montserrat_extralight"
+            android:hint="Add a comment"
+            android:maxLines="10"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/postCommentButton"
+            style="@style/Widget.Material3.Button.IconButton.Outlined"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:fontFamily="@font/montserrat"
+            android:padding="10dp"
+            android:text="Post"
+            android:textColor="@color/btn"
+            app:strokeColor="@color/btn" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

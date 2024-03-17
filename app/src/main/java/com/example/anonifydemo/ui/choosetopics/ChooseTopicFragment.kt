@@ -88,7 +88,7 @@ class ChooseTopicFragment : Fragment(), Utils {
                 val priorityList = topicAdapter.topicList.filter { it.priority > 0 }.sortedBy { it.priority }
 
                 userViewModel.updateUserTopic(priorityList)
-                Log.d("Choose Topic", priorityList.toString())
+                Log.d("Choose com.example.anonifydemo.ui.dataClasses.Topic", priorityList.toString())
                 goToFeedFragment()
             }
         }

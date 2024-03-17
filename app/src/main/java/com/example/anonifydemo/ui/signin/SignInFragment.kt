@@ -125,21 +125,21 @@ class SignInFragment : Fragment(), Utils{
         }
         signInWithGoogle.setOnClickListener {
 
-            authUtil.signInWithGoogle(this, getString(R.string.web_client_id), onSuccess = { user ->
-                toast(requireContext(), "Welcome ${user.displayName}")
-               setUser(user.uid, user.email)
-                goToChooseAvatarFragment()
-
-            }, onFailure = { e ->
-                handleFailure(requireContext(), e)
-            })
+//            authUtil.signInWithGoogle(this, getString(R.string.web_client_id), onSuccess = { user ->
+//                toast(requireContext(), "Welcome ${user.displayName}")
+////               setUser(user.uid, user.email)
+//                goToChooseAvatarFragment()
+//
+//            }, onFailure = { e ->
+//                handleFailure(requireContext(), e)
+//            })
         }
     }
 
-    private fun setUser(uid: String, email: String?){
-        val user = User(uid, email)
-        userViewModel.setUser(user)
-    }
+//    private fun setUser(uid: String, email: String?){
+//        val user = User(uid, email)
+//        userViewModel.setUser(user)
+//    }
 
     private fun observeLivedata() {
         viewModel.isEmailValid.observe(viewLifecycleOwner) { isValid ->
@@ -162,7 +162,7 @@ class SignInFragment : Fragment(), Utils{
         }
 
         viewModel.isSuccessful.observe(viewLifecycleOwner){
-            toast(requireContext(), "Welcome User!!")
+            toast(requireContext(), "Welcome com.example.anonifydemo.ui.dataClasses.User!!")
             goToChooseAvatarFragment()
         }
 
