@@ -1,28 +1,28 @@
 package com.example.anonifydemo.ui.choosetopics
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentChooseTopicBinding
 import com.example.anonifydemo.ui.choosetopics.topicRecyclerView.TopicRecyclerViewAdapter
-import com.example.anonifydemo.ui.dataClasses.Topics
+import com.example.anonifydemo.ui.dataClasses.FollowingTopic
+import com.example.anonifydemo.ui.dataClasses.Topic
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
+import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayout
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.lang.Long
 
 class ChooseTopicFragment : Fragment(), Utils {
 
@@ -36,7 +36,9 @@ class ChooseTopicFragment : Fragment(), Utils {
 
     private val userViewModel : UserViewModel by activityViewModels()
 
-    //   private lateinit var viewModel: ChooseTopicViewModel
+    private val followingTopicList = mutableListOf<FollowingTopic>()
+
+       private val viewModel: ChooseTopicViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,21 +55,21 @@ class ChooseTopicFragment : Fragment(), Utils {
         topicRv = binding!!.recyclerView
         fabNext = binding!!.btnnext
 
-        userViewModel.user.observe(viewLifecycleOwner){
-
-        }
+//        val userId = userViewModel.getUser()!!.userId
+        val userId = 6L
 
 //        fabNext = binding!!.nextBtn
 
-        val topicList = resources.getStringArray(R.array.topic_names).toList()
+//        val topicList = resources.getStringArray(R.array.topic_names).toList()
 
-        val topics : MutableList<Topics> = mutableListOf()
+        val topics : List<Topic> = AppRepository.getTopics()
+//
+//        topicList.forEachIndexed { index, name ->
+//            val topic = Topics(id = index, name = name)
+//            topics.add(topic)
+//        }
 
-        topicList.forEachIndexed { index, name ->
-            val topic = Topics(id = index, name = name)
-            topics.add(topic)
-        }
-        val topicAdapter = TopicRecyclerViewAdapter(requireContext(), topics)
+        val topicAdapter = TopicRecyclerViewAdapter(requireContext(), topics, followingTopicList, userId)
 
         //val staggeredStaggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
         topicRv.layoutManager = FlexboxLayoutManager(context).apply {
@@ -85,12 +87,19 @@ class ChooseTopicFragment : Fragment(), Utils {
             if (topicAdapter.getSelectedTopicsCount() < 3){
                 toast(requireContext(), "Select upto 3 topics to continue")
             }else{
-                val priorityList = topicAdapter.topicList.filter { it.priority > 0 }.sortedBy { it.priority }
-
-//                userViewModel.updateUserTopic(priorityList)
-                Log.d("Choose com.example.anonifydemo.ui.dataClasses.Topic", priorityList.toString())
+                val followingTopicList = topicAdapter.followingTopicList
+                viewModel.addFollowingTopicList(followingTopicList)
                 goToFeedFragment()
             }
+//            if (topicAdapter.getSelectedTopicsCount() < 3){
+//
+//            }else{
+////                val priorityList = topicAdapter.topicList.filter { it.priority > 0 }.sortedBy { it.priority }
+//
+//                userViewModel.updateUserTopic(followingTopicList)
+////                Log.d("Choose com.example.anonifydemo.ui.dataClasses.Topic", priorityList.toString())
+//                goToFeedFragment()
+//            }
         }
 
 //        fabNext.setOnClickListener {

@@ -24,6 +24,7 @@
             app:destination="@id/chooseAvatarFragment" />
 
     </fragment>
+
     <fragment
         android:id="@+id/onboardFragment"
         android:name="com.example.anonifydemo.ui.onboard.OnboardFragment"

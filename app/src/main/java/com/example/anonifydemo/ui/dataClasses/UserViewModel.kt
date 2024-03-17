@@ -1,6 +1,7 @@
 package com.example.anonifydemo.ui.dataClasses
 
 import android.adservices.topics.Topic
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,13 +17,14 @@ class UserViewModel : ViewModel() {
         _user.value = user
     }
 
-//    fun updateUserAvatarUrl(avatarUrl: Avatar) {
-//        val currentUser = _user.value ?: User()
-//        val updatedUser = currentUser.copy(avatarUrl = avatarUrl)
-//        _user.value = updatedUser
-//    }
+    fun updateUserAvatarUrl(avatarId: Long) {
+        val currentUser = _user.value ?: User()
+        val updatedUser = currentUser.copy(avatarId = avatarId)
+        _user.value = updatedUser
+        Log.d("Anonify : UserView Model", updatedUser.toString())
+    }
 //
-//    fun updateUserTopic(topicList: List<Topics>) {
+//    fun updateUserTopic(topicList: List<FollowingTopic>) {
 //        val currentUser = _user.value ?: User()
 //        val updatedUser = currentUser.copy(topics = topicList.toMutableList())
 //        _user.value = updatedUser

@@ -163,6 +163,7 @@ class SignInFragment : Fragment(), Utils{
         }
 
         viewModel.isSuccessful.observe(viewLifecycleOwner){
+            userViewModel.setUser(user = it.second)
             toast(requireContext(), "Welcome User!!")
             goToChooseAvatarFragment()
         }

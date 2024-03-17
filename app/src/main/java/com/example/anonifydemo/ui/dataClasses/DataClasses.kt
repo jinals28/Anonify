@@ -2,31 +2,17 @@ package com.example.anonifydemo.ui.dataClasses
 
 import java.util.*
 
-data class User(
-    val userId: Long, // Room: Long (Primary key)
-    val uid: String, // Firebase: String, Room: String
-    val email: String,
-    val avatarId: String = "", // Assuming this is a unique identifier for the avatar
-    val createdAt: Long // Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
-)
 
-//data class Avatar(
-//    val avatarId: String, // Assuming this is a unique identifier for the avatar
-//    val url: String,
-//    val name: String
-//)
 
-data class Topic(
-    val topicId: Long, // Room: Long (Primary key)
+data class Avatar(
+    val avatarId: Long, // Assuming this is a unique identifier for the avatar
+    val url: Int,
     val name: String
 )
 
-data class FollowingTopic(
-    val followingTopicId: Long, // Room: Long (Primary key)
-    val userId: Long, // Room: Long (Foreign key)
-    val topicId: Long, // Room: Long (Foreign key)
-    val followedAt: Date // Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
-)
+
+
+
 
 //data class Post(
 //    val postId: Long, // Room: Long (Primary key)

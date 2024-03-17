@@ -3,67 +3,128 @@ package com.example.anonifydemo.ui.choosetopics.topicRecyclerView
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemAddTopicBinding
-import com.example.anonifydemo.ui.choosetopics.ChooseTopicFragment
-import com.example.anonifydemo.ui.dataClasses.Topics
+import com.example.anonifydemo.ui.dataClasses.FollowingTopic
+import com.example.anonifydemo.ui.dataClasses.Topic
+import com.example.anonifydemo.ui.dataClasses.User
+import com.example.anonifydemo.ui.dataClasses.UserViewModel
 
-    class TopicRecyclerViewAdapter(val context: Context, val topicList: MutableList<Topics>) : RecyclerView.Adapter<TopicRecyclerViewAdapter.ViewHolder>() {
+
+class TopicRecyclerViewAdapter(
+    val context: Context,
+    val topicList: List<Topic>,
+    val followingTopicList: MutableList<FollowingTopic>,
+    val userId : Long
+) : RecyclerView.Adapter<TopicRecyclerViewAdapter.ViewHolder>() {
     inner class ViewHolder(val binding : ItemAddTopicBinding) : RecyclerView.ViewHolder(binding.root) {
         private val topicName = binding.addtopic
         private val card = binding.card
 
         init {
-            itemView.setOnClickListener {
+//            itemView.setOnClickListener {
+//                val position = adapterPosition
+//                if (position != RecyclerView.NO_POSITION){
+//                    val selectedTopic = topicList[position]
+//
+//
+//                    //!selectedTopic.isSelected refers to checking a new topic which is not selected, so in case when three topics are already selected and a new topic is selected, then it will prevent it from selection
+////                    if (!selectedTopic.isSelected && getSelectedTopicsCount() >= 3){
+////                        return@setOnClickListener
+////                    }
+////                    selectedTopic.isSelected = !selectedTopic.isSelected
+////                    if (selectedTopic.isSelected){
+////                        selectedTopic.priority = getSelectedTopicsCount()
+////
+////                    }else {
+////                        selectedTopic.priority = 0
+////                        reorderTopics()
+//                    }
+//
+//                }
+            card.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION){
                     val selectedTopic = topicList[position]
 
-                    //!selectedTopic.isSelected refers to checking a new topic which is not selected, so in case when three topics are already selected and a new topic is selected, then it will prevent it from selection
-                    if (!selectedTopic.isSelected && getSelectedTopicsCount() >= 3){
+                    //!isTopicSelected(selectedTopic) == true when a topic is not selected
+                    //!isTopicSelected(selectedTopic) == false when a topic is  selected
+//                    getSelectedTopicsCount() >= 3 is true when followingList ahs 3 items
+//                    getSelectedTopicsCount() >= 3 is false when followingList does not have 3 items
+                    if (!isTopicSelected(selectedTopic) && getSelectedTopicsCount() >= 3){
                         return@setOnClickListener
                     }
-                    selectedTopic.isSelected = !selectedTopic.isSelected
-                    if (selectedTopic.isSelected){
-                        selectedTopic.priority = getSelectedTopicsCount()
-                        Log.d("Priority", selectedTopic.priority.toString())
-                    }else {
-                        selectedTopic.priority = 0
-                        reorderTopics()
-                    }
-                    notifyItemChanged(position)
+                    toggleTopicSelection(selectedTopic)
                 }
             }
+
         }
 
-        fun onBind(topic : Topics){
+
+        fun onBind(topic : Topic){
+            val isSelected = isTopicSelected(topic)
             topicName.text = topic.name
-            itemView.isSelected = topic.isSelected
-            card.setBackgroundColor(if (topic.isSelected) ContextCompat.getColor(context, R.color.btn) else ContextCompat.getColor(context, R.color.unselected_topic))
+            card.isSelected = isSelected
+            card.setOnClickListener {
+                toggleTopicSelection(topic)
+//                onTopicSelected(topic)
+            }
+//            itemView.isSelected = topic.isSelected
+            card.setCardBackgroundColor(if (isSelected) ContextCompat.getColor(context, R.color.btn) else ContextCompat.getColor(context, R.color.unselected_topic))
+        }
+
+//        private fun onTopicSelected(topic: Topic) {
+//            card.setCardBackgroundColor(if (isSelected) ContextCompat.getColor(context, R.color.btn) else ContextCompat.getColor(context, R.color.unselected_topic))
+//        }
+
+        private fun toggleTopicSelection(topic: Topic) {
+            val existingIndex = followingTopicList.indexOfFirst { it.topicId == topic.topicId }
+            if (existingIndex != -1) {
+                followingTopicList.removeAt(existingIndex)
+                Log.d("Anonify: Priority", followingTopicList.toString())
+            } else {
+                if (followingTopicList.size >= 3) {
+//                    val firstSelected = followingTopicList.firstOrNull()
+//                    followingTopicList.removeAt(0)
+//                    firstSelected?.let {
+//                        followingTopicList.add(it.copy(topicId = topic.topicId))
+//                    }
+//                    reorderFollowingTopics()
+                } else {
+                    followingTopicList.add(FollowingTopic(
+                        followingTopicId = followingTopicList.size.toLong() + 1,
+                        userId = userId,
+                        topicId = topic.topicId,
+                        followedAt = System.currentTimeMillis()
+                    ))
+                    Log.d("Anonify: Priority", followingTopicList.toString())
+                }
+            }
+            notifyDataSetChanged()
+        }
+
+        private fun isTopicSelected(topic: Topic): Boolean {
+
+            return followingTopicList.any { it.topicId == topic.topicId }
         }
     }
 
-    private fun reorderTopics() {
-        val selectedTopics = topicList.filter { it.isSelected }.sortedBy { it.priority }
-        Log.d("Trv", "Reorder topics: $selectedTopics")
-        selectedTopics.forEachIndexed { index, topic ->
-            topic.priority = index + 1
-        }
-        Log.d("Trv", "Reorder topics after incrementing: $selectedTopics")
-        val priorityList = topicList.filter { it.priority > 0 }
-        Log.d("Trv", priorityList.toString())
-        notifyDataSetChanged()
-    }
+//    private fun reorderTopics() {
+//        val selectedTopics = topicList.filter { it.isSelected }.sortedBy { it.priority }
+//        Log.d("Trv", "Reorder topics: $selectedTopics")
+//        selectedTopics.forEachIndexed { index, topic ->
+//            topic.priority = index + 1
+//        }
+//        Log.d("Trv", "Reorder topics after incrementing: $selectedTopics")
+//        val priorityList = topicList.filter { it.priority > 0 }
+//        Log.d("Trv", priorityList.toString())
+//        notifyDataSetChanged()
+//    }
         fun getSelectedTopicsCount(): Int {
-        return topicList.count { it.isSelected }
+        return followingTopicList.size
 
     }
 //        fun updateNextButtonVisibility(next: ImageButton) {

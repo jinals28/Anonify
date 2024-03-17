@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.anonifydemo.ui.dataClasses.User
+import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.ValidationUtil
 
@@ -15,8 +17,8 @@ class SignInViewModel : ViewModel() {
     private val _isPasswordValid = MutableLiveData<Boolean>()
     val isPasswordValid: LiveData<Boolean> = _isPasswordValid
 
-    private val _isSuccessful = MutableLiveData<Boolean>()
-    val isSuccessful : LiveData<Boolean> = _isSuccessful
+    private val _isSuccessful = MutableLiveData<Pair<Boolean, User>>()
+    val isSuccessful : LiveData<Pair<Boolean, User>> = _isSuccessful
 
     private val _isFailure = MutableLiveData<Exception>()
     val isFailure : LiveData<Exception> = _isFailure
@@ -40,8 +42,9 @@ class SignInViewModel : ViewModel() {
 
     fun signInWithEmailPassword(context : Context, email: String, password: String) {
         auth = AuthenticationUtil.getInstance(context)
-        auth.signInWithEmailAndPassword(email = email, password = password, onSuccess = {
-            _isSuccessful.value = true
+        auth.signInWithEmailAndPassword(email = email, password = password, onSuccess = { firebaseUser ->
+            val user = AppRepository.getUser(firebaseUser.uid)
+            _isSuccessful.value = Pair(true, user!!)
         }, onFailure = {e->
             _isFailure.value = e
         })
