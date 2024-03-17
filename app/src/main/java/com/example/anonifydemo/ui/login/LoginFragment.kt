@@ -17,7 +17,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentLoginBinding
-import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.Utils
@@ -60,7 +59,8 @@ class LoginFragment : Fragment(), Utils {
                 try {
                     val account = task.getResult(ApiException::class.java)!!
                     Log.d("Aonify : LoginFragment", account.email!!)
-                    goToSignInFragment()
+                    val idToken = account.idToken
+                    goToSignUpFragment(account.email!!)
 //                    firebaseAuthWithGoogle(account.idToken!!)
 
                 } catch (e : Exception){
@@ -132,10 +132,10 @@ class LoginFragment : Fragment(), Utils {
         }
     }
 
-    private fun goToSignUpFragment(){
+    private fun goToSignUpFragment(email: String) {
 
         if (findNavController().currentDestination!!.id == R.id.loginFragment){
-            val action = LoginFragmentDirections.actionLoginFragmentToSignUpFragment()
+            val action = LoginFragmentDirections.actionLoginFragmentToSignUpFragment(email = email)
             findNavController().navigate(action)
         }
     }

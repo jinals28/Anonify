@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentSignUpBinding
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
@@ -37,6 +38,8 @@ class SignUpFragment : Fragment(), Utils {
 
     private lateinit var auth : AuthenticationUtil
 
+   private val args : SignUpFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,6 +57,8 @@ class SignUpFragment : Fragment(), Utils {
 
         auth = AuthenticationUtil.getInstance(requireContext())
 
+        val email = args.email
+
         signInTxt = binding!!.txtLogIn
 
         txtEmail = binding!!.txtEmail
@@ -63,6 +68,8 @@ class SignUpFragment : Fragment(), Utils {
         txtConPassword = binding!!.txtConPassword
 
         btnSignUp = binding!!.btnSignUp
+
+        txtEmail.setText(email)
 
         observeValidation()
 

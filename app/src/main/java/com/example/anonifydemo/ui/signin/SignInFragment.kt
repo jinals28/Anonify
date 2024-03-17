@@ -66,7 +66,7 @@ class SignInFragment : Fragment(), Utils{
 
         signUpTxt = binding!!.txtSignUp
 
-        signInWithGoogle = binding!!.googleSignInBtn
+//        signInWithGoogle = binding!!.googleSignInBtn
 
         txtEmail = binding!!.txtemail
 
@@ -123,17 +123,18 @@ class SignInFragment : Fragment(), Utils{
             dialog.show()
 
         }
-        signInWithGoogle.setOnClickListener {
 
-//            authUtil.signInWithGoogle(this, getString(R.string.web_client_id), onSuccess = { user ->
-//                toast(requireContext(), "Welcome ${user.displayName}")
-////               setUser(user.uid, user.email)
-//                goToChooseAvatarFragment()
+//        signInWithGoogle.setOnClickListener {
 //
-//            }, onFailure = { e ->
-//                handleFailure(requireContext(), e)
-//            })
-        }
+////            authUtil.signInWithGoogle(this, getString(R.string.web_client_id), onSuccess = { user ->
+////                toast(requireContext(), "Welcome ${user.displayName}")
+//////               setUser(user.uid, user.email)
+////                goToChooseAvatarFragment()
+////
+////            }, onFailure = { e ->
+////                handleFailure(requireContext(), e)
+////            })
+//        }
     }
 
 //    private fun setUser(uid: String, email: String?){
@@ -162,7 +163,7 @@ class SignInFragment : Fragment(), Utils{
         }
 
         viewModel.isSuccessful.observe(viewLifecycleOwner){
-            toast(requireContext(), "Welcome com.example.anonifydemo.ui.dataClasses.User!!")
+            toast(requireContext(), "Welcome !!")
             goToChooseAvatarFragment()
         }
 
@@ -180,7 +181,7 @@ class SignInFragment : Fragment(), Utils{
 
     private fun goToSignUpFragment(){
         if (findNavController().currentDestination!!.id == R.id.signInFragment){
-            val action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
+            val action = SignInFragmentDirections.actionSignInFragmentToLoginFragment()
             findNavController().navigate(action)
         }
     }

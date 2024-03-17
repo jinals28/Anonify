@@ -48,8 +48,9 @@
             android:id="@+id/action_signInFragment_to_chooseAvatarFragment"
             app:destination="@id/chooseAvatarFragment" />
         <action
-            android:id="@+id/action_signInFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
+            android:id="@+id/action_signInFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+
     </fragment>
 
     <fragment
@@ -81,6 +82,9 @@
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+        <argument
+            android:name="email"
+            app:argType="string" />
     </fragment>
 
     <fragment
