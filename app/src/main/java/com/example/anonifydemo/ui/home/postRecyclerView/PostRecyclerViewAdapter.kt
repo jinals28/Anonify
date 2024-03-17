@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +26,7 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Post>, 
         private val userAvatar = binding.imgUsr
         private val likeButton = binding.likeBtn
         private val commentButton = binding.commentBtn
+        private val moreOptions =binding.moreOptions
 
         init {
 
@@ -61,6 +64,31 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Post>, 
             commentButton.setOnClickListener {
                     val action = HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
                     it.findNavController().navigate(action)
+            }
+            moreOptions.setOnClickListener{
+                val popupMenu = PopupMenu(context, moreOptions)
+                popupMenu.menuInflater.inflate(R.menu.post_popup_menu, popupMenu.menu)
+                popupMenu.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.block -> {
+                            // Handle block post action
+                            Log.d("Anonify : $TAG", "blocked")
+                            true
+                        }
+                        R.id.report -> {
+                            // Handle report post action
+                            Log.d("Anonify : $TAG", "reported")
+                            true
+                        }
+                        R.id.hide -> {
+                            // Handle hide post action
+                            Log.d("Anonify : $TAG", "hide post")
+                            true
+                        }
+                        else -> false
+                    }
+                }
+                popupMenu.show()
             }
 
         }

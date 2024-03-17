@@ -74,12 +74,17 @@ class MainActivity : AppCompatActivity()  {
                 R.id.chooseAvatarFragment,
                 R.id.chooseTopic,
                 R.id.signUpFragment,
-                R.id.commentFragment-> {
+                R.id.commentFragment,
+                R.id.searchCommunityFragment,
+                R.id.createCommunityFragment,
+                R.id.communityProfileFragment,
+                R.id.editProfileFragment->{
                     bottomNavigationView.visibility = View.GONE
                 }
                 else -> {
                     bottomNavigationView.visibility = View.VISIBLE
                 }
+
             }
 
         }

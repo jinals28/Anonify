@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentHomeBinding
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
+import com.example.anonifydemo.ui.profile.ProfileFragmentDirections
 
 class HomeFragment : Fragment() {
 
@@ -21,7 +25,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var postRv : RecyclerView
-
+    private lateinit var btncommunity : ImageButton
     private lateinit var homeViewModel: HomeViewModel
 
     private val userViewModel : UserViewModel by activityViewModels()
@@ -41,8 +45,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        btncommunity = binding.toolbarCommunityIcon
         postRv = binding.postRv
+
 
         homeViewModel.postList.observe(viewLifecycleOwner){ posts ->
 //            val userTopics = userViewModel.getUser()?.topics ?: emptyList()
@@ -54,10 +59,15 @@ class HomeFragment : Fragment() {
             val adapter = PostRecyclerViewAdapter(requireContext(), posts, userViewModel.getUser()!!)
             postRv.adapter = adapter
         }
-
-
-
+        btncommunity.setOnClickListener {
+            goToCommunityFragment()
+        }
 
     }
-
+    private fun goToCommunityFragment() {
+        if (findNavController().currentDestination!!.id == R.id.navigation_home) {
+            val action = HomeFragmentDirections.actionHomeFragmentToSearchCommunityFragment()
+            findNavController().navigate(action)
+        }
+    }
 }

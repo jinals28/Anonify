@@ -23,6 +23,7 @@
             android:orientation="horizontal">
 
             <ImageButton
+                android:id="@+id/btnback"
                 style="@android:style/Widget.DeviceDefault.ImageButton"
                 android:layout_width="40dp"
                 android:layout_height="28dp"
@@ -47,6 +48,7 @@
                 android:layout_weight="1"/>
 
             <ImageButton
+                android:id="@+id/btnCreateHash"
                 style="@android:style/Widget.DeviceDefault.ImageButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"

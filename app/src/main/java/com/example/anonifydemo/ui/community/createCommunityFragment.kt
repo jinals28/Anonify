@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ImageButton
+import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentCreateCommunityBinding
 import com.example.anonifydemo.databinding.FragmentOnboardBinding
@@ -16,6 +18,7 @@ class createCommunityFragment : Fragment() {
     private var _binding : FragmentCreateCommunityBinding? = null
 
     private val binding get() = _binding
+    private lateinit var btnback:ImageButton
 
     //private lateinit var viewModel: CreateCommunityViewModel
 
@@ -33,7 +36,13 @@ class createCommunityFragment : Fragment() {
         val items = arrayOf("#entertainment", "#mentalhealth", "#bodyshaming")
         val adapter = customAdapter(requireContext(), items)
         binding!!.spinner.adapter = adapter
-
+        btnback = binding!!.btnback
+        btnback.setOnClickListener {
+            if (findNavController().currentDestination!!.id == R.id.createCommunityFragment){
+                val action = createCommunityFragmentDirections.actionCreateCommunityFragmentToSearchCommunityFragment()
+                findNavController().navigate(action)
+            }
+        }
         binding!!.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,

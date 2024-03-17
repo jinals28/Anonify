@@ -8,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentEditProfileBinding
 import com.example.anonifydemo.databinding.FragmentOnboardBinding
+import com.example.anonifydemo.ui.home.HomeFragmentDirections
 
 class editProfileFragment : Fragment() {
     private var _binding : FragmentEditProfileBinding? = null
@@ -20,6 +23,7 @@ class editProfileFragment : Fragment() {
     private lateinit var editbio : EditText
     private lateinit var lblemail:TextView
     private lateinit var lblbio:TextView
+    private lateinit var btnback:ImageButton
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,7 +38,11 @@ class editProfileFragment : Fragment() {
         editbio = binding!!.txteditbio
         lblemail = binding!!.lblemail
         lblbio = binding!!.lblbio
+        btnback = binding!!.btnback
 
+        btnback.setOnClickListener {
+            goToProfileFragment()
+        }
         editemail.setOnFocusChangeListener { _, hasFocus ->
             handleFocusChange(hasFocus, editemail, lblemail)
         }
@@ -60,7 +68,12 @@ class editProfileFragment : Fragment() {
             }
         }
     }
-
+    private fun  goToProfileFragment() {
+        if (findNavController().currentDestination!!.id == R.id.editProfileFragment) {
+            val action = editProfileFragmentDirections.actionEditProfileFragmentToNavigationProfile()
+            findNavController().navigate(action)
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

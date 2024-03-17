@@ -24,6 +24,7 @@
             android:orientation="horizontal">
 
             <ImageButton
+                android:id="@+id/btnback"
                 style="@android:style/Widget.DeviceDefault.ImageButton"
                 android:layout_width="40dp"
                 android:layout_height="28dp"
@@ -49,6 +50,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal">
 
         <ImageView
