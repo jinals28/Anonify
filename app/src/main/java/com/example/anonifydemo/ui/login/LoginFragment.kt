@@ -17,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentLoginBinding
+
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.Utils
@@ -52,23 +53,27 @@ class LoginFragment : Fragment(), Utils {
         _binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
 
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+            try {
+                if (result.resultCode == Activity.RESULT_OK){
 
-            if (result.resultCode == Activity.RESULT_OK){
-
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    val account = task.getResult(ApiException::class.java)!!
-                    Log.d("Aonify : LoginFragment", account.email!!)
-                    val idToken = account.idToken
-                    goToSignUpFragment(account.email!!)
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                    try {
+                        val account = task.getResult(ApiException::class.java)!!
+                        Log.d("Anonify : LoginFragment", account.email!!)
+                        val idToken = account.idToken
+                        goToSignUpFragment(account.email!!)
 //                    firebaseAuthWithGoogle(account.idToken!!)
 
-                } catch (e : Exception){
-                    Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+                    } catch (e : Exception){
+                        Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_LONG).show()
+                    }
+                }else if (result.resultCode == Activity.RESULT_CANCELED){
+                    Toast.makeText(requireContext(), result.resultCode, Toast.LENGTH_LONG).show()
                 }
-            }else if (result.resultCode == Activity.RESULT_CANCELED){
-                Toast.makeText(requireContext(), result.data!!.extras.toString(), Toast.LENGTH_LONG).show()
+            }catch (e: Exception){
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
             }
+
         }
 
         return binding!!.root

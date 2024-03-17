@@ -80,7 +80,6 @@
                     android:layout_marginTop="10dp"
                     android:backgroundTint="#AE3E4563"
                     android:drawablePadding="8dp"
-                    android:clickable="false"
                     android:hint="Enter Email Id"
                     android:drawableLeft="@drawable/baseline_email_24"
                     android:inputType="textEmailAddress"

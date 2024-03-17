@@ -16,5 +16,6 @@ data class Post(
         commentList.add(comment)
         commentCount++
     }
+
 }
 

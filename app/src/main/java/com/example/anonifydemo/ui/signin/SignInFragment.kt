@@ -23,8 +23,8 @@ import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.Utils
 import com.google.android.gms.common.SignInButton
 
-class SignInFragment : Fragment(), Utils{
 
+class SignInFragment : Fragment(), Utils{
 
     private var _binding : FragmentSignInBinding? = null
 
