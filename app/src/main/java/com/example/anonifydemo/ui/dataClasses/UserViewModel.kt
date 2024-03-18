@@ -38,7 +38,7 @@ class UserViewModel : ViewModel() {
     }
 
     fun getUserId() : Long {
-        return  _user.value!!.userId
+        return  1L
     }
 }
 

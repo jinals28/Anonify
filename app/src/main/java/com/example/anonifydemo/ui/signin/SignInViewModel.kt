@@ -8,6 +8,9 @@ import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.ValidationUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SignInViewModel : ViewModel() {
 
@@ -39,15 +42,36 @@ class SignInViewModel : ViewModel() {
         return _isEmailValid.value!! && _isPasswordValid.value!!
     }
 
+    private val _signInResult = MutableLiveData<Pair<Boolean, User?>>()
+    val signInResult: LiveData<Pair<Boolean, User?>>
+        get() = _signInResult
 
-    fun signInWithEmailPassword(context : Context, email: String, password: String) {
-        auth = AuthenticationUtil.getInstance(context)
-        auth.signInWithEmailAndPassword(email = email, password = password, onSuccess = { firebaseUser ->
-            val user = AppRepository.getUser(firebaseUser.uid)
-            _isSuccessful.value = Pair(true, user!!)
-        }, onFailure = {e->
-            _isFailure.value = e
-        })
+    private val _signInError = MutableLiveData<Exception>()
+    val signInError: LiveData<Exception>
+        get() = _signInError
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
+    fun signInWithEmailAndPassword(context: Context, email: String, password: String) {
+        coroutineScope.launch {
+            try {
+                val firebaseUser = AuthenticationUtil.signInWithEmailAndPassword(email, password)
+                val user = AppRepository.getUserByUid(firebaseUser.uid)
+                _signInResult.value = Pair(true, user)
+            } catch (e: Exception) {
+                _signInError.value = e
+            }
+        }
     }
+
+//    fun signInWithEmailPassword(context : Context, email: String, password: String) {
+//        auth = AuthenticationUtil.getInstance(context)
+//        auth.signInWithEmailAndPassword(email = email, password = password, onSuccess = { firebaseUser ->
+//            val user = AppRepository.getUser(firebaseUser.uid)
+//            _isSuccessful.value = Pair(true, user!!)
+//        }, onFailure = {e->
+//            _isFailure.value = e
+//        })
+//    }
     // TODO: Implement the ViewModel
 }

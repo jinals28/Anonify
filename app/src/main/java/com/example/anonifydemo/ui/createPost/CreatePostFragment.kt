@@ -61,7 +61,7 @@ class CreatePostFragment : Fragment(), Utils {
 
         avatarId = userViewModel.getUser()!!.avatarId
 
-        userId = userViewModel.getUser()!!.userId
+        userId = 1L
 
         return binding!!.root
     }

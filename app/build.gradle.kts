@@ -79,6 +79,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
     implementation("androidx.fragment:fragment-ktx:1.5.6")
+    implementation("com.google.firebase:firebase-firestore")
 
     ksp("com.github.bumptech.glide:ksp:4.14.2")
 

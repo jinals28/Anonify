@@ -10,16 +10,50 @@ import com.example.anonifydemo.ui.dataClasses.Like
 import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.dataClasses.Topic
 import com.example.anonifydemo.ui.dataClasses.User
+import com.google.firebase.firestore.ktx.*
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 object AppRepository {
     // Users table
-    private val users = mutableListOf<User>()
 
     // Posts table
     private val posts = mutableListOf<Post>()
 
     // Comments table
     private val comments = mutableListOf<Comment>()
+
+    const val TAG = "USER_REPOSITORY"
+
+    val users = Firebase.firestore.collection("users")
+
+    suspend fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        Log.d(TAG, "Add user")
+        users
+            .document(user.uid)
+            .set(user.toMap())
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot added with ID:")
+                onSuccess()
+            }
+            .addOnCanceledListener {
+                Log.d(TAG, "cancelled ")
+            }
+            .addOnFailureListener { e ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${e.localizedMessage}")
+                onFailure(e)
+            }
+    }
+
+    private fun User.toMap(): Map<String, Any?> {
+        return mapOf(
+            "uid" to uid,
+            "email" to email,
+            "createdAt" to createdAt
+        )
+    }
 
     // Topics table
     private val topics = mutableListOf<Topic>(
@@ -108,7 +142,7 @@ object AppRepository {
 
     // Get all users from repository
     fun getUsers(): List<User> {
-        return users
+        return mutableListOf()
     }
 
     // Get all posts from repository
@@ -141,7 +175,7 @@ object AppRepository {
 
     fun getUser(uid: String): User? {
 
-        return users.find { it.uid == uid }
+        return null
 
     }
 
@@ -187,25 +221,25 @@ object AppRepository {
         val userPosts = getPostsForUser(userId)
         Log.d("Anonify, Repo.DisplaYPOst", "${userPosts.toString()}")
         try {
-            val displayPostlist = userPosts.map { post ->
-                val user = getUserById(post.userId)
-                Log.d("Anonify : App Repo", "${user.toString()} ")
-                val avatarUrl = getAvatarOb(user.avatarId)
-                Log.d("Anonify : App Repo", "${avatarUrl.toString()} ")
-                val topicName = getTopicById(post.topicId).name
-                val likeCount = getLikes().count { it.postId == post.postId }
-                val commentCount = getComments().count { it.postId == post.postId }
-                DisplayPost(
-                    postId = post.postId,
-                    postContent = post.postContent,
-                    avatarUrl = avatarUrl.url,
-                    avatarName = avatarUrl.name, // Use any user identifier you want to display
-                    topicName = topicName,
-                    likeCount = likeCount,
-                    commentCount = commentCount
-                )
-            }
-            return displayPostlist
+//            val displayPostlist = userPosts.map { post ->
+//                val user = getUserById(post.userId)
+//                Log.d("Anonify : App Repo", "${user.toString()} ")
+//                val avatarUrl = getAvatarOb(user.avatarId)
+//                Log.d("Anonify : App Repo", "${avatarUrl.toString()} ")
+//                val topicName = getTopicById(post.topicId).name
+//                val likeCount = getLikes().count { it.postId == post.postId }
+//                val commentCount = getComments().count { it.postId == post.postId }
+//                DisplayPost(
+//                    postId = post.postId,
+//                    postContent = post.postContent,
+//                    avatarUrl = avatarUrl.url,
+//                    avatarName = avatarUrl.name, // Use any user identifier you want to display
+//                    topicName = topicName,
+//                    likeCount = likeCount,
+//                    commentCount = commentCount
+//                )
+
+            return mutableListOf()
         }catch(e: Exception){
             Log.d("Anonify : App Repo", "Exception ${e.message}toString() ")
 
@@ -219,24 +253,32 @@ object AppRepository {
         return topics.find { it.topicId == topicId }!!
     }
 
-    private fun getUserById(userId: Long): User {
-        Log.d("Anonify : Repo.getUserByID", getUsers().toString())
-        return getUsers().find { it.userId == userId }!!
-    }
+//    private fun getUserById(userId: Long): User {
+//        Log.d("Anonify : Repo.getUserByID", getUsers().toString())
+//        return getUsers().find { it.userId == userId }!!
+//    }
 
     fun updateUser(updatedUser: User) {
         try{
-        val existingIndex = users.indexOfFirst { it.userId == updatedUser.userId }
-        if (existingIndex != -1) {
-            users.removeAt(existingIndex)
-            users.add(existingIndex, updatedUser)
-        }else{
-            Log.d("Anonfy repo", "-1 found")
-        }
+//        val existingIndex = users.indexOfFirst { it.userId == updatedUser.userId }
+//        if (existingIndex != -1) {
+//            users.removeAt(existingIndex)
+//            users.add(existingIndex, updatedUser)
+//        }else{
+//            Log.d("Anonfy repo", "-1 found")
+//        }
         }catch (e: Exception){
             Log.d("Anonify Repo", e.toString())
         }
 
+    }
+
+    suspend fun getUserByUid(uid: String): User? {
+        return withContext(Dispatchers.IO) {
+            val documentSnapshot = users.document(uid).get().await()
+            val user = documentSnapshot.toObject(User::class.java)
+            user ?: throw IllegalStateException("User not found")
+        }
     }
 
 

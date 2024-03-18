@@ -55,7 +55,7 @@ class SignUpFragment : Fragment(), Utils {
 
         viewModel = ViewModelProvider(this).get(SignUpViewModel::class.java)
 
-        auth = AuthenticationUtil.getInstance(requireContext())
+//        auth = AuthenticationUtil.getInstance(requireContext())
 
         val email = args.email
 

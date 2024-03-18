@@ -73,7 +73,7 @@ class SignInFragment : Fragment(), Utils{
         txtPassword = binding!!.txtPassword
         ForgetPass =binding!!.ForgetPass
 
-        authUtil = AuthenticationUtil.getInstance(requireContext())
+//        authUtil = AuthenticationUtil.getInstance(requireContext())
 
         observeLivedata()
 
@@ -83,7 +83,7 @@ class SignInFragment : Fragment(), Utils{
             val password = txtPassword.text.toString()
 
             if(viewModel.validateFields(email, password)){
-                viewModel.signInWithEmailPassword(requireContext(), email, password)
+                viewModel.signInWithEmailAndPassword(requireContext(), email, password)
             }
         }
 
@@ -105,7 +105,7 @@ class SignInFragment : Fragment(), Utils{
                 if (TextUtils.isEmpty(userEmail) && !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
                     toast(requireContext(), "Enter your registered email id")
                 }
-                authUtil.sendPasswordResetEmail(userEmail,
+                AuthenticationUtil.sendPasswordResetEmail(userEmail,
                     onSuccess = {
                         toast(requireContext(), "Check your email")
                         dialog.dismiss()
@@ -162,8 +162,8 @@ class SignInFragment : Fragment(), Utils{
             }
         }
 
-        viewModel.isSuccessful.observe(viewLifecycleOwner){
-            userViewModel.setUser(user = it.second)
+        viewModel.signInResult.observe(viewLifecycleOwner){
+            userViewModel.setUser(user = it.second!!)
             toast(requireContext(), "Welcome User!!")
             goToChooseAvatarFragment()
         }

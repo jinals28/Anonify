@@ -54,7 +54,7 @@ class HomeFragment : Fragment() {
         btncommunity = binding.toolbarCommunityIcon
         postRv = binding.postRv
 
-        homeViewModel.getPostsForUser(user.userId)
+        homeViewModel.getPostsForUser(1L)
 
         homeViewModel.postList.observe(viewLifecycleOwner){ posts ->
 //            val userTopics = userViewModel.getUser()?.topics ?: emptyList()

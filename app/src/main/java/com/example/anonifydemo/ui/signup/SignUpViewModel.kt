@@ -4,10 +4,13 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.repository.AppRepository
+import com.example.anonifydemo.ui.repository.UserRepository
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.ValidationUtil
+import kotlinx.coroutines.launch
 
 class SignUpViewModel : ViewModel() {
 
@@ -46,19 +49,41 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun signUpWithEmailAndPassword(context: Context, email: String, password: String) {
+        viewModelScope.launch {
+//            auth = AuthenticationUtil.getInstance(context)
+            val user = AuthenticationUtil.signUpWithEmailAndPassword(email = email, password = password, onSuccess =
+            { firebaseUser ->
+                val user = User(
+                    email = firebaseUser.email ?: "",
+                    uid = firebaseUser.uid,
+                    createdAt = System.currentTimeMillis()
+                )
 
-        auth = AuthenticationUtil.getInstance(context)
-        auth.signUpWithEmailAndPassword(email = email, password = password, onSuccess = {
-            AppRepository.addUser(User(
-                userId = AppRepository.getUsers().size.toLong() + 1,
-                email = it.email!!,
-                uid = it.uid,
-                createdAt = System.currentTimeMillis()
-            ))
-            _isSuccessful.value = true
-        }, onFailure = {
-            _isFailure.value = it
-        })
+//            AppRepository.addUser(User(
+////                userId = AppRepository.getUsers().size.toLong() + 1,
+//                email = it.email!!,
+//                uid = it.uid,
+//                createdAt = System.currentTimeMillis()
+//            ))
+            }, onFailure = {
+                _isFailure.value = it
+            })
+            addUserToFirestore(user)
+        }
+
+
+    }
+
+    suspend fun addUserToFirestore(user: User) {
+
+        AppRepository.addUser(user,
+            onSuccess = {
+                _isSuccessful.value = true
+            },
+            onFailure = { exception ->
+                _isFailure.value = exception
+            }
+        )
 
     }
 }
