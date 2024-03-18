@@ -56,7 +56,7 @@ class ChooseTopicFragment : Fragment(), Utils {
         fabNext = binding!!.btnnext
 
 //        val userId = userViewModel.getUser()!!.userId
-        val userId = 6L
+        val userId = userViewModel.getUser()!!.userId
 
 //        fabNext = binding!!.nextBtn
 

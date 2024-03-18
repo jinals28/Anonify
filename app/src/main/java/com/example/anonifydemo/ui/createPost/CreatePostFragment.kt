@@ -11,18 +11,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentCreatePostBinding
-import com.example.anonifydemo.ui.dataClasses.Post
+import com.example.anonifydemo.ui.dataClasses.Avatar
+import com.example.anonifydemo.ui.dataClasses.Topic
 import com.google.android.material.chip.Chip
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
-import com.example.anonifydemo.ui.repository.PostManager
 import com.example.anonifydemo.ui.utils.Utils
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -33,11 +30,11 @@ class CreatePostFragment : Fragment(), Utils {
 
     private val userViewModel : UserViewModel by activityViewModels()
 
-    private lateinit var postViewModel : CreatePostViewModel
+    private val postViewModel : CreatePostViewModel by viewModels()
 
     private lateinit var userAvatar : CircleImageView
 
-    private lateinit var suggestionList : List<String>
+    private lateinit var suggestionList : List<Topic>
 
     private lateinit var suggestionRv : RecyclerView
 
@@ -49,7 +46,11 @@ class CreatePostFragment : Fragment(), Utils {
 
     private lateinit var postBtn : Button
 
-    private lateinit var uid : String
+    private var avatarId : Long = -1L
+
+    private var avatar : Int = -1
+
+    private var userId : Long = -1L
 
 
     override fun onCreateView(
@@ -58,17 +59,20 @@ class CreatePostFragment : Fragment(), Utils {
     ): View {
         _binding=FragmentCreatePostBinding.inflate(layoutInflater, container, false)
 
+        avatarId = userViewModel.getUser()!!.avatarId
+
+        userId = userViewModel.getUser()!!.userId
+
         return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        postViewModel = ViewModelProvider(this).get(CreatePostViewModel::class.java)
 
-        suggestionList = resources.getStringArray(R.array.topic_names).toList()
+//        suggestionList = resources.getStringArray(R.array.topic_names).toList()
 
-        postViewModel.set(suggestionList)
+//        postViewModel.set(suggestionList)
 
         suggestionRv = binding!!.suggestionsRecyclerView
 
@@ -82,21 +86,28 @@ class CreatePostFragment : Fragment(), Utils {
 
         postBtn = binding!!.toolbarButtonPost
 
-        uid = userViewModel.getUser()!!.uid
+
+        avatar = postViewModel.getAvatarId(avatarId)
+
+        userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
+
+
+
+//        uid = userViewModel.getUser()!!.uid
 
         postViewModel.topicList.observe(viewLifecycleOwner){ suggestionsList ->
             val suggestionsAdapter = SuggestionsAdapter(suggestionsList) { suggestionItem ->
-                binding!!.textInput.setText("$suggestionItem")
-                hashtagChip.text = suggestionItem
+
+                binding!!.textInput.setText("${suggestionItem.name}")
+
+                hashtagChip.text = suggestionItem.name
+
                 hideSuggestions()
             }
             suggestionRv.adapter = suggestionsAdapter
         }
 
 
-//        userViewModel.user.observe(viewLifecycleOwner){
-//            userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), it.avatarUrl.id))
-//        }
        // Set the cursor after the '#'
 //        setupSuggestionsRecyclerView()
 
@@ -161,7 +172,7 @@ class CreatePostFragment : Fragment(), Utils {
 
             if (!postViewModel.isValidContent(content)){
 
-                postContent.error = "com.example.anonifydemo.ui.dataClasses.Post should contain words"
+                postContent.error = "Post cannot be empty"
 
             }
 
@@ -175,11 +186,7 @@ class CreatePostFragment : Fragment(), Utils {
             }
 
             if (postViewModel.isValidHashtag(hashtag) && postViewModel.isValidContent(content)){
-//                postViewModel.addPost(Post(PostManager.getPostList().size.toLong() + 1,
-//                    uid = uid,
-//                    text = content,
-//                    hashtag = hashtag
-//                ))
+                postViewModel.addPost(userId, content, hashtag)
                 textInput.setText("")
                 postContent.setText("")
 

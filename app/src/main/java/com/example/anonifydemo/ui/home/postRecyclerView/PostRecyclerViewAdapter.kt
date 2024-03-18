@@ -11,14 +11,19 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemPostBinding
+import com.example.anonifydemo.ui.dataClasses.Avatar
+import com.example.anonifydemo.ui.dataClasses.DisplayPost
+import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.Post
+import com.example.anonifydemo.ui.dataClasses.Topic
 import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.home.HomeFragmentDirections
 import com.example.anonifydemo.ui.repository.PostManager
 import kotlin.math.min
 
-class PostRecyclerViewAdapter(val context : Context, val postList : List<Post>, val user: User) :  RecyclerView.Adapter<PostRecyclerViewAdapter.PostViewHolder>(){
-    inner class PostViewHolder(binding : ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
+class PostRecyclerViewAdapter(val context : Context,
+                              val postList : List<DisplayPost>) :  RecyclerView.Adapter<PostRecyclerViewAdapter.PostViewHolder>() {
+    inner class PostViewHolder(binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private val txtHashtag = binding.txtHashtag
         private val txtPostContent = binding.txtpost
@@ -28,42 +33,39 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Post>, 
         private val commentButton = binding.commentBtn
         private val moreOptions =binding.moreOptions
 
-        init {
+        fun bind(post: DisplayPost) {
 
-        }
+            txtHashtag.text = post.topicName
+            txtPostContent.text = post.postContent
+            userAvatar.setImageDrawable(ContextCompat.getDrawable(context, post.avatarUrl))
+            userName.text = post.avatarName
 
-
-        fun bind(post: Post) {
-
-            txtHashtag.text = post.hashtag
-            txtPostContent.text = post.text
-
-            if (user.uid == post.uid){
+//            if (user.uid == post.uid){
 
 //                userAvatar.setImageDrawable(ContextCompat.getDrawable(context, user.avatarUrl.id))
 //                userName.text = user.avatarUrl.name
-            }
 
             // Set the like button icon based on whether the user has liked the post
-            setLikeButtonState(post.likedBy.contains(user.uid))
-
-            // Set the like count text
-            setLikeCountText(post.likedBy, post.likeCount)
-
+//            setLikeButtonState(post.likedBy.contains(user))
+////
+////            // Set the like count text
+//            setLikeCountText(post.likedBy, post.likeCount)
+//
             // Handle like button click
             likeButton.setOnClickListener {
-                if (post.likedBy.contains(user.uid)) {
-                    // Unlike the post
-                    unlikePost(post)
-                } else {
-                    // com.example.anonifydemo.ui.dataClasses.Like the post
-                    likePost(post)
-                }
+//                if (post.likedBy.contains(user.uid)) {
+//                    // Unlike the post
+//                    unlikePost(post)
+//                } else {
+//                    // com.example.anonifydemo.ui.dataClasses.Like the post
+//                    likePost(post)
+//                }
             }
 
             commentButton.setOnClickListener {
-                    val action = HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
-                    it.findNavController().navigate(action)
+                val action =
+                    HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
+                it.findNavController().navigate(action)
             }
             moreOptions.setOnClickListener{
                 val popupMenu = PopupMenu(context, moreOptions)
@@ -90,7 +92,6 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Post>, 
                 }
                 popupMenu.show()
             }
-
         }
 
         private fun setLikeButtonState(isLiked: Boolean) {
@@ -115,25 +116,25 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Post>, 
             }
         }
 
-        private fun likePost(post: Post) {
-            post.likeCount++
-            post.likedBy.add(user.uid)
-            // Update the UI
-            setLikeButtonState(true)
-            setLikeCountText(post.likedBy, post.likeCount)
-            // Update the PostManager
-            PostManager.updatePost(post)
-        }
-
-        private fun unlikePost(post: Post) {
-            post.likeCount--
-            post.likedBy.remove(user.uid)
-            // Update the UI
-            setLikeButtonState(false)
-            setLikeCountText(post.likedBy, post.likeCount)
-            // Update the PostManager
-            PostManager.updatePost(post)
-        }
+//        private fun likePost(post: Post) {
+//            post.likeCount++
+//            post.likedBy.add(user.uid)
+//            // Update the UI
+//            setLikeButtonState(true)
+//            setLikeCountText(post.likedBy, post.likeCount)
+//            // Update the PostManager
+//            PostManager.updatePost(post)
+//        }
+//
+//        private fun unlikePost(post: Post) {
+//            post.likeCount--
+//            post.likedBy.remove(user.uid)
+//            // Update the UI
+//            setLikeButtonState(false)
+//            setLikeCountText(post.likedBy, post.likeCount)
+//            // Update the PostManager
+//            PostManager.updatePost(post)
+//        }
 
     }
 

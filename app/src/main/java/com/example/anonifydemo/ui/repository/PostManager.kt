@@ -23,14 +23,14 @@ object PostManager {
         return postList
     }
 
-    fun updatePost(updatedPost: Post) {
-        val index = postList.indexOfFirst { it.uid == updatedPost.uid }
-        if (index != -1) {
-            postList[index] = updatedPost
-        }
-    }
-
-    fun getPostById(postId: Long): Post? {
-        return getPostList().find { it.postId == postId }
-    }
+//    fun updatePost(updatedPost: Post) {
+//        val index = postList.indexOfFirst { it.uid == updatedPost.uid }
+//        if (index != -1) {
+//            postList[index] = updatedPost
+//        }
+//    }
+//
+//    fun getPostById(postId: Long): Post? {
+//        return getPostList().find { it.postId == postId }
+//    }
 }

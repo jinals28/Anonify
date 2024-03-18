@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentHomeBinding
+import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.profile.ProfileFragmentDirections
@@ -25,20 +27,24 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var postRv : RecyclerView
+
     private lateinit var btncommunity : ImageButton
-    private lateinit var homeViewModel: HomeViewModel
+
+    private val homeViewModel: HomeViewModel by viewModels()
 
     private val userViewModel : UserViewModel by activityViewModels()
+
+    private lateinit var user : User
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        homeViewModel =
-            ViewModelProvider(this)[HomeViewModel::class.java]
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        user = userViewModel.getUser()!!
 
         return binding.root
     }
@@ -48,6 +54,7 @@ class HomeFragment : Fragment() {
         btncommunity = binding.toolbarCommunityIcon
         postRv = binding.postRv
 
+        homeViewModel.getPostsForUser(user.userId)
 
         homeViewModel.postList.observe(viewLifecycleOwner){ posts ->
 //            val userTopics = userViewModel.getUser()?.topics ?: emptyList()
@@ -56,7 +63,8 @@ class HomeFragment : Fragment() {
 //                    post.hashtag == topic.name
 //                }
 //            }
-            val adapter = PostRecyclerViewAdapter(requireContext(), posts, userViewModel.getUser()!!)
+//            val adapter = PostRecyclerViewAdapter(requireContext(), posts, userViewModel.getUser()!!)
+            val adapter = PostRecyclerViewAdapter(requireContext(), posts)
             postRv.adapter = adapter
         }
         btncommunity.setOnClickListener {
@@ -70,4 +78,5 @@ class HomeFragment : Fragment() {
             findNavController().navigate(action)
         }
     }
+
 }

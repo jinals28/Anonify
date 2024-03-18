@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.anonifydemo.R
 import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Comment
+import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.Like
 import com.example.anonifydemo.ui.dataClasses.Post
@@ -81,6 +82,7 @@ object AppRepository {
     // Add post to repository
     fun addPost(post: Post) {
         posts.add(post)
+        Log.d("Anonify : Post", posts.toString())
     }
 
     // Add comment to repository
@@ -143,6 +145,99 @@ object AppRepository {
 
     }
 
+    fun getAvatar(avatarId: Long): Int {
+        return avatarList.find { it.avatarId == avatarId }!!.url
+    }
+
+    fun getHashtagId(hashtag: String): Long {
+
+        return topics.find{ it.name == hashtag}!!.topicId
+
+    }
+
+    fun getFollowingTopicList(userId: Long): List<FollowingTopic> {
+
+        return followingTopicList.filter { it.userId == userId }
+    }
+
+//    fun getFollowingTopicIdListForUser(userId: Long): List<Long> {
+//        return
+//    }
+
+    fun getPostsForUser(userId: Long): List<Post> {
+
+        val list = followingTopicList.filter { it.userId == userId }.map {
+            it.topicId
+        }
+        Log.d("Anonify: Repo", list.toString())
+        Log.d("Anonify: Repo", "Followinglist" + followingTopicList.toString())
+        return getPosts().filter { post ->
+            list.contains(post.topicId)
+        }.sortedByDescending { post ->
+            post.postCreatedAt
+        }
+    }
+
+    private fun getAvatarOb(avatarId: Long): Avatar{
+        return avatarList.find { it.avatarId == avatarId }!!
+    }
+
+    fun getDisplayPostsForUser(userId: Long): List<DisplayPost> {
+
+        val userPosts = getPostsForUser(userId)
+        Log.d("Anonify, Repo.DisplaYPOst", "${userPosts.toString()}")
+        try {
+            val displayPostlist = userPosts.map { post ->
+                val user = getUserById(post.userId)
+                Log.d("Anonify : App Repo", "${user.toString()} ")
+                val avatarUrl = getAvatarOb(user.avatarId)
+                Log.d("Anonify : App Repo", "${avatarUrl.toString()} ")
+                val topicName = getTopicById(post.topicId).name
+                val likeCount = getLikes().count { it.postId == post.postId }
+                val commentCount = getComments().count { it.postId == post.postId }
+                DisplayPost(
+                    postId = post.postId,
+                    postContent = post.postContent,
+                    avatarUrl = avatarUrl.url,
+                    avatarName = avatarUrl.name, // Use any user identifier you want to display
+                    topicName = topicName,
+                    likeCount = likeCount,
+                    commentCount = commentCount
+                )
+            }
+            return displayPostlist
+        }catch(e: Exception){
+            Log.d("Anonify : App Repo", "Exception ${e.message}toString() ")
+
+            }
+        return mutableListOf()
+
+        }
+
+
+    private fun getTopicById(topicId: Long): Topic {
+        return topics.find { it.topicId == topicId }!!
+    }
+
+    private fun getUserById(userId: Long): User {
+        Log.d("Anonify : Repo.getUserByID", getUsers().toString())
+        return getUsers().find { it.userId == userId }!!
+    }
+
+    fun updateUser(updatedUser: User) {
+        try{
+        val existingIndex = users.indexOfFirst { it.userId == updatedUser.userId }
+        if (existingIndex != -1) {
+            users.removeAt(existingIndex)
+            users.add(existingIndex, updatedUser)
+        }else{
+            Log.d("Anonfy repo", "-1 found")
+        }
+        }catch (e: Exception){
+            Log.d("Anonify Repo", e.toString())
+        }
+
+    }
 
 
     // Other methods for fetching data can be added similarly

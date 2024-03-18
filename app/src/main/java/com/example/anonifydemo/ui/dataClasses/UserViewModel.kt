@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.anonifydemo.ui.repository.AppRepository
 
 class UserViewModel : ViewModel() {
 
@@ -22,6 +23,8 @@ class UserViewModel : ViewModel() {
         val updatedUser = currentUser.copy(avatarId = avatarId)
         _user.value = updatedUser
         Log.d("Anonify : UserView Model", updatedUser.toString())
+        AppRepository.updateUser(updatedUser)
+
     }
 //
 //    fun updateUserTopic(topicList: List<FollowingTopic>) {
@@ -33,4 +36,9 @@ class UserViewModel : ViewModel() {
     fun getUser(): User? {
         return _user.value
     }
+
+    fun getUserId() : Long {
+        return  _user.value!!.userId
+    }
 }
+
