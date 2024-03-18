@@ -50,17 +50,16 @@ class ChooseAvatarFragment : Fragment() {
 
             avatarRv = binding!!.avatarRv
 
+           val avatarList = AppRepository.avatarList
 
-            AppRepository.avatarList.observe(viewLifecycleOwner){avatarList ->
-                Log.d("Anonify : Choose Avatar ", avatarList.toString())
-                val adapter = AvatarRecyclerViewAdapter(requireContext(), avatarList, userViewModel)
+            val adapter = AvatarRecyclerViewAdapter(requireContext(), avatarList, userViewModel)
+//
+          avatarRv.adapter = adapter
 
-                avatarRv.adapter = adapter
-            }
-
-
-
-
+//            AppRepository.avatarList.observe(viewLifecycleOwner){avatarList ->
+//                Log.d("Anonify : Choose Avatar ", avatarList.toString())
+//
+//            }
 
         }
     }

@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity()  {
 
 
         lifecycleScope.launch {
-            AppRepository.getAvatars()
+            AppRepository.getTopics()
         }
 
 

@@ -15,12 +15,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentCreatePostBinding
-import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Topic
 import com.google.android.material.chip.Chip
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
+import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -60,8 +59,6 @@ class CreatePostFragment : Fragment(), Utils {
     ): View {
         _binding=FragmentCreatePostBinding.inflate(layoutInflater, container, false)
 
-        avatarId = -1L
-        userId = 1L
 
         return binding!!.root
     }
@@ -87,15 +84,14 @@ class CreatePostFragment : Fragment(), Utils {
         postBtn = binding!!.toolbarButtonPost
 
 
-        avatar = postViewModel.getAvatarId(avatarId)
+        avatar = userViewModel.getUser()!!.avatar.url
 
         userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
-
-
 
 //        uid = userViewModel.getUser()!!.uid
 
         postViewModel.topicList.observe(viewLifecycleOwner){ suggestionsList ->
+            suggestionList = suggestionsList
             val suggestionsAdapter = SuggestionsAdapter(suggestionsList) { suggestionItem ->
 
                 binding!!.textInput.setText("${suggestionItem.name}")

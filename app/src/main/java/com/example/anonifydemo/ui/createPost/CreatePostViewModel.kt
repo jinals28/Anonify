@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.dataClasses.Topic
 import com.example.anonifydemo.ui.repository.AppRepository
@@ -22,7 +21,7 @@ class CreatePostViewModel : ViewModel() {
 
     init {
 
-        _topicList.value = AppRepository.getTopics()
+        _topicList.value = AppRepository.topicList
     }
 
 //    fun set(topicList: List<String>) {
@@ -32,7 +31,8 @@ class CreatePostViewModel : ViewModel() {
 
     fun generateSuggestions(input: String) {
         Log.d("com.example.anonifydemo.ui.dataClasses.Post View Model", input)
-        _topicList.value = AppRepository.getTopics().filter { it.name.startsWith(input, ignoreCase = true) }.toList()
+        _topicList.value = AppRepository.topicList.filter { it.name.startsWith(input, ignoreCase = true) }.toList()
+//        _topicList.value = AppRepository.getTopics().filter { it.name.startsWith(input, ignoreCase = true) }.toList()
         Log.d("com.example.anonifydemo.ui.dataClasses.Post View Model", _topicList.value.toString())
     }
 
@@ -64,7 +64,7 @@ class CreatePostViewModel : ViewModel() {
     }
 
     fun getAvatarId(avatarId: Long): Int {
-        return AppRepository.getAvatar(avatarId)
+        return 0
     }
 
 

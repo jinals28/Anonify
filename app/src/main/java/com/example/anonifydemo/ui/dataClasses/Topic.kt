@@ -6,7 +6,6 @@ package com.example.anonifydemo.ui.dataClasses
 //    var isSelected: Boolean = false,
 //    var priority: Int = 0
 //)
-data class Topic(
-    val topicId: Long, // Room: Long (Primary key)
+data class Topic( // Room: Long (Primary key)
     val name: String
 )

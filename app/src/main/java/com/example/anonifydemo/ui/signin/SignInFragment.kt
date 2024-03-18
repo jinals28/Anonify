@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.example.anonifydemo.databinding.FragmentSignInBinding
 import com.example.anonifydemo.ui.dataClasses.ActiveUser
 import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
+import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.Utils
 import com.google.android.gms.common.SignInButton
@@ -164,14 +166,27 @@ class SignInFragment : Fragment(), Utils{
         }
 
         viewModel.signInResult.observe(viewLifecycleOwner){
+            val followingList = AppRepository.getFollowingTopicsForUser(it.second!!.uid)
+            val avatar = if (it.second!!.avatar != ""){
+                AppRepository.getAvatar(it.second!!.avatar)
+            }else {
+                Avatar()
+            }
             userViewModel.setUser(user = ActiveUser(
                 uid = it.second!!.uid,
                 email = it.second!!.email,
                 createdAt = it.second!!.createdAt,
-                avatarId = Avatar()
+                avatar = avatar
             ))
             toast(requireContext(), "Welcome User!!")
-            goToChooseAvatarFragment()
+            if (it.second!!.avatar != ""){
+                goToChooseTopicFragment()
+            }else if(followingList.isNotEmpty()){
+                goToHomeFragment()
+            }else{
+                goToChooseAvatarFragment()
+            }
+
         }
 
         viewModel.isFailure.observe(viewLifecycleOwner){e ->
@@ -179,9 +194,23 @@ class SignInFragment : Fragment(), Utils{
         }
     }
 
+    private fun goToHomeFragment() {
+        if (findNavController().currentDestination!!.id == R.id.signInFragment){
+            val action = SignInFragmentDirections.actionSignInFragmentToNavigationHome()
+            findNavController().navigate(action)
+        }
+    }
+
     private fun goToChooseAvatarFragment(){
         if (findNavController().currentDestination!!.id == R.id.signInFragment){
             val action = SignInFragmentDirections.actionSignInFragmentToChooseAvatarFragment()
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun goToChooseTopicFragment(){
+        if (findNavController().currentDestination!!.id == R.id.signInFragment){
+            val action = SignInFragmentDirections.actionSignInFragmentToChooseTopic()
             findNavController().navigate(action)
         }
     }

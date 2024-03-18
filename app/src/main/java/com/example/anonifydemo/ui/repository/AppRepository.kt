@@ -3,6 +3,7 @@ package com.example.anonifydemo.ui.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.anonifydemo.R
 import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Comment
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
@@ -19,8 +20,8 @@ import kotlinx.coroutines.withContext
 
 object AppRepository {
     // Users table
-
-    // Posts table
+// Pos
+//    ts table
     private val posts = mutableListOf<Post>()
 
     // Comments table
@@ -30,9 +31,18 @@ object AppRepository {
 
     val users = Firebase.firestore.collection("users")
 
-    private var _avatarList = MutableLiveData<List<Avatar>>()
 
-    val avatarList : LiveData<List<Avatar>> = _avatarList
+    val followingTopics = Firebase.firestore.collection("followingTopics")
+
+//    private var _avatarList = MutableLiveData<List<Avatar>>()
+//
+//    val avatarList : LiveData<List<Avatar>> = _avatarList
+
+    private var _topicList = MutableLiveData<List<Topic>>()
+
+    val topicsList : LiveData<List<Topic>> = _topicList
+
+    var topicList : List<Topic> = mutableListOf()
 
     suspend fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         Log.d(TAG, "Add user")
@@ -53,26 +63,104 @@ object AppRepository {
     }
 
     private val avatarsCollection = Firebase.firestore.collection("avatars")
+    private val topicCollection = Firebase.firestore.collection("topics")
 
-    suspend fun getAvatars() {
-        val avatars = MutableLiveData<List<Avatar>>()
+//    suspend fun getAvatars() {
+//        val avatars = MutableLiveData<List<Avatar>>()
+//        try {
+//            val list = mutableListOf<Avatar>()
+//            val querySnapshot = avatarsCollection.get().await()
+//            for (document in querySnapshot.documents) {
+//                val name = document.getString("name") ?: ""
+//                // Assuming you store the resource ID as a string in Firestore
+//                val avatarId = document.getLong("url") ?: -1L
+//
+//                list.add(Avatar(avatarId.toInt(), name))
+//                Log.d(TAG, list.toString())
+//            }
+//            _avatarList.value = list
+//        } catch (e: Exception) {
+//            Log.d(TAG, "eXCEPTION: $e.localizedMessage!!")
+//        }
+//
+//    }
+
+    suspend fun getTopics(){
         try {
-            val list = mutableListOf<Avatar>()
-            val querySnapshot = avatarsCollection.get().await()
+            val list = mutableListOf<Topic>()
+            val querySnapshot = topicCollection.get().await()
             for (document in querySnapshot.documents) {
                 val name = document.getString("name") ?: ""
-                // Assuming you store the resource ID as a string in Firestore
-                val avatarId = document.getLong("url") ?: -1L
-
-                list.add(Avatar(avatarId.toInt(), name))
+                // Assuming you store the resource ID as a string in Firestor
+                list.add(Topic(name))
                 Log.d(TAG, list.toString())
             }
-            _avatarList.value = list
+            topicList = list
+            _topicList.value = list
         } catch (e: Exception) {
             Log.d(TAG, "eXCEPTION: $e.localizedMessage!!")
         }
 
     }
+fun getFollowingTopicsForUser(userId : String): MutableList<FollowingTopic> {
+    var followingTopics = mutableListOf<FollowingTopic>()
+    val docRef = Firebase.firestore.collection("followingTopics").document(userId)
+    docRef.get()
+        .addOnSuccessListener { documentSnapshot ->
+            if (documentSnapshot.exists()) {
+
+                for (doc in documentSnapshot.data!!.entries) {
+                    val topic = doc.key
+                    val followedData = doc.value as Map<*, *> // Assuming the value is a Map<String, Any>
+                    val followedAt = followedData["followedAt"] as Long
+                    followingTopics.add(FollowingTopic(topic = topic, followedAt = followedAt))
+
+//                    val followedAt = doc.value. as Long
+//                    followingTopics.add(FollowingTopic(topic = topic, followedAt = followedAt))
+                }
+                // Navigate to home fragment
+            }
+        }
+        .addOnFailureListener { e ->
+            // Handle failure
+            Log.e("SignInFragment", "Error fetching following topics: ${e.message}", e)
+            // Navigate to chooseAvatarFragment
+
+        }
+    return followingTopics
+}
+
+
+    suspend fun saveSelectedTopics(selectedTopics: List<FollowingTopic>, userId: String) {
+        val userDocRef = followingTopics.document(userId)
+
+        // Create a map of topics with their followed timestamps
+        val topicsMap = selectedTopics.associateBy { it.topic } // Assuming topic is unique
+
+        // Save the map to Firestore
+        userDocRef.set(topicsMap)
+    }
+
+    val avatarList = listOf(
+        Avatar(R.drawable.dinosaur,"Moki"),
+        Avatar(R.drawable.dog,"Jinto"),
+        Avatar(R.drawable.panda,"Yarri"),
+        Avatar(R.drawable.rabbit,"Zink"),
+        Avatar(R.drawable.bear,"Loki"),
+        Avatar(R.drawable.cat,"Yolo"),
+        Avatar(R.drawable.octopus,"Kairo"),
+        Avatar(R.drawable.owl,"Lumi"),
+        Avatar(R.drawable.deer,"Yara"),
+        Avatar(R.drawable.tiger,"Lokai"),
+        Avatar(R.drawable.shark,"Soli"),
+        Avatar(R.drawable.elephant,"Juno"),
+        Avatar(R.drawable.lion,"Simba"),
+        Avatar(R.drawable.wolf,"Jinx"),
+        Avatar(R.drawable.sloth,"Zinna"),
+        Avatar(R.drawable.rabbit2,"Lexa"),
+        Avatar(R.drawable.llama,"Lyric"),
+        Avatar(R.drawable.penguin,"Zolar")
+    )
 
     private fun User.toMap(): Map<String, Any?> {
         return mapOf(
@@ -83,28 +171,50 @@ object AppRepository {
     }
 
     // Topics table
-    private val topics = mutableListOf<Topic>(
-        Topic(1, "#Entertainment"),
-        Topic(2, "#Social"),
-        Topic(3, "#FashionAndBeauty"),
-        Topic(4, "#Mentalhealth"),
-        Topic(5, "#InternshipAndJobs"),
-        Topic(6, "#CollegeStories"),
-        Topic(7, "#TravelTopics"),
-        Topic(8, "#Technology"),
-        Topic(9, "#Career"),
-        Topic(10, "#Anxiety"),
-        Topic(11, "#Family"),
-        Topic(12, "#Sports"),
-        Topic(13, "#Addiction"),
-        Topic(14, "#Advice"),
-        Topic(15, "#Aging"),
-        Topic(16, "#BadHabits"),
-        Topic(17, "#BodyShaming"),
-        Topic(18, "#TimeManagement"),
-        Topic(19, "#Racism"),
-        Topic(20, "#Other")
-    )
+//    var topicsList = mutableListOf(
+//        Topic("#Entertainment"),
+//        Topic("#Social"),
+//        Topic("#FashionAndBeauty"),
+//        Topic("#Mentalhealth"),
+//        Topic("#InternshipAndJobs"),
+//        Topic("#CollegeStories"),
+//        Topic("#TravelTopics"),
+//        Topic("#Technology"),
+//        Topic("#Career"),
+//        Topic("#Anxiety"),
+//        Topic("#Family"),
+//        Topic("#Sports"),
+//        Topic("#Addiction"),
+//        Topic("#Advice"),
+//        Topic("#Aging"),
+//        Topic("#BadHabits"),
+//        Topic("#BodyShaming"),
+//        Topic("#TimeManagement"),
+//        Topic("#Racism"),
+//        Topic("#Other")
+//    )
+    suspend fun addTopics(topicsList: List<Topic>) {
+        try {
+//            for (topic in topicsList) {
+//                topics
+//                    .document(topic.name)
+//                    .set(mapOf("name" to topic.name))
+//                    .addOnSuccessListener { documentReference ->
+//                        Log.d(TAG, "DocumentSnapshot added with ID:")
+//
+//                    }
+//                    .addOnCanceledListener {
+//                        Log.d(TAG, "cancelled ")
+//                    }
+//                    .addOnFailureListener { e ->
+//                        Log.d(TAG, "DocumentSnapshot added with ID: ${e.localizedMessage}")
+//                    }
+//            }
+
+        } catch (e: Exception) {
+            println("Error adding topics to Firestore: ${e.localizedMessage}")
+        }
+    }
 
     private val followingTopicList = mutableListOf<FollowingTopic>()
 
@@ -132,17 +242,16 @@ object AppRepository {
 //        Avatar(R.drawable.penguin, "Zolar")
 //    )
 
-        suspend fun updateUserAvatar(userId: String, avatar: Avatar) {
+        suspend fun updateUserAvatar(userId: String, avatar: String) {
             try {
                 // Create a map with the avatar details to update in the user document
-                val avatarMap = mapOf(
-                    "avatarId" to avatar.url,
-                    "name" to avatar.name,
-                )
+//                val avatarMap = mapOf(
+//                    "name" to avatar,
+//                )
 
                 // Update the avatar field in the user document
                 users.document(userId)
-                    .update("avatar", avatarMap)
+                    .update("avatar", avatar)
                     .await()
             } catch (e: Exception) {
                 // Handle any errors
@@ -170,7 +279,7 @@ object AppRepository {
 
         // Add topic to repository
         fun addTopic(topic: Topic) {
-            topics.add(topic)
+//            topics.add(topic)
         }
 
         fun addFollowingTopic(followingTopic: FollowingTopic) {
@@ -200,9 +309,9 @@ object AppRepository {
         }
 
         // Get all topics from repository
-        fun getTopics(): List<Topic> {
-            return topics
-        }
+//        fun getTopics(): List<Topic> {
+//            return listOf()
+//        }
 
         fun getFollowingTopics(): List<FollowingTopic> {
             return followingTopicList
@@ -220,21 +329,21 @@ object AppRepository {
 
         }
 
-        fun getAvatar(avatarId: Long): Int {
+        fun getAvatar(avatarName : String): Avatar {
 //
-            return 0
+            return avatarList.find { it.name == avatarName }!!
         }
 
         fun getHashtagId(hashtag: String): Long {
 
-            return topics.find { it.name == hashtag }!!.topicId
+            return -1L
 
         }
 
-        fun getFollowingTopicList(userId: Long): List<FollowingTopic> {
-
-            return followingTopicList.filter { it.userId == userId }
-        }
+//        fun getFollowingTopicList(userId: String): List<FollowingTopic> {
+//
+//            return emptyList()
+//        }
 
 //    fun getFollowingTopicIdListForUser(userId: Long): List<Long> {
 //        return
@@ -242,16 +351,17 @@ object AppRepository {
 
         fun getPostsForUser(userId: Long): List<Post> {
 
-            val list = followingTopicList.filter { it.userId == userId }.map {
-                it.topicId
-            }
-            Log.d("Anonify: Repo", list.toString())
-            Log.d("Anonify: Repo", "Followinglist" + followingTopicList.toString())
-            return getPosts().filter { post ->
-                list.contains(post.topicId)
-            }.sortedByDescending { post ->
-                post.postCreatedAt
-            }
+//            val list = followingTopicList.filter { it.userId == userId }.map {
+//                it.topicId
+//            }
+//            Log.d("Anonify: Repo", list.toString())
+//            Log.d("Anonify: Repo", "Followinglist" + followingTopicList.toString())
+//            return getPosts().filter { post ->
+//                list.contains(post.topicId)
+//            }.sortedByDescending { post ->
+//                post.postCreatedAt
+//            }
+            return listOf()
         }
 
         fun getAvatarOb(avatarId: Long): Avatar {
@@ -293,7 +403,7 @@ object AppRepository {
 
 
         fun getTopicById(topicId: Long): Topic {
-            return topics.find { it.topicId == topicId }!!
+            return Topic("")
         }
 
 //    private fun getUserById(userId: Long): User {

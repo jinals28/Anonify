@@ -12,6 +12,6 @@ data class User(
 //    val userId: Long = -1, // Room: Long (Primary key)
     val uid: String = "", // Firebase: String, Room: String
     val email: String = "",
-    val avatarId: Long = -1, // Assuming this is a unique identifier for the avatar
+    val avatar: String = "", // Assuming this is a unique identifier for the avatar
     val createdAt: Long = -1 // Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
 )

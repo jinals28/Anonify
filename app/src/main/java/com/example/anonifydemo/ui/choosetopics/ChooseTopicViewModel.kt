@@ -7,8 +7,6 @@ import com.example.anonifydemo.ui.repository.AppRepository
 class ChooseTopicViewModel : ViewModel() {
 
     fun addFollowingTopicList(followingTopicList : List<FollowingTopic>){
-        followingTopicList.forEach {
-            AppRepository.addFollowingTopic(followingTopic = it)
-        }
+
     }
 }

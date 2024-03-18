@@ -8,6 +8,7 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
@@ -22,6 +23,7 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.launch
 import java.lang.Long
 
 class ChooseTopicFragment : Fragment(), Utils {
@@ -38,13 +40,21 @@ class ChooseTopicFragment : Fragment(), Utils {
 
     private val followingTopicList = mutableListOf<FollowingTopic>()
 
-       private val viewModel: ChooseTopicViewModel by viewModels()
+    private val viewModel: ChooseTopicViewModel by viewModels()
+
+    private var topicsList = mutableListOf<Topic>()
+
+    private lateinit var topicAdapter : TopicRecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentChooseTopicBinding.inflate(layoutInflater, container, false)
+
+//        lifecycleScope.launch {
+//            topicsList = AppRepository.getTopics().toMutableList()
+//        }
 
         return binding!!.root
     }
@@ -63,23 +73,23 @@ class ChooseTopicFragment : Fragment(), Utils {
 //        val topicList = resources.getStringArray(R.array.topic_names).toList()
 
         val topics : List<Topic> = listOf()
+
+        AppRepository.topicsList.observe(viewLifecycleOwner){list ->
+            topicAdapter = TopicRecyclerViewAdapter(requireContext(), list, followingTopicList, userId)
+            topicRv.adapter = topicAdapter
+        }
 //
 //        topicList.forEachIndexed { index, name ->
 //            val topic = Topics(id = index, name = name)
 //            topics.add(topic)
 //        }
 
-        val topicAdapter = TopicRecyclerViewAdapter(requireContext(), topics, followingTopicList, userId)
-
         //val staggeredStaggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
         topicRv.layoutManager = FlexboxLayoutManager(context).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
         }
-        topicRv.apply {
-           // layoutManager = staggeredStaggeredGridLayoutManager
-            adapter = topicAdapter
-        }
+
 //        next.visibility=View.VISIBLE
 //        topicAdapter.updateNextButtonVisibility(next)
 
@@ -88,7 +98,7 @@ class ChooseTopicFragment : Fragment(), Utils {
                 toast(requireContext(), "Select upto 3 topics to continue")
             }else{
                 val followingTopicList = topicAdapter.followingTopicList
-                viewModel.addFollowingTopicList(followingTopicList)
+                userViewModel.saveSelectedTopics(followingTopicList)
                 goToFeedFragment()
             }
 //            if (topicAdapter.getSelectedTopicsCount() < 3){

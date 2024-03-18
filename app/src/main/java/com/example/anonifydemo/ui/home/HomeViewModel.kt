@@ -6,9 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.FollowingTopic
-import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.repository.AppRepository
-import com.example.anonifydemo.ui.repository.PostManager
 
 class HomeViewModel : ViewModel() {
 
@@ -24,7 +22,7 @@ class HomeViewModel : ViewModel() {
 
     val followingTopicIdList : LiveData<List<Long>> = _followingTopicIdList
     fun getFollowingTopicList(userId: Long) {
-        _followingTopicList.value = AppRepository.getFollowingTopicList(userId)
+//        _followingTopicList.value = AppRepository.getFollowingTopicList(userId)
 //        getFollowingTopicIdList(userId)
     }
 

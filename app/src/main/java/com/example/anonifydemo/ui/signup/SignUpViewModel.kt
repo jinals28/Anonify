@@ -56,7 +56,8 @@ class SignUpViewModel : ViewModel() {
                 val user = User(
                     email = firebaseUser.email ?: "",
                     uid = firebaseUser.uid,
-                    createdAt = System.currentTimeMillis()
+                    createdAt = System.currentTimeMillis(),
+                    avatar = ""
                 )
 
 //            AppRepository.addUser(User(
@@ -74,7 +75,7 @@ class SignUpViewModel : ViewModel() {
 
     }
 
-    suspend fun addUserToFirestore(user: User) {
+    private suspend fun addUserToFirestore(user: User) {
 
         AppRepository.addUser(user,
             onSuccess = {

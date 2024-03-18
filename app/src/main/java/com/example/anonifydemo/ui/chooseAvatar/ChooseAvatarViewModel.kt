@@ -16,7 +16,7 @@ class ChooseAvatarViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            AppRepository.getAvatars()
+//            AppRepository.getAvatars()
         }
     }
 //    suspend fun getAvatars(): LiveData<List<Avatar>> {

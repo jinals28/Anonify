@@ -81,7 +81,7 @@ class TopicRecyclerViewAdapter(
 //        }
 
         private fun toggleTopicSelection(topic: Topic) {
-            val existingIndex = followingTopicList.indexOfFirst { it.topicId == topic.topicId }
+            val existingIndex = followingTopicList.indexOfFirst { it.topic == topic.name }
             if (existingIndex != -1) {
                 followingTopicList.removeAt(existingIndex)
                 Log.d("Anonify: Priority", followingTopicList.toString())
@@ -95,9 +95,7 @@ class TopicRecyclerViewAdapter(
 //                    reorderFollowingTopics()
                 } else {
                     followingTopicList.add(FollowingTopic(
-                        followingTopicId = followingTopicList.size.toLong() + 1,
-                        userId = userId,
-                        topicId = topic.topicId,
+                        topic = topic.name,
                         followedAt = System.currentTimeMillis()
                     ))
                     Log.d("Anonify: Priority", followingTopicList.toString())
@@ -108,7 +106,8 @@ class TopicRecyclerViewAdapter(
 
         private fun isTopicSelected(topic: Topic): Boolean {
 
-            return followingTopicList.any { it.topicId == topic.topicId }
+            return followingTopicList.any { it.topic == topic.name }
+
         }
     }
 
@@ -123,6 +122,7 @@ class TopicRecyclerViewAdapter(
 //        Log.d("Trv", priorityList.toString())
 //        notifyDataSetChanged()
 //    }
+
         fun getSelectedTopicsCount(): Int {
         return followingTopicList.size
 
