@@ -17,7 +17,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentSignInBinding
-import com.example.anonifydemo.ui.dataClasses.User
+import com.example.anonifydemo.ui.dataClasses.ActiveUser
+import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.Utils
@@ -163,7 +164,12 @@ class SignInFragment : Fragment(), Utils{
         }
 
         viewModel.signInResult.observe(viewLifecycleOwner){
-            userViewModel.setUser(user = it.second!!)
+            userViewModel.setUser(user = ActiveUser(
+                uid = it.second!!.uid,
+                email = it.second!!.email,
+                createdAt = it.second!!.createdAt,
+                avatarId = Avatar()
+            ))
             toast(requireContext(), "Welcome User!!")
             goToChooseAvatarFragment()
         }

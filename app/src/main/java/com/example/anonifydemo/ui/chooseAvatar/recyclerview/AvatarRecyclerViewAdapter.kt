@@ -1,6 +1,7 @@
 package com.example.anonifydemo.ui.chooseAvatar.recyclerview
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -69,9 +70,9 @@ class AvatarRecyclerViewAdapter(
 
         val avatar = imageIds[position]
         holder.onBind(holder.itemView.context, avatar)
-
+        Log.d("Anonify : AvatarRv", avatar.toString())
         holder.imgAvatar.setOnClickListener {
-                userViewModel.updateUserAvatarUrl(avatar.avatarId)
+                userViewModel.updateUserAvatarUrl(avatar)
                 Toast.makeText(holder.itemView.context, "Welcome ${avatar.name}", Toast.LENGTH_LONG).show()
             if (holder.itemView.findNavController().currentDestination!!.id == R.id.chooseAvatarFragment){
                 val action = ChooseAvatarFragmentDirections.actionChooseAvatarFragmentToChooseTopic()

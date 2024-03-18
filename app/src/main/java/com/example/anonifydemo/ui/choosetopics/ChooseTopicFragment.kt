@@ -62,7 +62,7 @@ class ChooseTopicFragment : Fragment(), Utils {
 
 //        val topicList = resources.getStringArray(R.array.topic_names).toList()
 
-        val topics : List<Topic> = AppRepository.getTopics()
+        val topics : List<Topic> = listOf()
 //
 //        topicList.forEachIndexed { index, name ->
 //            val topic = Topics(id = index, name = name)

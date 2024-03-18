@@ -1,7 +1,8 @@
 package com.example.anonifydemo.ui.repository
 
 import android.util.Log
-import com.example.anonifydemo.R
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Comment
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
@@ -25,9 +26,13 @@ object AppRepository {
     // Comments table
     private val comments = mutableListOf<Comment>()
 
-    const val TAG = "USER_REPOSITORY"
+    const val TAG = "Anonify: USER_REPOSITORY"
 
     val users = Firebase.firestore.collection("users")
+
+    private var _avatarList = MutableLiveData<List<Avatar>>()
+
+    val avatarList : LiveData<List<Avatar>> = _avatarList
 
     suspend fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         Log.d(TAG, "Add user")
@@ -45,6 +50,28 @@ object AppRepository {
                 Log.d(TAG, "DocumentSnapshot added with ID: ${e.localizedMessage}")
                 onFailure(e)
             }
+    }
+
+    private val avatarsCollection = Firebase.firestore.collection("avatars")
+
+    suspend fun getAvatars() {
+        val avatars = MutableLiveData<List<Avatar>>()
+        try {
+            val list = mutableListOf<Avatar>()
+            val querySnapshot = avatarsCollection.get().await()
+            for (document in querySnapshot.documents) {
+                val name = document.getString("name") ?: ""
+                // Assuming you store the resource ID as a string in Firestore
+                val avatarId = document.getLong("url") ?: -1L
+
+                list.add(Avatar(avatarId.toInt(), name))
+                Log.d(TAG, list.toString())
+            }
+            _avatarList.value = list
+        } catch (e: Exception) {
+            Log.d(TAG, "eXCEPTION: $e.localizedMessage!!")
+        }
+
     }
 
     private fun User.toMap(): Map<String, Any?> {
@@ -84,143 +111,159 @@ object AppRepository {
     // Likes table
     private val likes = mutableListOf<Like>()
 
-    private val avatarList = listOf<Avatar>(
-        Avatar(1,R.drawable.dinosaur,"Moki"),
-        Avatar(2,R.drawable.dog,"Jinto"),
-        Avatar(3,R.drawable.panda,"Yarri"),
-        Avatar(4,R.drawable.rabbit,"Zink"),
-        Avatar(5,R.drawable.bear,"Loki"),
-        Avatar(6,R.drawable.cat,"Yolo"),
-        Avatar(7,R.drawable.octopus,"Kairo"),
-        Avatar(8,R.drawable.owl,"Lumi"),
-        Avatar(9,R.drawable.deer,"Yara"),
-        Avatar(10,R.drawable.tiger,"Lokai"),
-        Avatar(11,R.drawable.shark,"Soli"),
-        Avatar(12,R.drawable.elephant,"Juno"),
-        Avatar(13,R.drawable.lion,"Simba"),
-        Avatar(14,R.drawable.wolf,"Jinx"),
-        Avatar(15,R.drawable.sloth,"Zinna"),
-        Avatar(16,R.drawable.rabbit2,"Lexa"),
-        Avatar(17,R.drawable.llama,"Lyric"),
-        Avatar(18,R.drawable.penguin,"Zolar")
-    )
+//    val avatarList = listOf<Avatar>(
+//        Avatar(R.drawable.dinosaur, "Moki"),
+//        Avatar(R.drawable.dog, "Jinto"),
+//        Avatar(R.drawable.panda, "Yarri"),
+//        Avatar(R.drawable.rabbit, "Zink"),
+//        Avatar(R.drawable.bear, "Loki"),
+//        Avatar(R.drawable.cat, "Yolo"),
+//        Avatar(R.drawable.octopus, "Kairo"),
+//        Avatar(R.drawable.owl, "Lumi"),
+//        Avatar(R.drawable.deer, "Yara"),
+//        Avatar(R.drawable.tiger, "Lokai"),
+//        Avatar(R.drawable.shark, "Soli"),
+//        Avatar(R.drawable.elephant, "Juno"),
+//        Avatar(R.drawable.lion, "Simba"),
+//        Avatar(R.drawable.wolf, "Jinx"),
+//        Avatar(R.drawable.sloth, "Zinna"),
+//        Avatar(R.drawable.rabbit2, "Lexa"),
+//        Avatar(R.drawable.llama, "Lyric"),
+//        Avatar(R.drawable.penguin, "Zolar")
+//    )
 
-    // Other tables can be similarly defined
+        suspend fun updateUserAvatar(userId: String, avatar: Avatar) {
+            try {
+                // Create a map with the avatar details to update in the user document
+                val avatarMap = mapOf(
+                    "avatarId" to avatar.url,
+                    "name" to avatar.name,
+                )
 
-    // Add user to repository
-    fun addUser(user: User) {
-        users.add(user)
-        Log.d("Anonify : Repo", users.toString())
-    }
+                // Update the avatar field in the user document
+                users.document(userId)
+                    .update("avatar", avatarMap)
+                    .await()
+            } catch (e: Exception) {
+                // Handle any errors
+            }
+        }
 
-    // Add post to repository
-    fun addPost(post: Post) {
-        posts.add(post)
-        Log.d("Anonify : Post", posts.toString())
-    }
+        // Other tables can be similarly defined
 
-    // Add comment to repository
-    fun addComment(comment: Comment) {
-        comments.add(comment)
-    }
+        // Add user to repository
+        fun addUser(user: User) {
+            users.add(user)
+            Log.d("Anonify : Repo", users.toString())
+        }
 
-    // Add topic to repository
-    fun addTopic(topic: Topic) {
-        topics.add(topic)
-    }
+        // Add post to repository
+        fun addPost(post: Post) {
+            posts.add(post)
+            Log.d("Anonify : Post", posts.toString())
+        }
 
-    fun addFollowingTopic(followingTopic: FollowingTopic) {
-        followingTopicList.add(followingTopic)
-    }
+        // Add comment to repository
+        fun addComment(comment: Comment) {
+            comments.add(comment)
+        }
 
-    // Add like to repository
-    fun addLike(like: Like) {
-        likes.add(like)
-    }
+        // Add topic to repository
+        fun addTopic(topic: Topic) {
+            topics.add(topic)
+        }
 
-    // Other CRUD operations can be added similarly
+        fun addFollowingTopic(followingTopic: FollowingTopic) {
+            followingTopicList.add(followingTopic)
+        }
 
-    // Get all users from repository
-    fun getUsers(): List<User> {
-        return mutableListOf()
-    }
+        // Add like to repository
+        fun addLike(like: Like) {
+            likes.add(like)
+        }
 
-    // Get all posts from repository
-    fun getPosts(): List<Post> {
-        return posts
-    }
+        // Other CRUD operations can be added similarly
 
-    // Get all comments from repository
-    fun getComments(): List<Comment> {
-        return comments
-    }
+        // Get all users from repository
+        fun getUsers(): List<User> {
+            return mutableListOf()
+        }
 
-    // Get all topics from repository
-    fun getTopics(): List<Topic> {
-        return topics
-    }
+        // Get all posts from repository
+        fun getPosts(): List<Post> {
+            return posts
+        }
 
-    fun getFollowingTopics(): List<FollowingTopic> {
-        return followingTopicList
-    }
+        // Get all comments from repository
+        fun getComments(): List<Comment> {
+            return comments
+        }
 
-    // Get all likes from repository
-    fun getLikes(): List<Like> {
-        return likes
-    }
+        // Get all topics from repository
+        fun getTopics(): List<Topic> {
+            return topics
+        }
 
-    fun getAvatarList() : List<Avatar>{
-        return avatarList
-    }
+        fun getFollowingTopics(): List<FollowingTopic> {
+            return followingTopicList
+        }
 
-    fun getUser(uid: String): User? {
+        // Get all likes from repository
+        fun getLikes(): List<Like> {
+            return likes
+        }
 
-        return null
 
-    }
+        fun getUser(uid: String): User? {
 
-    fun getAvatar(avatarId: Long): Int {
-        return avatarList.find { it.avatarId == avatarId }!!.url
-    }
+            return null
 
-    fun getHashtagId(hashtag: String): Long {
+        }
 
-        return topics.find{ it.name == hashtag}!!.topicId
+        fun getAvatar(avatarId: Long): Int {
+//
+            return 0
+        }
 
-    }
+        fun getHashtagId(hashtag: String): Long {
 
-    fun getFollowingTopicList(userId: Long): List<FollowingTopic> {
+            return topics.find { it.name == hashtag }!!.topicId
 
-        return followingTopicList.filter { it.userId == userId }
-    }
+        }
+
+        fun getFollowingTopicList(userId: Long): List<FollowingTopic> {
+
+            return followingTopicList.filter { it.userId == userId }
+        }
 
 //    fun getFollowingTopicIdListForUser(userId: Long): List<Long> {
 //        return
 //    }
 
-    fun getPostsForUser(userId: Long): List<Post> {
+        fun getPostsForUser(userId: Long): List<Post> {
 
-        val list = followingTopicList.filter { it.userId == userId }.map {
-            it.topicId
+            val list = followingTopicList.filter { it.userId == userId }.map {
+                it.topicId
+            }
+            Log.d("Anonify: Repo", list.toString())
+            Log.d("Anonify: Repo", "Followinglist" + followingTopicList.toString())
+            return getPosts().filter { post ->
+                list.contains(post.topicId)
+            }.sortedByDescending { post ->
+                post.postCreatedAt
+            }
         }
-        Log.d("Anonify: Repo", list.toString())
-        Log.d("Anonify: Repo", "Followinglist" + followingTopicList.toString())
-        return getPosts().filter { post ->
-            list.contains(post.topicId)
-        }.sortedByDescending { post ->
-            post.postCreatedAt
+
+        fun getAvatarOb(avatarId: Long): Avatar {
+//        return avatarList.find { it.avatarId == avatarId }!!
+            return Avatar()
         }
-    }
 
-    private fun getAvatarOb(avatarId: Long): Avatar{
-        return avatarList.find { it.avatarId == avatarId }!!
-    }
+        fun getDisplayPostsForUser(userId: Long): List<DisplayPost> {
 
-    fun getDisplayPostsForUser(userId: Long): List<DisplayPost> {
-
-        val userPosts = getPostsForUser(userId)
-        Log.d("Anonify, Repo.DisplaYPOst", "${userPosts.toString()}")
-        try {
+            val userPosts = getPostsForUser(userId)
+            Log.d("Anonify, Repo.DisplaYPOst", "${userPosts.toString()}")
+            try {
 //            val displayPostlist = userPosts.map { post ->
 //                val user = getUserById(post.userId)
 //                Log.d("Anonify : App Repo", "${user.toString()} ")
@@ -239,27 +282,27 @@ object AppRepository {
 //                    commentCount = commentCount
 //                )
 
-            return mutableListOf()
-        }catch(e: Exception){
-            Log.d("Anonify : App Repo", "Exception ${e.message}toString() ")
+                return mutableListOf()
+            } catch (e: Exception) {
+                Log.d("Anonify : App Repo", "Exception ${e.message}toString() ")
 
             }
-        return mutableListOf()
+            return mutableListOf()
 
         }
 
 
-    private fun getTopicById(topicId: Long): Topic {
-        return topics.find { it.topicId == topicId }!!
-    }
+        fun getTopicById(topicId: Long): Topic {
+            return topics.find { it.topicId == topicId }!!
+        }
 
 //    private fun getUserById(userId: Long): User {
 //        Log.d("Anonify : Repo.getUserByID", getUsers().toString())
 //        return getUsers().find { it.userId == userId }!!
 //    }
 
-    fun updateUser(updatedUser: User) {
-        try{
+        fun updateUser(updatedUser: User) {
+            try {
 //        val existingIndex = users.indexOfFirst { it.userId == updatedUser.userId }
 //        if (existingIndex != -1) {
 //            users.removeAt(existingIndex)
@@ -267,20 +310,20 @@ object AppRepository {
 //        }else{
 //            Log.d("Anonfy repo", "-1 found")
 //        }
-        }catch (e: Exception){
-            Log.d("Anonify Repo", e.toString())
+            } catch (e: Exception) {
+                Log.d("Anonify Repo", e.toString())
+            }
+
         }
 
-    }
-
-    suspend fun getUserByUid(uid: String): User? {
-        return withContext(Dispatchers.IO) {
-            val documentSnapshot = users.document(uid).get().await()
-            val user = documentSnapshot.toObject(User::class.java)
-            user ?: throw IllegalStateException("User not found")
+        suspend fun getUserByUid(uid: String): User? {
+            return withContext(Dispatchers.IO) {
+                val documentSnapshot = users.document(uid).get().await()
+                val user = documentSnapshot.toObject(User::class.java)
+                user ?: throw IllegalStateException("User not found")
+            }
         }
+
+
+        // Other methods for fetching data can be added similarly
     }
-
-
-    // Other methods for fetching data can be added similarly
-}

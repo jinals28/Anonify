@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentHomeBinding
+import com.example.anonifydemo.ui.dataClasses.ActiveUser
 import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
@@ -34,7 +35,7 @@ class HomeFragment : Fragment() {
 
     private val userViewModel : UserViewModel by activityViewModels()
 
-    private lateinit var user : User
+    private lateinit var user : ActiveUser
 
     override fun onCreateView(
         inflater: LayoutInflater,

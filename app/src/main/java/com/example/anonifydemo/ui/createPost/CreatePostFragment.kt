@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentCreatePostBinding
 import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Topic
@@ -59,8 +60,7 @@ class CreatePostFragment : Fragment(), Utils {
     ): View {
         _binding=FragmentCreatePostBinding.inflate(layoutInflater, container, false)
 
-        avatarId = userViewModel.getUser()!!.avatarId
-
+        avatarId = -1L
         userId = 1L
 
         return binding!!.root

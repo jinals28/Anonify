@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 //import androidx.credentials.CredentialManager
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -23,8 +24,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ActivityMainBinding
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
+import com.example.anonifydemo.ui.repository.AppRepository
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity()  {
 
@@ -45,6 +48,11 @@ class MainActivity : AppCompatActivity()  {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        lifecycleScope.launch {
+            AppRepository.getAvatars()
+        }
 
 
 //        WindowCompat.setDecorFitsSystemWindows(window, false)

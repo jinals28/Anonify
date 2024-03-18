@@ -2,6 +2,12 @@ package com.example.anonifydemo.ui.dataClasses
 
 import java.util.*
 
+data class ActiveUser(
+    val uid: String = "", // Firebase: String, Room: String
+    val email: String = "",
+    val avatarId: Avatar = Avatar(), // Assuming this is a unique identifier for the avatar
+    val createdAt: Long = -1,
+)
 data class Like(
     val likeId: Long, // Room: Long (Primary key)
     val userId: Long, // Room: Long (Foreign key)
