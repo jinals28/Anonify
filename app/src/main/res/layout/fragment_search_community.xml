@@ -67,13 +67,13 @@
     <SearchView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/search_bg"
         android:elevation="5dp"
         android:gravity="center"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
         android:queryBackground="@drawable/search_bg"
         android:queryHint="Search topics or hashtags"
         android:searchIcon="@drawable/baseline_search_24" />

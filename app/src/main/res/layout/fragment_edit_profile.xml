@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/windowBackground"
     android:orientation="vertical"
     android:paddingEnd="20dp"
@@ -69,7 +70,7 @@
         android:textSize="24sp"
         android:textStyle="bold" />
     <TextView
-        android:id="@+id/txtSignUp"
+        android:id="@+id/editavatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edit avatar"
@@ -101,6 +102,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
+        android:backgroundTint="@color/btn"
+        app:boxStrokeColor="@color/btn"
+        app:cursorColor="@color/btn"
+        android:textColorLink="@color/btn"
         android:singleLine="true"
         android:fontFamily="@font/montserrat"
         android:padding="16dp"
@@ -131,6 +136,10 @@
         android:inputType="text"
         android:maxLines="5"
         android:padding="16dp"
+        android:backgroundTint="@color/btn"
+        app:boxStrokeColor="@color/btn"
+        app:cursorColor="@color/btn"
+        android:textColorLink="@color/btn"
         android:singleLine="false"
         android:textColorHint="@android:color/darker_gray" />
     <View

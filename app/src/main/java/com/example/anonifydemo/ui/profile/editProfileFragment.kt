@@ -24,6 +24,7 @@ class editProfileFragment : Fragment() {
     private lateinit var lblemail:TextView
     private lateinit var lblbio:TextView
     private lateinit var btnback:ImageButton
+    private lateinit var editavatar:TextView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,6 +40,7 @@ class editProfileFragment : Fragment() {
         lblemail = binding!!.lblemail
         lblbio = binding!!.lblbio
         btnback = binding!!.btnback
+        editavatar =binding!!.editavatar
 
         btnback.setOnClickListener {
             goToProfileFragment()
@@ -49,6 +51,9 @@ class editProfileFragment : Fragment() {
 
         editbio.setOnFocusChangeListener { _, hasFocus ->
             handleFocusChange(hasFocus, editbio, lblbio)
+        }
+        editavatar.setOnClickListener{
+            gotoavatarFragment()
         }
     }
     private fun handleFocusChange(hasFocus: Boolean, editText: EditText, labelTextView: TextView) {
@@ -71,6 +76,12 @@ class editProfileFragment : Fragment() {
     private fun  goToProfileFragment() {
         if (findNavController().currentDestination!!.id == R.id.editProfileFragment) {
             val action = editProfileFragmentDirections.actionEditProfileFragmentToNavigationProfile()
+            findNavController().navigate(action)
+        }
+    }
+    private fun  gotoavatarFragment() {
+        if (findNavController().currentDestination!!.id == R.id.editProfileFragment) {
+            val action = editProfileFragmentDirections.actionEditProfileFragmentToChooseAvatarFragment()
             findNavController().navigate(action)
         }
     }

@@ -183,6 +183,9 @@
         <action
             android:id="@+id/action_editProfileFragment_to_navigation_profile"
             app:destination="@id/navigation_profile" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_chooseAvatarFragment"
+            app:destination="@id/chooseAvatarFragment" />
     </fragment>
     <fragment
         android:id="@+id/profile2Fragment"
