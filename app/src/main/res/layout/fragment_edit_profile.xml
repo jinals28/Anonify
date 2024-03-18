@@ -48,7 +48,7 @@
 
     </androidx.appcompat.widget.Toolbar>
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_usr"
+        android:id="@+id/editimgusr"
         android:layout_width="90dp"
         android:src="@mipmap/ic_launcher_round"
         android:layout_gravity="center"
@@ -58,7 +58,7 @@
         android:layout_width="20dp"
         android:layout_height="10dp" />
     <TextView
-        android:id="@+id/txtusrnm"
+        android:id="@+id/editusrnm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

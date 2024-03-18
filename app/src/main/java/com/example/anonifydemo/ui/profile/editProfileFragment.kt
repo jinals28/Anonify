@@ -10,21 +10,34 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentEditProfileBinding
 import com.example.anonifydemo.databinding.FragmentOnboardBinding
+import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.HomeFragmentDirections
+import de.hdodenhof.circleimageview.CircleImageView
 
 class editProfileFragment : Fragment() {
     private var _binding : FragmentEditProfileBinding? = null
     private val binding get() = _binding
+    private val userViewModel : UserViewModel by activityViewModels()
     private lateinit var editemail: EditText
     private lateinit var editbio : EditText
     private lateinit var lblemail:TextView
     private lateinit var lblbio:TextView
     private lateinit var btnback:ImageButton
     private lateinit var editavatar:TextView
+    private lateinit var editimgusr : CircleImageView
+    private lateinit var editusrnm: TextView
+    private var avatarId : Long = -1L
+
+    private var avatar : Int = -1
+
+    private var userId : Long = -1L
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,6 +54,12 @@ class editProfileFragment : Fragment() {
         lblbio = binding!!.lblbio
         btnback = binding!!.btnback
         editavatar =binding!!.editavatar
+        editimgusr = binding!!.editimgusr
+        editusrnm = binding!!.editusrnm
+
+        avatar = userViewModel.getUser()!!.avatar.url
+        editimgusr.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
+
 
         btnback.setOnClickListener {
             goToProfileFragment()

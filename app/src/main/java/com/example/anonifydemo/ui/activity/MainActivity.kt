@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -28,6 +29,7 @@ import com.example.anonifydemo.ui.repository.AppRepository
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 class MainActivity : AppCompatActivity()  {
 
@@ -49,10 +51,11 @@ class MainActivity : AppCompatActivity()  {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         lifecycleScope.launch {
             AppRepository.getTopics()
         }
+//        val resourceId = R.drawable.dog
+//        Log.d("Drawable ID", "The drawable ID is: $resourceId")
 
 
 //        WindowCompat.setDecorFitsSystemWindows(window, false)
