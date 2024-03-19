@@ -40,9 +40,9 @@ object AppRepository {
 
     private var _topicList = MutableLiveData<List<Topic>>()
 
-    val topicsList : LiveData<List<Topic>> = _topicList
+    val topicsList: LiveData<List<Topic>> = _topicList
 
-    var topicList : List<Topic> = mutableListOf()
+    var topicList: List<Topic> = mutableListOf()
 
     suspend fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         Log.d(TAG, "Add user")
@@ -85,7 +85,7 @@ object AppRepository {
 //
 //    }
 
-    suspend fun getTopics(){
+    suspend fun getTopics() {
         try {
             val list = mutableListOf<Topic>()
             val querySnapshot = topicCollection.get().await()
@@ -102,33 +102,86 @@ object AppRepository {
         }
 
     }
-fun getFollowingTopicsForUser(userId : String): MutableList<FollowingTopic> {
-    var followingTopics = mutableListOf<FollowingTopic>()
-    val docRef = Firebase.firestore.collection("followingTopics").document(userId)
-    docRef.get()
-        .addOnSuccessListener { documentSnapshot ->
-            if (documentSnapshot.exists()) {
 
-                for (doc in documentSnapshot.data!!.entries) {
-                    val topic = doc.key
-                    val followedData = doc.value as Map<*, *> // Assuming the value is a Map<String, Any>
-                    val followedAt = followedData["followedAt"] as Long
-                    followingTopics.add(FollowingTopic(topic = topic, followedAt = followedAt))
-
-//                    val followedAt = doc.value. as Long
-//                    followingTopics.add(FollowingTopic(topic = topic, followedAt = followedAt))
+    suspend fun getFollowingTopicsForUser(userId: String): MutableList<FollowingTopic> {
+        Log.d(TAG, "Repo getFollowing")
+        var followingTopics = mutableListOf<FollowingTopic>()
+        try{
+        val docRef = Firebase.firestore.collection("followingTopics").document(userId)
+        val doc = docRef.get().await()
+        if (doc.exists()) {
+            val data = doc.data
+            if (data != null) {
+                for ((topic, topicData) in data) {
+                    if (topicData is Map<*, *>) {
+                        val followedAt = topicData["followedAt"] as? Long
+                        if (followedAt != null) {
+                            followingTopics.add(
+                                FollowingTopic(
+                                    topic = topic,
+                                    followedAt = followedAt
+                                )
+                            )
+                        }else{
+                            // Handle missing or invalid followedAt data
+                            Log.e(
+                                TAG,
+                                "Invalid followedAt data for topic: $topic"
+                            )
+                        }
+                    }else {
+                        // Handle unexpected topic data format
+                        Log.e(
+                            TAG,
+                            "Unexpected data format for topic: $topic"
+                        )
+                    }
                 }
-                // Navigate to home fragment
+            }else {
+                // Handle null data
+                Log.e(TAG, "Null data received for user: $userId")
             }
+            } else {
+            // Handle non-existent document
+            Log.e(TAG, "No following topics found for user: $userId")
         }
-        .addOnFailureListener { e ->
-            // Handle failure
-            Log.e("SignInFragment", "Error fetching following topics: ${e.message}", e)
-            // Navigate to chooseAvatarFragment
-
-        }
+        } catch (e: Exception)
+    {
+        // Handle exceptions
+        Log.e(TAG, "Error fetching following topics for user: $userId", e)
+    }
+        Log.d(TAG, followingTopics.toString())
     return followingTopics
 }
+
+//    val followingTopicList  = doc.toObject(FollowingTopic::class.java)
+//        .addOnSuccessListener { documentSnapshot ->
+//            if (documentSnapshot.exists()) {
+//
+//                for (doc in documentSnapshot.data!!.entries) {
+//                    val topic = doc.key
+//                    val followedData = doc.value as Map<*, *> // Assuming the value is a Map<String, Any>
+//                    val followedAt = followedData["followedAt"] as Long
+//                    followingTopics.add(FollowingTopic(topic = topic, followedAt = followedAt))
+//
+////                    val followedAt = doc.value. as Long
+////                    followingTopics.add(FollowingTopic(topic = topic, followedAt = followedAt))
+                // Navigate to home fragment
+//        .addOnFailureListener { e ->
+//            // Handle failure
+//            Log.e("SignInFragment", "Error fetching following topics: ${e.message}", e)
+//            // Navigate to chooseAvatarFragment
+//
+//        }
+
+    suspend fun getUserByUid(uid: String): Pair<User, List<FollowingTopic>> {
+        return withContext(Dispatchers.IO) {
+            val documentSnapshot = users.document(uid).get().await()
+            val user = documentSnapshot.toObject(User::class.java)
+            val followingTopicList = getFollowingTopicsForUser(user!!.uid)
+            Pair(user, followingTopicList) ?: throw IllegalStateException("User not found")
+        }
+    }
 
 
     suspend fun saveSelectedTopics(selectedTopics: List<FollowingTopic>, userId: String) {
@@ -426,13 +479,7 @@ fun getFollowingTopicsForUser(userId : String): MutableList<FollowingTopic> {
 
         }
 
-        suspend fun getUserByUid(uid: String): User? {
-            return withContext(Dispatchers.IO) {
-                val documentSnapshot = users.document(uid).get().await()
-                val user = documentSnapshot.toObject(User::class.java)
-                user ?: throw IllegalStateException("User not found")
-            }
-        }
+
 
 
         // Other methods for fetching data can be added similarly

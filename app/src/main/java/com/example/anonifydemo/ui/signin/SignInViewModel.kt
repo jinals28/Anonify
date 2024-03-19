@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
@@ -42,8 +43,8 @@ class SignInViewModel : ViewModel() {
         return _isEmailValid.value!! && _isPasswordValid.value!!
     }
 
-    private val _signInResult = MutableLiveData<Pair<Boolean, User?>>()
-    val signInResult: LiveData<Pair<Boolean, User?>>
+    private val _signInResult = MutableLiveData<Pair<Boolean, Pair<User, List<FollowingTopic>>>>()
+    val signInResult: LiveData<Pair<Boolean, Pair<User, List<FollowingTopic>>>>
         get() = _signInResult
 
     private val _signInError = MutableLiveData<Exception>()
@@ -56,8 +57,8 @@ class SignInViewModel : ViewModel() {
         coroutineScope.launch {
             try {
                 val firebaseUser = AuthenticationUtil.signInWithEmailAndPassword(email, password)
-                val user = AppRepository.getUserByUid(firebaseUser.uid)
-                _signInResult.value = Pair(true, user)
+                val pair= AppRepository.getUserByUid(firebaseUser.uid)
+                _signInResult.value = Pair(true, pair)
             } catch (e: Exception) {
                 _signInError.value = e
             }

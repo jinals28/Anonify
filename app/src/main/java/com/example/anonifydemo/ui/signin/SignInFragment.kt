@@ -166,23 +166,27 @@ class SignInFragment : Fragment(), Utils{
         }
 
         viewModel.signInResult.observe(viewLifecycleOwner){
-            val followingList = AppRepository.getFollowingTopicsForUser(it.second!!.uid)
-            val avatar = if (it.second!!.avatar != ""){
-                AppRepository.getAvatar(it.second!!.avatar)
+            val list = it.second.second
+            val avatar = if (it.second!!.first.avatar != ""){
+                AppRepository.getAvatar(it.second!!.first.avatar)
             }else {
                 Avatar()
             }
             userViewModel.setUser(user = ActiveUser(
-                uid = it.second!!.uid,
-                email = it.second!!.email,
-                createdAt = it.second!!.createdAt,
-                avatar = avatar
+                uid = it.second!!.first.uid,
+                email = it.second!!.first.email,
+                createdAt = it.second!!.first.createdAt,
+                avatar = avatar,
+                followingTopics = list
+
             ))
             toast(requireContext(), "Welcome User!!")
-            if (it.second!!.avatar != ""){
-                goToChooseTopicFragment()
-            }else if(followingList.isNotEmpty()){
-                goToHomeFragment()
+            if (it.second!!.first.avatar != "") {
+                if (it.second!!.second.isNotEmpty()) {
+                    goToHomeFragment()
+                } else {
+                    goToChooseTopicFragment()
+                }
             }else{
                 goToChooseAvatarFragment()
             }
