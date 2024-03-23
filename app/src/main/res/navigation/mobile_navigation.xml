@@ -71,6 +71,9 @@
         <action
             android:id="@+id/action_chooseAvatarFragment_to_chooseTopic"
             app:destination="@id/chooseTopic" />
+        <action
+            android:id="@+id/action_chooseAvatarFragment_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
     </fragment>
 
     <fragment

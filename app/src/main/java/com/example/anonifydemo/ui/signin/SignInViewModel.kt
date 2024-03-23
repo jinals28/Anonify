@@ -8,12 +8,13 @@ import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
+import com.example.anonifydemo.ui.utils.Utils
 import com.example.anonifydemo.ui.utils.ValidationUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SignInViewModel : ViewModel() {
+class SignInViewModel : ViewModel(), Utils {
 
     private val _isEmailValid = MutableLiveData<Boolean>()
     val isEmailValid: LiveData<Boolean> = _isEmailValid
@@ -54,6 +55,7 @@ class SignInViewModel : ViewModel() {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     fun signInWithEmailAndPassword(context: Context, email: String, password: String) {
+        log("in sign in viewmodel, signinwithemailandpassword")
         coroutineScope.launch {
             try {
                 val firebaseUser = AuthenticationUtil.signInWithEmailAndPassword(email, password)

@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity()  {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val userViewModel : UserViewModel by viewModels()
+    val userViewModel : UserViewModel by viewModels()
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -52,7 +52,8 @@ class MainActivity : AppCompatActivity()  {
         setContentView(binding.root)
 
         lifecycleScope.launch {
-            AppRepository.getTopics()
+//            AppRepository.getTopics()
+            AppRepository.fetchPosts()
         }
 //        val resourceId = R.drawable.dog
 //        Log.d("Drawable ID", "The drawable ID is: $resourceId")

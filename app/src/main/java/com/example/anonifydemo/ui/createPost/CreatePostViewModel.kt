@@ -4,10 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.dataClasses.Topic
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.ValidationUtil
+import kotlinx.coroutines.launch
 
 class CreatePostViewModel : ViewModel() {
 
@@ -51,15 +53,17 @@ class CreatePostViewModel : ViewModel() {
         return AppRepository.getHashtagId(hashtag)
     }
 
-    fun addPost(userId: Long, content: String, hashtag: String) {
-        val topicId = getHashtagId(hashtag)
-       val post =  Post(userId = userId,
-           postId = AppRepository.getPosts().size.toLong() + 1L,
-           topicId = topicId,
+    fun addPost(userId: String, content: String, hashtag: String) {
+       val post =  Post(
+           userId = userId,
+           topicName = hashtag,
            postContent = content,
            postCreatedAt = System.currentTimeMillis()
            )
-       AppRepository.addPost(post)
+        viewModelScope.launch {
+            AppRepository.addPost(post)
+        }
+
 
     }
 

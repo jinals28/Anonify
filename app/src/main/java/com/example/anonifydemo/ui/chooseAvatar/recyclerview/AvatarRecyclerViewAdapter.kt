@@ -74,10 +74,18 @@ class AvatarRecyclerViewAdapter(
         holder.imgAvatar.setOnClickListener {
                 userViewModel.updateUserAvatarUrl(avatar)
                 Toast.makeText(holder.itemView.context, "Welcome ${avatar.name}", Toast.LENGTH_LONG).show()
-            if (holder.itemView.findNavController().currentDestination!!.id == R.id.chooseAvatarFragment){
-                val action = ChooseAvatarFragmentDirections.actionChooseAvatarFragmentToChooseTopic()
-                holder.itemView.findNavController().navigate(action)
+            if (userViewModel.getUser()!!.followingTopics.isNotEmpty()){
+                if (holder.itemView.findNavController().currentDestination!!.id == R.id.chooseAvatarFragment){
+                    val action = ChooseAvatarFragmentDirections.actionChooseAvatarFragmentToNavigationProfile()
+                    holder.itemView.findNavController().navigate(action)
+                }
+            }else{
+                if (holder.itemView.findNavController().currentDestination!!.id == R.id.chooseAvatarFragment){
+                    val action = ChooseAvatarFragmentDirections.actionChooseAvatarFragmentToChooseTopic()
+                    holder.itemView.findNavController().navigate(action)
+                }
             }
+
 
         }
     }

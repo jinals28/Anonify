@@ -46,11 +46,9 @@ class CreatePostFragment : Fragment(), Utils {
 
     private lateinit var postBtn : Button
 
-    private var avatarId : Long = -1L
-
     private var avatar : Int = -1
 
-    private var userId : Long = -1L
+    private var userId : String = ""
 
 
     override fun onCreateView(
@@ -83,10 +81,13 @@ class CreatePostFragment : Fragment(), Utils {
 
         postBtn = binding!!.toolbarButtonPost
 
-
         avatar = userViewModel.getUser()!!.avatar.url
 
+        userId = userViewModel.getUserId()
+
         userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
+
+//        suggestionList = AppRepository.topicList
 
 //        uid = userViewModel.getUser()!!.uid
 
@@ -178,18 +179,15 @@ class CreatePostFragment : Fragment(), Utils {
                 }else {
                     toast(requireContext(), "Choose a valid hashtag")
                 }
-
             }
 
+            //TODO: IMPROVE THIS CODE
             if (postViewModel.isValidHashtag(hashtag) && postViewModel.isValidContent(content)){
                 postViewModel.addPost(userId, content, hashtag)
                 textInput.setText("")
                 postContent.setText("")
 
             }
-
-
-
 
 //            val post = com.example.anonifydemo.ui.dataClasses.Post(
 //                uid = uid,

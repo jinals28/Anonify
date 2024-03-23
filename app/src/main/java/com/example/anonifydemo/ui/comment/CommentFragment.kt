@@ -36,7 +36,7 @@ class CommentFragment : Fragment() {
 
         val postId = args.postId
 
-        val post = viewModel.getPostById(postId)
+//        val post = viewModel.getPostById(postId)
 
 
 

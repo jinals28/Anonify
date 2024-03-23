@@ -168,12 +168,13 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-object AuthenticationUtil {
+object AuthenticationUtil : Utils {
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     suspend fun signInWithEmailAndPassword(email: String, password: String): FirebaseUser {
         return withContext(Dispatchers.IO) {
+            log("AuthenticationUtil, signInWithEmailAndPassword")
             val authResult = auth.signInWithEmailAndPassword(email, password).await()
             authResult.user ?: throw IllegalStateException("User not found")
         }

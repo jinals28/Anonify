@@ -8,7 +8,7 @@ class CommentViewModel : ViewModel() {
 
     private val postManager = PostManager.getInstance()
 
-    fun getPostById(postId: Long): Post? {
-        return postManager.getPostList().find { it.postId == postId }
-    }
+//    fun getPostById(postId: Long): Post? {
+//        return postManager.getPostList().find { it.postId == postId }
+//    }
 }

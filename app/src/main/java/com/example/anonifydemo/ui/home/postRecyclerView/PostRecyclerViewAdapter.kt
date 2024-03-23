@@ -5,20 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemPostBinding
-import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
-import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.Post
-import com.example.anonifydemo.ui.dataClasses.Topic
-import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.home.HomeFragmentDirections
-import com.example.anonifydemo.ui.repository.PostManager
 import kotlin.math.min
 
 class PostRecyclerViewAdapter(val context : Context,
@@ -63,9 +57,9 @@ class PostRecyclerViewAdapter(val context : Context,
             }
 
             commentButton.setOnClickListener {
-                val action =
-                    HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
-                it.findNavController().navigate(action)
+//                val action =
+//                    HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
+//                it.findNavController().navigate(action)
             }
             moreOptions.setOnClickListener{
                 val popupMenu = PopupMenu(context, moreOptions)

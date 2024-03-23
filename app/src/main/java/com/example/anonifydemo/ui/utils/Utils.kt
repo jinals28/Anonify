@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 interface Utils {
 
     companion object {
-        const val TAG = "Utils"
+        const val TAG = "Anonify: Utils"
     }
 
     fun toast(context : Context, message : String){
@@ -33,6 +33,10 @@ interface Utils {
                 Log.e(TAG, "Exception $e")
             }
         }
+    }
+
+    fun log(message: String){
+        Log.d(TAG, message)
     }
 
 

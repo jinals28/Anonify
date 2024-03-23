@@ -1,6 +1,7 @@
 package com.example.anonifydemo.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
@@ -18,8 +20,11 @@ import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.profile.ProfileFragmentDirections
+import com.example.anonifydemo.ui.repository.AppRepository
+import com.example.anonifydemo.ui.utils.Utils
+import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), Utils {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -55,9 +60,11 @@ class HomeFragment : Fragment() {
         btncommunity = binding.toolbarCommunityIcon
         postRv = binding.postRv
 
-        homeViewModel.getPostsForUser(1L)
+        lifecycleScope.launch {
+            AppRepository.fetchPosts()
+        }
 
-        homeViewModel.postList.observe(viewLifecycleOwner){ posts ->
+        AppRepository.postList.observe(viewLifecycleOwner){ posts ->
 //            val userTopics = userViewModel.getUser()?.topics ?: emptyList()
 //            val filteredPosts = posts.filter { post ->
 //                userTopics.any { topic ->
@@ -65,9 +72,11 @@ class HomeFragment : Fragment() {
 //                }
 //            }
 //            val adapter = PostRecyclerViewAdapter(requireContext(), posts, userViewModel.getUser()!!)
+            log("In Home Fragment ${posts.toString()}")
             val adapter = PostRecyclerViewAdapter(requireContext(), posts)
             postRv.adapter = adapter
         }
+
         btncommunity.setOnClickListener {
             goToCommunityFragment()
         }

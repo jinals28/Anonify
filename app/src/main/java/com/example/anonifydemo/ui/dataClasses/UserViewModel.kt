@@ -65,8 +65,8 @@ fun updateUserAvatarUrl(avatar: Avatar) {
         return _user.value
     }
 
-    fun getUserId() : Long {
-        return  1L
+    fun getUserId() : String {
+        return  _user.value!!.uid
     }
 }
 

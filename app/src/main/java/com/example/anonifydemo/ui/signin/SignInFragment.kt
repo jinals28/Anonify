@@ -27,25 +27,25 @@ import com.example.anonifydemo.ui.utils.Utils
 import com.google.android.gms.common.SignInButton
 
 
-class SignInFragment : Fragment(), Utils{
+class SignInFragment : Fragment(), Utils {
 
-    private var _binding : FragmentSignInBinding? = null
+    private var _binding: FragmentSignInBinding? = null
 
     private val binding get() = _binding
 
-    private lateinit var btnSignIn : Button
+    private lateinit var btnSignIn: Button
 
-    private val userViewModel : UserViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
-    private lateinit var signUpTxt : TextView
+    private lateinit var signUpTxt: TextView
 
-    private lateinit var txtEmail : EditText
+    private lateinit var txtEmail: EditText
 
-    private lateinit var txtPassword : EditText
+    private lateinit var txtPassword: EditText
 
-    private lateinit var authUtil : AuthenticationUtil
+    private lateinit var authUtil: AuthenticationUtil
 
-    private lateinit var signInWithGoogle : SignInButton
+    private lateinit var signInWithGoogle: SignInButton
 
     private lateinit var viewModel: SignInViewModel
     private lateinit var ForgetPass: TextView
@@ -74,20 +74,24 @@ class SignInFragment : Fragment(), Utils{
         txtEmail = binding!!.txtemail
 
         txtPassword = binding!!.txtPassword
-        ForgetPass =binding!!.ForgetPass
+        ForgetPass = binding!!.ForgetPass
 
 //        authUtil = AuthenticationUtil.getInstance(requireContext())
 
         observeLivedata()
 
         btnSignIn.setOnClickListener {
-
-            val email = txtEmail.text.toString()
-            val password = txtPassword.text.toString()
-
-            if(viewModel.validateFields(email, password)){
-                viewModel.signInWithEmailAndPassword(requireContext(), email, password)
+            try{
+                val email = txtEmail.text.toString()
+                val password = txtPassword.text.toString()
+                log("SignInFragment")
+                if (viewModel.validateFields(email, password)) {
+                    viewModel.signInWithEmailAndPassword(requireContext(), email, password)
+                }
+            }catch (e : Exception){
+                log(e.toString())
             }
+
         }
 
         signUpTxt.setOnClickListener {
@@ -99,13 +103,15 @@ class SignInFragment : Fragment(), Utils{
             val builder = AlertDialog.Builder(requireContext())
             val dialogView = layoutInflater.inflate(R.layout.dialog_forgot, null)
             val emailBox = dialogView.findViewById<EditText>(R.id.emailBox)
-            val btnreset=dialogView.findViewById<Button>(R.id.btnreset)
+            val btnreset = dialogView.findViewById<Button>(R.id.btnreset)
             builder.setView(dialogView)
             val dialog = builder.create()
 
             btnreset.setOnClickListener {
                 val userEmail = emailBox.text.toString()
-                if (TextUtils.isEmpty(userEmail) && !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+                if (TextUtils.isEmpty(userEmail) && !Patterns.EMAIL_ADDRESS.matcher(userEmail)
+                        .matches()
+                ) {
                     toast(requireContext(), "Enter your registered email id")
                 }
                 AuthenticationUtil.sendPasswordResetEmail(userEmail,
@@ -126,8 +132,84 @@ class SignInFragment : Fragment(), Utils{
             dialog.show()
 
         }
+    }
+        private fun observeLivedata() {
+            viewModel.isEmailValid.observe(viewLifecycleOwner) { isValid ->
+                // Update UI based on email validation
+                if (!isValid) {
+                    txtEmail.error = "Invalid email"
+                } else {
+                    txtEmail.error = null
+                }
+            }
+            viewModel.isPasswordValid.observe(viewLifecycleOwner) { isValid ->
+                // Update UI based on password validation
+                if (!isValid) {
+                    txtPassword.error = "Invalid password"
 
-//        signInWithGoogle.setOnClickListener {
+                } else {
+                    txtPassword.error = null
+                }
+            }
+            viewModel.signInResult.observe(viewLifecycleOwner) {
+                val list = it.second.second
+                val avatar = if (it.second!!.first.avatar != "") {
+                    AppRepository.getAvatar(it.second!!.first.avatar)
+                } else {
+                    Avatar()
+                }
+                userViewModel.setUser(
+                    user = ActiveUser(
+                        uid = it.second!!.first.uid,
+                        email = it.second!!.first.email,
+                        createdAt = it.second!!.first.createdAt,
+                        avatar = avatar,
+                        followingTopics = list
+
+                    )
+                )
+                toast(requireContext(), "Welcome User!!")
+                if (it.second!!.first.avatar != "") {
+                    if (it.second!!.second.isNotEmpty()) {
+                        goToHomeFragment()
+                    } else {
+                        goToChooseTopicFragment()
+                    }
+                } else {
+                    goToChooseAvatarFragment()
+                }
+            }
+            viewModel.isFailure.observe(viewLifecycleOwner) { e ->
+                handleFailure(requireContext(), e)
+            }
+        }
+        private fun goToHomeFragment() {
+            if (findNavController().currentDestination!!.id == R.id.signInFragment) {
+                val action = SignInFragmentDirections.actionSignInFragmentToNavigationHome()
+                findNavController().navigate(action)
+            }
+        }
+        private fun goToChooseAvatarFragment() {
+            if (findNavController().currentDestination!!.id == R.id.signInFragment) {
+                val action = SignInFragmentDirections.actionSignInFragmentToChooseAvatarFragment()
+                findNavController().navigate(action)
+            }
+        }
+        private fun goToChooseTopicFragment() {
+            if (findNavController().currentDestination!!.id == R.id.signInFragment) {
+                val action = SignInFragmentDirections.actionSignInFragmentToChooseTopic()
+                findNavController().navigate(action)
+            }
+        }
+        private fun goToSignUpFragment() {
+            if (findNavController().currentDestination!!.id == R.id.signInFragment) {
+                val action =
+                    SignInFragmentDirections.actionSignInFragmentToSignUpFragment(email = "")
+                findNavController().navigate(action)
+            }
+        }
+}
+//    signInWithGoogle.setOnClickListener {
 //
 ////            authUtil.signInWithGoogle(this, getString(R.string.web_client_id), onSuccess = { user ->
 ////                toast(requireContext(), "Welcome ${user.displayName}")
@@ -138,93 +220,8 @@ class SignInFragment : Fragment(), Utils{
 ////                handleFailure(requireContext(), e)
 ////            })
 //        }
-    }
 
 //    private fun setUser(uid: String, email: String?){
 //        val user = User(uid, email)
 //        userViewModel.setUser(user)
 //    }
-
-    private fun observeLivedata() {
-        viewModel.isEmailValid.observe(viewLifecycleOwner) { isValid ->
-            // Update UI based on email validation
-            if (!isValid) {
-                txtEmail.error = "Invalid email"
-            } else {
-                txtEmail.error = null
-            }
-        }
-
-        viewModel.isPasswordValid.observe(viewLifecycleOwner) { isValid ->
-            // Update UI based on password validation
-            if (!isValid) {
-                txtPassword.error = "Invalid password"
-
-            } else {
-                txtPassword.error = null
-            }
-        }
-
-        viewModel.signInResult.observe(viewLifecycleOwner){
-            val list = it.second.second
-            val avatar = if (it.second!!.first.avatar != ""){
-                AppRepository.getAvatar(it.second!!.first.avatar)
-            }else {
-                Avatar()
-            }
-            userViewModel.setUser(user = ActiveUser(
-                uid = it.second!!.first.uid,
-                email = it.second!!.first.email,
-                createdAt = it.second!!.first.createdAt,
-                avatar = avatar,
-                followingTopics = list
-
-            ))
-            toast(requireContext(), "Welcome User!!")
-            if (it.second!!.first.avatar != "") {
-                if (it.second!!.second.isNotEmpty()) {
-                    goToHomeFragment()
-                } else {
-                    goToChooseTopicFragment()
-                }
-            }else{
-                goToChooseAvatarFragment()
-            }
-
-        }
-
-        viewModel.isFailure.observe(viewLifecycleOwner){e ->
-            handleFailure(requireContext(), e)
-        }
-    }
-
-    private fun goToHomeFragment() {
-        if (findNavController().currentDestination!!.id == R.id.signInFragment){
-            val action = SignInFragmentDirections.actionSignInFragmentToNavigationHome()
-            findNavController().navigate(action)
-        }
-    }
-
-    private fun goToChooseAvatarFragment(){
-        if (findNavController().currentDestination!!.id == R.id.signInFragment){
-            val action = SignInFragmentDirections.actionSignInFragmentToChooseAvatarFragment()
-            findNavController().navigate(action)
-        }
-    }
-
-    private fun goToChooseTopicFragment(){
-        if (findNavController().currentDestination!!.id == R.id.signInFragment){
-            val action = SignInFragmentDirections.actionSignInFragmentToChooseTopic()
-            findNavController().navigate(action)
-        }
-    }
-
-    private fun goToSignUpFragment(){
-        if (findNavController().currentDestination!!.id == R.id.signInFragment){
-            val action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment(email = "")
-            findNavController().navigate(action)
-        }
-    }
-
-
-}
