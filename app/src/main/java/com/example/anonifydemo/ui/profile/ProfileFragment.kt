@@ -20,6 +20,7 @@ import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentProfileBinding
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.signin.SignInFragmentDirections
+import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -31,6 +32,7 @@ class ProfileFragment : Fragment() {
     private val userViewModel : UserViewModel by activityViewModels()
     private lateinit var editprofile: Button
     private lateinit var btnsettings: ImageButton
+    private lateinit var authUtil: AuthenticationUtil
     private lateinit var imgusr : CircleImageView
     private lateinit var txtusrnm: TextView
     private var avatarId : Long = -1L
@@ -104,16 +106,24 @@ class ProfileFragment : Fragment() {
             Toast.makeText(requireContext(), "delete account", Toast.LENGTH_SHORT).show()
           //  dialog.dismiss() // Dismiss the dialog if needed
         }
-        item5.setOnClickListener {
-            // Handle click on item 1
-                //logout code
-            dialog.dismiss() // Dismiss the dialog if needed
-        }
+            item5.setOnClickListener {
+                // Handle click on item 1
+                    //logout code
+                authUtil.logout()
+                goToSignInFragment()
+                dialog.dismiss() // Dismiss the dialog if needed
+            }
         dialog.show();
 
         dialog.window?.setLayout (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color. TRANSPARENT))
        // dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity (Gravity. BOTTOM)
+    }
+    private fun goToSignInFragment() {
+        if (findNavController().currentDestination!!.id == R.id.navigation_profile) {
+            val action = ProfileFragmentDirections.actionNavigationProfileToSignInFragment()
+            findNavController().navigate(action)
+        }
     }
 }

@@ -209,4 +209,9 @@ object AuthenticationUtil : Utils {
             }
         }
     }
+
+    fun logout() {
+        auth.signOut()
+    }
+
 }
