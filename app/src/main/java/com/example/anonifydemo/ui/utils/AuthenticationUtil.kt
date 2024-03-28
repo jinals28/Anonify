@@ -1,6 +1,7 @@
 package com.example.anonifydemo.ui.utils
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.example.anonifydemo.ui.dataClasses.User
 //import android.util.Log
 //import androidx.credentials.CredentialManager
@@ -169,8 +170,54 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object AuthenticationUtil : Utils {
+    private const val PREF_NAME = "AuthPrefs"
+    private const val KEY_IS_LOGGED_IN = "isLoggedIn"
+    private const val KEY_EMAIL = "email"
+    private const val KEY_PASSWORD = "password"
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+  private fun getSharedPreferences(context: Context): SharedPreferences {
+        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    }
+
+    fun isLoggedIn(context: Context): Boolean {
+        return getSharedPreferences(context).getBoolean(KEY_IS_LOGGED_IN, false)
+    }
+
+    fun setLoggedIn(context: Context, isLoggedIn: Boolean) {
+        getSharedPreferences(context).edit().putBoolean(KEY_IS_LOGGED_IN, isLoggedIn).apply()
+    }
+
+    fun saveCredentials(context: Context, email: String, password: String) {
+        getSharedPreferences(context).edit()
+            .putString(KEY_EMAIL, email)
+            .putString(KEY_PASSWORD, password)
+            .apply()
+    }
+
+    fun clearCredentials(context: Context) {
+        getSharedPreferences(context).edit()
+            .remove(KEY_EMAIL)
+            .remove(KEY_PASSWORD)
+            .apply()
+    }
+
+//    suspend fun signInWithEmailAndPassword(context: Context, email: String, password: String): Boolean {
+//        return withContext(Dispatchers.IO) {
+//            try {
+//                val authResult = auth.signInWithEmailAndPassword(email, password).await()
+//                val loggedIn = authResult.user != null
+//                if (loggedIn) {
+//                    saveCredentials(context, email, password)
+//                    setLoggedIn(context, true)
+//                }
+//                authResult.user ?: throw IllegalStateException("User not found")
+//                loggedIn
+//            } catch (e: Exception) {
+//                false
+//            }
+//        }
+//    }
 
     suspend fun signInWithEmailAndPassword(email: String, password: String): FirebaseUser {
         return withContext(Dispatchers.IO) {
@@ -196,6 +243,24 @@ object AuthenticationUtil : Utils {
 
     }
 
+//    suspend fun signUpWithEmailAndPassword(
+//        context: Context,
+//        email: String,
+//        password: String,
+//        onSuccess: (FirebaseUser) -> Unit,
+//        onFailure: (Exception) -> Unit
+//    ): User {
+//        val authResult = auth.createUserWithEmailAndPassword(email, password).await()
+//        val currentUser = authResult.user ?: throw IllegalStateException("User is null")
+//        saveCredentials(context, email, password)
+//        setLoggedIn(context, true)
+//        return User(
+//            uid = currentUser.uid,
+//            email = currentUser.email ?: "",
+//            createdAt = System.currentTimeMillis()
+//        )
+//    }
+
     fun sendPasswordResetEmail(
         userEmail: String,
         onSuccess: () -> Unit,
@@ -210,8 +275,14 @@ object AuthenticationUtil : Utils {
         }
     }
 
-    fun logout() {
+    fun logout(context: Context) {
         auth.signOut()
+        clearCredentials(context)
+        setLoggedIn(context, false)
     }
 
+    fun clearRememberMe(context: Context) {
+        clearCredentials(context)
+        setLoggedIn(context, false)
+    }
 }

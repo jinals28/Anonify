@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
@@ -42,6 +43,7 @@ class SignInFragment : Fragment(), Utils {
     private lateinit var txtEmail: EditText
 
     private lateinit var txtPassword: EditText
+    private lateinit var rememberMe:CheckBox
 
     private lateinit var authUtil: AuthenticationUtil
 
@@ -69,6 +71,7 @@ class SignInFragment : Fragment(), Utils {
 
         signUpTxt = binding!!.txtSignUp
 
+        rememberMe=binding!!.RememberMe
 //        signInWithGoogle = binding!!.googleSignInBtn
 
         txtEmail = binding!!.txtemail
@@ -84,9 +87,17 @@ class SignInFragment : Fragment(), Utils {
             try{
                 val email = txtEmail.text.toString()
                 val password = txtPassword.text.toString()
+                val rememberMe = rememberMe.isChecked
                 log("SignInFragment")
                 if (viewModel.validateFields(email, password)) {
                     viewModel.signInWithEmailAndPassword(requireContext(), email, password)
+
+                    if (rememberMe) {
+                        AuthenticationUtil.saveCredentials(requireContext(), email, password)
+                        AuthenticationUtil.setLoggedIn(requireContext(), true)
+                    } else {
+                        AuthenticationUtil.clearCredentials(requireContext())
+                    }
                 }
             }catch (e : Exception){
                 log(e.toString())

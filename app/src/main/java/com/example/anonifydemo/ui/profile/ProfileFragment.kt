@@ -109,9 +109,11 @@ class ProfileFragment : Fragment() {
             item5.setOnClickListener {
                 // Handle click on item 1
                     //logout code
-                authUtil.logout()
+                AuthenticationUtil.logout(requireContext())
+                AuthenticationUtil.clearRememberMe(requireContext())
+                dialog.dismiss()
                 goToSignInFragment()
-                dialog.dismiss() // Dismiss the dialog if needed
+                 // Dismiss the dialog if needed
             }
         dialog.show();
 
