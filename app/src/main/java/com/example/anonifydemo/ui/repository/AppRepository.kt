@@ -13,6 +13,7 @@ import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.dataClasses.Topic
 import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.utils.Utils
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.*
 import com.google.firebase.ktx.Firebase
@@ -97,7 +98,7 @@ object AppRepository : Utils {
         Avatar(R.drawable.penguin,"Zolar")
     )
 
-    private val followingTopicList = mutableListOf<FollowingTopic>()
+    var followingTopicList = mutableListOf<FollowingTopic>()
 
     // Likes table
     private val likes = mutableListOf<Like>()
@@ -186,6 +187,7 @@ object AppRepository : Utils {
         Log.e(TAG, "Error fetching following topics for user: $userId", e)
     }
         Log.d(TAG, followingTopics.toString())
+        followingTopicList = followingTopics
     return followingTopics
 }
 
@@ -256,11 +258,13 @@ object AppRepository : Utils {
             }
         }
 
-    suspend fun fetchPosts() {
+    suspend fun fetchPosts(followingTopicsList: List<FollowingTopic>) {
         log("In Fetch Posts")
             val posts = mutableListOf<DisplayPost>()
+
+        val followingTopic = followingTopicsList.map { it.topic }
             try {
-                val querySnapshot: QuerySnapshot = postsList.get().await()
+                val querySnapshot: QuerySnapshot = postsList.whereIn("topicName", followingTopic).orderBy("postCreatedAt", Query.Direction.DESCENDING).get().await()
                 for (document in querySnapshot.documents) {
                     log("App REpo: Post Id: ${document.id}")
                     val userId = document.getString("userId") ?: ""

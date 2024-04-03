@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.repository.AppRepository
@@ -65,6 +66,14 @@ class SignInViewModel : ViewModel(), Utils {
                 _signInError.value = e
             }
         }
+    }
+
+    fun fetchPosts(followingTopicsList : List<FollowingTopic>) {
+        viewModelScope.launch {
+            AppRepository.fetchPosts(followingTopicsList)
+        }
+
+
     }
 
 //    fun signInWithEmailPassword(context : Context, email: String, password: String) {

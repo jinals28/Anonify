@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.dataClasses.Topic
 import com.example.anonifydemo.ui.repository.AppRepository
@@ -15,15 +16,15 @@ class CreatePostViewModel : ViewModel() {
 
     private var topics: List<String> = listOf()
 
-    private val _topicList = MutableLiveData<List<Topic>>()
+    private val _topicList = MutableLiveData<List<FollowingTopic>>()
 
-    val topicList: LiveData<List<Topic>> = _topicList
+    val topicList: LiveData<List<FollowingTopic>> = _topicList
 
 //    private val postManager = PostManager.getInstance()
 
     init {
 
-        _topicList.value = AppRepository.topicList
+
     }
 
 //    fun set(topicList: List<String>) {
@@ -33,7 +34,7 @@ class CreatePostViewModel : ViewModel() {
 
     fun generateSuggestions(input: String) {
         Log.d("com.example.anonifydemo.ui.dataClasses.Post View Model", input)
-        _topicList.value = AppRepository.topicList.filter { it.name.startsWith(input, ignoreCase = true) }.toList()
+        _topicList.value = AppRepository.followingTopicList.filter { it.topic.startsWith(input, ignoreCase = true) }.toList()
 //        _topicList.value = AppRepository.getTopics().filter { it.name.startsWith(input, ignoreCase = true) }.toList()
         Log.d("com.example.anonifydemo.ui.dataClasses.Post View Model", _topicList.value.toString())
     }
@@ -45,7 +46,7 @@ class CreatePostViewModel : ViewModel() {
     fun isValidHashtag(hashtag: String): Boolean {
         // Implement hashtag validation logic
         // Check if the hashtag is in the predefined suggestion list
-        return _topicList.value!!.any { it.name.equals(hashtag, ignoreCase = true) }
+        return _topicList.value!!.any { it.topic.equals(hashtag, ignoreCase = true) }
 //        return ValidationUtil.isHashtagValid(hashtag, topics) // Replace with your validation logic
     }
 
@@ -69,6 +70,12 @@ class CreatePostViewModel : ViewModel() {
 
     fun getAvatarId(avatarId: Long): Int {
         return 0
+    }
+
+    fun setTopicList(followingTopics: List<FollowingTopic>) {
+
+        _topicList.value = followingTopics
+
     }
 
 

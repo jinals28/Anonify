@@ -15,12 +15,12 @@ class UserViewModel : ViewModel() {
 
     val followingTopicList : MutableList<FollowingTopic> = mutableListOf()
 
-    private val _followingTopicList = MutableLiveData<FollowingTopic>()
+    private val _followingTopicList = MutableLiveData<List<FollowingTopic>>()
 
-    val followingTopic : LiveData<FollowingTopic> = _followingTopicList
+    val followingTopic : LiveData<List<FollowingTopic>> = _followingTopicList
 
     fun setUser(user : ActiveUser){
-
+        _followingTopicList.value = user.followingTopics
         _user.value = user
     }
 
@@ -51,6 +51,7 @@ fun updateUserAvatarUrl(avatar: Avatar) {
             // Update the local cache
             val currentUser = _user.value ?: ActiveUser()
             val updatedUser = currentUser.copy(followingTopics = selectedTopics)
+            _followingTopicList.value = selectedTopics
             _user.value = updatedUser
         }
     }

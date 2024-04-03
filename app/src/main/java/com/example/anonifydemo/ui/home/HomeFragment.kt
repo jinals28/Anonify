@@ -1,7 +1,6 @@
 package com.example.anonifydemo.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,17 +8,14 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentHomeBinding
 import com.example.anonifydemo.ui.dataClasses.ActiveUser
-import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
-import com.example.anonifydemo.ui.profile.ProfileFragmentDirections
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
 import kotlinx.coroutines.launch
@@ -61,7 +57,7 @@ class HomeFragment : Fragment(), Utils {
         postRv = binding.postRv
 
         lifecycleScope.launch {
-            AppRepository.fetchPosts()
+            AppRepository.fetchPosts(user.followingTopics)
         }
 
         AppRepository.postList.observe(viewLifecycleOwner){ posts ->

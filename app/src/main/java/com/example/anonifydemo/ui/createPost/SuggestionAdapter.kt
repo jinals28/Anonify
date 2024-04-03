@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
-import com.example.anonifydemo.ui.dataClasses.Topic
+import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.google.android.material.chip.Chip
 
-class SuggestionsAdapter(private val suggestions: List<Topic>, private val onItemClick: (Topic) -> Unit) : RecyclerView.Adapter<SuggestionsAdapter.ViewHolder>() {
+class SuggestionsAdapter(private val suggestions: List<FollowingTopic>, private val onItemClick: (FollowingTopic) -> Unit) : RecyclerView.Adapter<SuggestionsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.row_pickahashtag, parent, false)
         return ViewHolder(view)
@@ -25,8 +25,8 @@ class SuggestionsAdapter(private val suggestions: List<Topic>, private val onIte
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val suggestionChip: Chip = itemView.findViewById(R.id.suggestion_chip)
 
-            fun bind(item: Topic, onItemClick: (Topic) -> Unit) {
-                suggestionChip.text = item.name
+            fun bind(item: FollowingTopic, onItemClick: (FollowingTopic) -> Unit) {
+                suggestionChip.text = item.topic
                 itemView.setOnClickListener { onItemClick(item) }
             }
         }

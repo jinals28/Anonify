@@ -16,10 +16,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.databinding.FragmentCreatePostBinding
-import com.example.anonifydemo.ui.dataClasses.Topic
+import com.example.anonifydemo.ui.dataClasses.ActiveUser
+import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.google.android.material.chip.Chip
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
-import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -34,7 +34,7 @@ class CreatePostFragment : Fragment(), Utils {
 
     private lateinit var userAvatar : CircleImageView
 
-    private lateinit var suggestionList : List<Topic>
+    private lateinit var suggestionList : List<FollowingTopic>
 
     private lateinit var suggestionRv : RecyclerView
 
@@ -50,12 +50,16 @@ class CreatePostFragment : Fragment(), Utils {
 
     private var userId : String = ""
 
+    private lateinit var activeUser: ActiveUser
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _binding=FragmentCreatePostBinding.inflate(layoutInflater, container, false)
+
 
 
         return binding!!.root
@@ -64,7 +68,7 @@ class CreatePostFragment : Fragment(), Utils {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        activeUser = userViewModel.getUser()!!
 //        suggestionList = resources.getStringArray(R.array.topic_names).toList()
 
 //        postViewModel.set(suggestionList)
@@ -81,9 +85,9 @@ class CreatePostFragment : Fragment(), Utils {
 
         postBtn = binding!!.toolbarButtonPost
 
-        avatar = userViewModel.getUser()!!.avatar.url
+        avatar = activeUser.avatar.url
 
-        userId = userViewModel.getUserId()
+        userId = activeUser.uid
 
         userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
 
@@ -91,13 +95,15 @@ class CreatePostFragment : Fragment(), Utils {
 
 //        uid = userViewModel.getUser()!!.uid
 
-        postViewModel.topicList.observe(viewLifecycleOwner){ suggestionsList ->
+        postViewModel.setTopicList(activeUser!!.followingTopics)
+
+       postViewModel.topicList.observe(viewLifecycleOwner){ suggestionsList ->
             suggestionList = suggestionsList
             val suggestionsAdapter = SuggestionsAdapter(suggestionsList) { suggestionItem ->
 
-                binding!!.textInput.setText("${suggestionItem.name}")
+                binding!!.textInput.setText("${suggestionItem.topic}")
 
-                hashtagChip.text = suggestionItem.name
+                hashtagChip.text = suggestionItem.topic
 
                 hideSuggestions()
             }

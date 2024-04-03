@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity()  {
 
         lifecycleScope.launch {
 //            AppRepository.getTopics()
-            AppRepository.fetchPosts()
+//            AppRepository.fetchPosts()
         }
 //        val resourceId = R.drawable.dog
 //        Log.d("Drawable ID", "The drawable ID is: $resourceId")
