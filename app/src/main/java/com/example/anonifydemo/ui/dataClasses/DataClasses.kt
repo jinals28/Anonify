@@ -16,6 +16,13 @@ data class Like(
     val likedAt: Long // Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
 )
 
+data class DisplayLike(
+    val postId: String,
+    val likedAt: Long,
+    var liked: Boolean // Indicator to show if it was liked or not
+)
+
+
 data class Comment(
     val commentId: Long, // Room: Long (Primary key)
     val userId: Long, // Room: Long (Foreign key)

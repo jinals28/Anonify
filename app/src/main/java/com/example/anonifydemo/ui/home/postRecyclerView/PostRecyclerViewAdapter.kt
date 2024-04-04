@@ -1,6 +1,7 @@
 package com.example.anonifydemo.ui.home.postRecyclerView
 
 import android.content.Context
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,14 +10,35 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemPostBinding
+import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
-import com.example.anonifydemo.ui.dataClasses.Like
-import kotlin.math.min
+import com.example.anonifydemo.ui.repository.AppRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class PostRecyclerViewAdapter(val context : Context,
-                              val postList : List<DisplayPost>) :  RecyclerView.Adapter<PostRecyclerViewAdapter.PostViewHolder>() {
+class PostRecyclerViewAdapter(val context : Context, val postList : List<DisplayPost>, val userId : String) :  RecyclerView.Adapter<PostRecyclerViewAdapter.PostViewHolder>() {
 
-      private val userLikes = mutableListOf<Like>()
+    private val userLikes = postList.map{
+        DisplayLike(
+            postId = it.postId,
+            likedAt = -1L,
+            liked = it.likedByCurrentUser
+        )
+    }.toMutableList()
+
+    init {
+        Log.d(TAG, userLikes.toString())
+    }
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    private val debounceDuration = 10_000L
+
+    private val debounceHandler = android.os.Handler(Looper.getMainLooper())
     inner class PostViewHolder(binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private val txtHashtag = binding.txtHashtag
@@ -43,15 +65,13 @@ class PostRecyclerViewAdapter(val context : Context,
 
             noOfComment.text = post.commentCount.toString()
 
-
-
 //            if (user.uid == post.uid){
 
 //                userAvatar.setImageDrawable(ContextCompat.getDrawable(context, user.avatarUrl.id))
 //                userName.text = user.avatarUrl.name
 
             // Set the like button icon based on whether the user has liked the post
-//            setLikeButtonState(post.likedBy.contains(user))
+            setLikeButtonState(post.likedByCurrentUser)
 //////
 //////            // Set the like count text
 //            setLikeCountText(post.likedBy, post.likeCount)
@@ -102,15 +122,32 @@ class PostRecyclerViewAdapter(val context : Context,
         }
 
         private fun togglePost(post: DisplayPost) {
-            val isLiked = userLikes.any { it.postId == post.postId }
-
-            if (isLiked){
+            Log.d(TAG, userLikes.toString())
+            val isLiked = userLikes.find { it.postId == post.postId }?.liked
+            Log.d(TAG, isLiked.toString())
+            if (isLiked!!){
                 unlikePost(post)
 //                userLikes.removeAll { it.postId == post.postId }
             } else {
                 likePost(post)
 
             }
+            debounceUpdateToDatabase(userLikes)
+        }
+
+        private fun debounceUpdateToDatabase(userLikes: MutableList<DisplayLike>) {
+
+            coroutineScope.coroutineContext.cancelChildren()
+
+            coroutineScope.launch {
+                delay(debounceDuration)
+                updateLikesToDatabase(userLikes)
+            }
+        }
+
+        private suspend fun updateLikesToDatabase(userLikes: MutableList<DisplayLike>) {
+            Log.d(TAG, "in updateLikes ${userLikes.toString()}")
+            AppRepository.updatesLikes(userId, userLikes)
         }
 
         private fun setLikeButtonState(isLiked: Boolean) {
@@ -138,15 +175,10 @@ class PostRecyclerViewAdapter(val context : Context,
 
         private fun likePost(post: DisplayPost) {
             post.likeCount++
+            post.likedByCurrentUser = true
             setLikeButtonState(true)
             setLikeCountText(post.likeCount)
-            val like = Like(
-                postId = post.postId,
-                likedAt = System.currentTimeMillis()
-            )
-            userLikes.add(like)
-
-
+            userLikes.find { it.postId == post.postId }?.liked = true
 //            post.likeCount++
 //            post.likedBy.add(user.uid)
 //            // Update the UI
@@ -159,7 +191,9 @@ class PostRecyclerViewAdapter(val context : Context,
         private fun unlikePost(post: DisplayPost) {
             setLikeButtonState(false)
             post.likeCount--
-            userLikes.removeAll { it.postId == post.postId }
+            post.likedByCurrentUser = false
+            userLikes.find { it.postId == post.postId }?.apply { liked = false }
+            Log.d(TAG, userLikes.toString())
             // Update the UI
             setLikeCountText(post.likeCount)
             // Update the PostManager
@@ -167,8 +201,6 @@ class PostRecyclerViewAdapter(val context : Context,
         }
 
     }
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -182,11 +214,13 @@ class PostRecyclerViewAdapter(val context : Context,
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
 
         val post = postList[position]
+
         holder.bind(post)
+
 
     }
 
     companion object {
-        const val TAG = "PostRecyclerViewAdapter"
+        const val TAG = "Anonify: PostRecyclerViewAdapter"
     }
 }

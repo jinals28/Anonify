@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.anonifydemo.R
 import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Comment
+import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.Like
@@ -13,6 +14,7 @@ import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.dataClasses.Topic
 import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.utils.Utils
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.*
@@ -43,6 +45,8 @@ object AppRepository : Utils {
     private val avatarsCollection = Firebase.firestore.collection("avatars")
 
     private val topicCollection = Firebase.firestore.collection("topics")
+
+    private val likesCollection = Firebase.firestore.collection("likes")
 
     private var _topicList = MutableLiveData<List<Topic>>()
 
@@ -260,7 +264,33 @@ object AppRepository : Utils {
             }
         }
 
-    suspend fun fetchPosts(followingTopicsList: List<FollowingTopic>) {
+    private suspend fun isPostLikedByCurrentUser(postId: String, userId: String): Boolean {
+
+        try {
+            val documentSnapshot = likesCollection.document(postId).get().await()
+            if (documentSnapshot.exists()) {
+                val data = documentSnapshot.data
+                if (data != null) {
+                    val likes = data["likes"] as? List<HashMap<String, Any>> // Assuming the likes are stored as a list of HashMaps
+                    likes?.forEach { likeData ->
+                        val likeUserId = likeData["userId"] as? String
+                        if (likeUserId == userId) {
+                            // The post is liked by the user
+                            return true
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // Handle exceptions, such as Firestore errors or parsing errors
+            Log.e(TAG, "Error checking if post is liked by user: ${e.message}", e)
+        }
+
+        // The post is not liked by the user
+        return false
+    }
+
+    suspend fun fetchPosts(userId: String, followingTopicsList: List<FollowingTopic>) {
         log("In Fetch Posts")
             val posts = mutableListOf<DisplayPost>()
 
@@ -278,6 +308,8 @@ object AppRepository : Utils {
                     log("Avatar name from userId: $avatarName")
                     val url = avatarList.find { it.name == avatarName }!!.url
 
+                    val likedByUser = isPostLikedByCurrentUser(document.id, userId)
+
                     val post = DisplayPost(
                         postId = document.id,
                         postContent = postContent,
@@ -285,6 +317,7 @@ object AppRepository : Utils {
                         likeCount = likeCount.toInt(),
                         avatarName = avatarName,
                         avatarUrl = url,
+                        likedByCurrentUser = likedByUser
                     )
                     posts.add(post)
                     log("App Repo, ${posts.toString()}")
@@ -328,6 +361,99 @@ object AppRepository : Utils {
                 Log.e("AppRepository", "Exception adding post", e)
             }
         }
+
+    suspend fun updatesLikes(userId: String, userLikes: MutableList<DisplayLike>) {
+        Log.d(TAG, userLikes.toString())
+        userLikes.forEach { like ->
+            Log.d(TAG, like.toString())
+            val postId = like.postId
+            val userId = userId
+            val likeDoc = likesCollection.document(postId)
+
+            try {
+                val documentSnapshot = likeDoc.get().await()
+                val likesList = mutableListOf<HashMap<String, Any>>()
+
+                if (documentSnapshot.exists()) {
+                    val data = documentSnapshot.data
+                    if (data != null) {
+                        val existingLikes = data["likes"] as? List<HashMap<String, Any>> // Assuming the likes are stored as a list of HashMaps
+                        existingLikes?.forEach { likeData ->
+                            val userId = likeData["userId"] as? String
+                            val likedAt = likeData["likedAt"] as? Long
+                            if (userId != null && likedAt != null) {
+                                likesList.add(hashMapOf("userId" to userId, "likedAt" to likedAt))
+                            }
+                        }
+                    }
+                }
+                if (like.liked) {
+                    if (!likesList.any { it["userId"] == userId }) {
+                        likesList.add(hashMapOf("userId" to userId, "likedAt" to like.likedAt))
+
+                        postsList.document(postId).update("likeCount", FieldValue.increment(1))
+                            .addOnSuccessListener {
+                                Log.d(TAG, "likeCount incremented for postId: $postId")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e(
+                                    TAG,
+                                    "Failed to increment likeCount for postId: $postId, ${e.message}",
+                                    e
+                                )
+                            }
+
+                    } else {
+                        // Case 2: Update likedAt for existing userId
+                        likesList.filter { it["userId"] == userId }
+                            .forEach {
+                                if (like.likedAt != -1L) {
+                                    it["likedAt"] = like.likedAt
+                                }
+                            }
+                    }
+                }else {
+
+                    if (likesList.filter { it["userId"] == userId }.isNotEmpty()) {
+                        likesList.removeIf { it["userId"] == userId }
+
+
+                        // Case 3: Remove userId if not in userLikes
+//                    val userLikes = likesList.map { it["userId"] }
+//                    Log.d(TAG, userLikes.toString())
+//                    likesList.removeIf { it["userId"] !in userLikes }
+//                    Log.d(TAG, likesList.toString())
+
+                        val likesRemoved = likesList.filter { it["userId"] == userId }.isEmpty()
+                        if (likesRemoved) {
+                            postsList.document(postId).update("likeCount", FieldValue.increment(-1))
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "likeCount decremented for postId: $postId")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e(
+                                        TAG,
+                                        "Failed to decrement likeCount for postId: $postId, ${e.message}",
+                                        e
+                                    )
+                                }
+                        }
+                    } else {
+
+                    }
+                }
+
+                // Update the likes collection with the updated list
+                val updateMap = hashMapOf("likes" to likesList)
+                likesCollection.document(postId).set(updateMap).await()
+
+                Log.d(TAG, "Like added to collection for postId: $postId")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error adding like to collection for postId: $postId, ${e.message}", e)
+            }
+
+        }
+    }
 
         // Add comment to repository
         fun addComment(comment: Comment) {
@@ -456,7 +582,9 @@ object AppRepository : Utils {
             }
 
         }
-        // Other methods for fetching data can be added similarly
+
+
+    // Other methods for fetching data can be added similarly
     }
 
 

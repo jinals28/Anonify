@@ -57,7 +57,7 @@ class HomeFragment : Fragment(), Utils {
         postRv = binding.postRv
 
         lifecycleScope.launch {
-            AppRepository.fetchPosts(user.followingTopics)
+            AppRepository.fetchPosts(user.uid, user.followingTopics)
         }
 
         AppRepository.postList.observe(viewLifecycleOwner){ posts ->
@@ -69,7 +69,7 @@ class HomeFragment : Fragment(), Utils {
 //            }
 //            val adapter = PostRecyclerViewAdapter(requireContext(), posts, userViewModel.getUser()!!)
             log("In Home Fragment ${posts.toString()}")
-            val adapter = PostRecyclerViewAdapter(requireContext(), posts)
+            val adapter = PostRecyclerViewAdapter(requireContext(), posts, user.uid)
             postRv.adapter = adapter
         }
 

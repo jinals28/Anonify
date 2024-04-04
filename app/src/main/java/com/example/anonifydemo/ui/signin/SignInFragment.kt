@@ -182,7 +182,7 @@ class SignInFragment : Fragment(), Utils {
                 toast(requireContext(), "Welcome User!!")
                 if (it.second!!.first.avatar != "") {
                     if (it.second!!.second.isNotEmpty()) {
-                        viewModel.fetchPosts(it.second.second)
+                        viewModel.fetchPosts(it.second.first.uid, it.second.second)
                         goToHomeFragment()
                     } else {
                         goToChooseTopicFragment()

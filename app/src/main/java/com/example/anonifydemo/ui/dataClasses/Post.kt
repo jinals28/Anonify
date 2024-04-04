@@ -7,17 +7,16 @@ data class DisplayPost(
     val avatarName: String,
     val topicName: String,
     var likeCount: Int,
-    val commentCount: Int = 0
+    val commentCount: Int = 0,
+    var likedByCurrentUser: Boolean
 )
-
 
 data class Post(// Room: Long (Primary key)
     val userId: String, // Room: Long (Foreign key)
     val topicName: String, // Room: Long (Foreign key)
     val postContent: String,
     val postCreatedAt: Long,
-    val likeCount: Long = -1L,
-    val commentCount: Long = -1L
+    val likeCount: Long = 0L,
+    val commentCount: Long = 0L
     // Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
 )
-

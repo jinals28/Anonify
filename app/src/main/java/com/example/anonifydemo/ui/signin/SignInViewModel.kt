@@ -68,9 +68,9 @@ class SignInViewModel : ViewModel(), Utils {
         }
     }
 
-    fun fetchPosts(followingTopicsList : List<FollowingTopic>) {
+    fun fetchPosts(userId : String, followingTopicsList : List<FollowingTopic>) {
         viewModelScope.launch {
-            AppRepository.fetchPosts(followingTopicsList)
+            AppRepository.fetchPosts(userId, followingTopicsList)
         }
 
 
