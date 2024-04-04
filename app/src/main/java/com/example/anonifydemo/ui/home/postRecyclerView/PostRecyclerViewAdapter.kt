@@ -6,17 +6,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemPostBinding
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
-import com.example.anonifydemo.ui.dataClasses.Post
-import com.example.anonifydemo.ui.home.HomeFragmentDirections
+import com.example.anonifydemo.ui.dataClasses.Like
 import kotlin.math.min
 
 class PostRecyclerViewAdapter(val context : Context,
                               val postList : List<DisplayPost>) :  RecyclerView.Adapter<PostRecyclerViewAdapter.PostViewHolder>() {
+
+      private val userLikes = mutableListOf<Like>()
     inner class PostViewHolder(binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private val txtHashtag = binding.txtHashtag
@@ -26,13 +26,24 @@ class PostRecyclerViewAdapter(val context : Context,
         private val likeButton = binding.likeBtn
         private val commentButton = binding.commentBtn
         private val moreOptions =binding.moreOptions
+        private val noOfLike = binding.Nolike
+        private val noOfComment = binding.Nocomment
 
         fun bind(post: DisplayPost) {
 
             txtHashtag.text = post.topicName
+
             txtPostContent.text = post.postContent
+
             userAvatar.setImageDrawable(ContextCompat.getDrawable(context, post.avatarUrl))
+
             userName.text = post.avatarName
+
+            noOfLike.text = post.likeCount.toString()
+
+            noOfComment.text = post.commentCount.toString()
+
+
 
 //            if (user.uid == post.uid){
 
@@ -41,12 +52,13 @@ class PostRecyclerViewAdapter(val context : Context,
 
             // Set the like button icon based on whether the user has liked the post
 //            setLikeButtonState(post.likedBy.contains(user))
-////
-////            // Set the like count text
+//////
+//////            // Set the like count text
 //            setLikeCountText(post.likedBy, post.likeCount)
 //
             // Handle like button click
             likeButton.setOnClickListener {
+                togglePost(post)
 //                if (post.likedBy.contains(user.uid)) {
 //                    // Unlike the post
 //                    unlikePost(post)
@@ -54,6 +66,7 @@ class PostRecyclerViewAdapter(val context : Context,
 //                    // com.example.anonifydemo.ui.dataClasses.Like the post
 //                    likePost(post)
 //                }
+//                likePost(post.postId)
             }
 
             commentButton.setOnClickListener {
@@ -88,6 +101,18 @@ class PostRecyclerViewAdapter(val context : Context,
             }
         }
 
+        private fun togglePost(post: DisplayPost) {
+            val isLiked = userLikes.any { it.postId == post.postId }
+
+            if (isLiked){
+                unlikePost(post)
+//                userLikes.removeAll { it.postId == post.postId }
+            } else {
+                likePost(post)
+
+            }
+        }
+
         private fun setLikeButtonState(isLiked: Boolean) {
             if (isLiked) {
                 likeButton.setImageResource(R.drawable.baseline_thumb_up_alt_24)
@@ -96,21 +121,32 @@ class PostRecyclerViewAdapter(val context : Context,
             }
         }
 
-        private fun setLikeCountText(likedBy: MutableList<String>, likeCount: Int) {
-            if (likeCount > 2) {
-                // Show the total like count if more than 2 likes
-//                likeButton.text = "$likeCount likes"
-                Log.d("Anonify : $TAG", "$likeCount likes")
-            } else {
-                // Show the names of users who liked the post if less than 3 likes
-                // Replace "likedByUser1, likedByUser2, likedByUser3" with the actual user names
-                val likedByUsers = likedBy.subList(0, min(likedBy.size, 3)).joinToString(", ")
-//                likeButton.text =
-                Log.d("Anonify : $TAG", "$likedByUsers and ${likeCount - likedBy.size} others")
-            }
+        private fun setLikeCountText(likeCount: Int) {
+            noOfLike.text = likeCount.toString()
+//            if (likeCount > 2) {
+//                // Show the total like count if more than 2 likes
+////                likeButton.text = "$likeCount likes"
+//                Log.d("Anonify : $TAG", "$likeCount likes")
+//            } else {
+//                // Show the names of users who liked the post if less than 3 likes
+//                // Replace "likedByUser1, likedByUser2, likedByUser3" with the actual user names
+//                val likedByUsers = likedBy.subList(0, min(likedBy.size, 3)).joinToString(", ")
+////                likeButton.text =
+//                Log.d("Anonify : $TAG", "$likedByUsers and ${likeCount - likedBy.size} others")
+//            }
         }
 
-//        private fun likePost(post: Post) {
+        private fun likePost(post: DisplayPost) {
+            post.likeCount++
+            setLikeButtonState(true)
+            setLikeCountText(post.likeCount)
+            val like = Like(
+                postId = post.postId,
+                likedAt = System.currentTimeMillis()
+            )
+            userLikes.add(like)
+
+
 //            post.likeCount++
 //            post.likedBy.add(user.uid)
 //            // Update the UI
@@ -118,17 +154,17 @@ class PostRecyclerViewAdapter(val context : Context,
 //            setLikeCountText(post.likedBy, post.likeCount)
 //            // Update the PostManager
 //            PostManager.updatePost(post)
-//        }
+        }
 //
-//        private fun unlikePost(post: Post) {
-//            post.likeCount--
-//            post.likedBy.remove(user.uid)
-//            // Update the UI
-//            setLikeButtonState(false)
-//            setLikeCountText(post.likedBy, post.likeCount)
-//            // Update the PostManager
+        private fun unlikePost(post: DisplayPost) {
+            setLikeButtonState(false)
+            post.likeCount--
+            userLikes.removeAll { it.postId == post.postId }
+            // Update the UI
+            setLikeCountText(post.likeCount)
+            // Update the PostManager
 //            PostManager.updatePost(post)
-//        }
+        }
 
     }
 

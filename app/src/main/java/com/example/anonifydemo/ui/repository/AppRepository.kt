@@ -30,6 +30,8 @@ object AppRepository : Utils {
     // Comments table
     private val comments = mutableListOf<Comment>()
 
+    val likeList = mutableListOf<Like>()
+
     const val TAG = "Anonify: USER_REPOSITORY"
 
     private val users = Firebase.firestore.collection("users")

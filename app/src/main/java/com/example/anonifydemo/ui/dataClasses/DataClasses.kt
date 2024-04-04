@@ -10,10 +10,10 @@ data class ActiveUser(
     val followingTopics : List<FollowingTopic> = listOf()
 )
 data class Like(
-    val likeId: Long, // Room: Long (Primary key)
-    val userId: Long, // Room: Long (Foreign key)
-    val postId: Long, // Room: Long (Foreign key)
-    val likedAt: Date // Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
+    val likeId: String = "", // Room: Long (Primary key)
+    val userId: String= "", // Room: Long (Foreign key)
+    val postId: String, // Room: Long (Foreign key)
+    val likedAt: Long // Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
 )
 
 data class Comment(
