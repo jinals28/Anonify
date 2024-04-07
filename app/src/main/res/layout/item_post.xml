@@ -193,6 +193,7 @@
             android:layout_weight="1" />
 
         <ImageButton
+            android:id="@+id/btnsave"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:background="@color/windowBackground"

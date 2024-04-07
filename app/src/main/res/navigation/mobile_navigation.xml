@@ -155,27 +155,27 @@
         <action
             android:id="@+id/action_searchCommunityFragment_to_communityProfileFragment"
             app:destination="@id/communityProfileFragment" />
-        <action
-            android:id="@+id/action_searchCommunityFragment_to_navigation_home"
-            app:destination="@id/navigation_home" />
+<!--        <action-->
+<!--            android:id="@+id/action_searchCommunityFragment_to_navigation_home"-->
+<!--            app:destination="@id/navigation_home" />-->
     </fragment>
     <fragment
         android:id="@+id/communityProfileFragment"
         android:name="com.example.anonifydemo.ui.community.communityProfileFragment"
         android:label="fragment_community_profile"
         tools:layout="@layout/fragment_community_profile" >
-        <action
-            android:id="@+id/action_communityProfileFragment_to_searchCommunityFragment"
-            app:destination="@id/searchCommunityFragment" />
+<!--        <action-->
+<!--            android:id="@+id/action_communityProfileFragment_to_searchCommunityFragment"-->
+<!--            app:destination="@id/searchCommunityFragment" />-->
     </fragment>
     <fragment
         android:id="@+id/createCommunityFragment"
         android:name="com.example.anonifydemo.ui.community.createCommunityFragment"
         android:label="fragment_create_community"
         tools:layout="@layout/fragment_create_community" >
-        <action
-            android:id="@+id/action_createCommunityFragment_to_searchCommunityFragment"
-            app:destination="@id/searchCommunityFragment" />
+<!--        <action-->
+<!--            android:id="@+id/action_createCommunityFragment_to_searchCommunityFragment"-->
+<!--            app:destination="@id/searchCommunityFragment" />-->
     </fragment>
     <fragment
         android:id="@+id/commentFragment"
@@ -192,9 +192,9 @@
         android:name="com.example.anonifydemo.ui.profile.editProfileFragment"
         android:label="fragment_edit_profile"
         tools:layout="@layout/fragment_edit_profile" >
-        <action
-            android:id="@+id/action_editProfileFragment_to_navigation_profile"
-            app:destination="@id/navigation_profile" />
+<!--        <action-->
+<!--            android:id="@+id/action_editProfileFragment_to_navigation_profile"-->
+<!--            app:destination="@id/navigation_profile" />-->
         <action
             android:id="@+id/action_editProfileFragment_to_chooseAvatarFragment"
             app:destination="@id/chooseAvatarFragment" />

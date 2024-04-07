@@ -32,6 +32,7 @@ class editProfileFragment : Fragment() {
     private lateinit var editavatar:TextView
     private lateinit var editimgusr : CircleImageView
     private lateinit var editusrnm: TextView
+    private lateinit var btnedit:Button
     private var avatarId : Long = -1L
 
     private var avatar : Int = -1
@@ -56,11 +57,14 @@ class editProfileFragment : Fragment() {
         editavatar =binding!!.editavatar
         editimgusr = binding!!.editimgusr
         editusrnm = binding!!.editusrnm
+        btnedit=binding!!.btnedit
 
         avatar = userViewModel.getUser()!!.avatar.url
         editimgusr.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
 
-
+        btnedit.setOnClickListener{
+            //update profile
+        }
         btnback.setOnClickListener {
             goToProfileFragment()
         }
@@ -93,9 +97,11 @@ class editProfileFragment : Fragment() {
         }
     }
     private fun  goToProfileFragment() {
+        val navController = findNavController()
         if (findNavController().currentDestination!!.id == R.id.editProfileFragment) {
-            val action = editProfileFragmentDirections.actionEditProfileFragmentToNavigationProfile()
-            findNavController().navigate(action)
+//            val action = editProfileFragmentDirections.actionEditProfileFragmentToNavigationProfile()
+//            findNavController().navigate(action)
+               navController.popBackStack()
         }
     }
     private fun  gotoavatarFragment() {

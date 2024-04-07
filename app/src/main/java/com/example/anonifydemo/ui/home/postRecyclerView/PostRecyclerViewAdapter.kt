@@ -50,6 +50,7 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
         private val moreOptions =binding.moreOptions
         private val noOfLike = binding.Nolike
         private val noOfComment = binding.Nocomment
+        private val btnsave = binding.btnsave
 
         fun bind(post: DisplayPost) {
 
@@ -87,6 +88,10 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
 //                    likePost(post)
 //                }
 //                likePost(post.postId)
+            }
+
+            btnsave.setOnClickListener {
+                //onsave code
             }
 
             commentButton.setOnClickListener {

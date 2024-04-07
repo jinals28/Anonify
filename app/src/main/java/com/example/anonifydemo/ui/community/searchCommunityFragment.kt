@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.SearchView
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentHomeBinding
@@ -22,6 +23,7 @@ class searchCommunityFragment : Fragment() {
     //    private lateinit var viewModel: SearchCommunityViewModel
 private lateinit var btnback : ImageButton
     private lateinit var btnhash : ImageButton
+    private lateinit var searchHash : SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +38,7 @@ private lateinit var btnback : ImageButton
         super.onViewCreated(view, savedInstanceState)
         btnback = binding!!.btnback
         btnhash = binding!!.btnCreateHash
+        searchHash=binding!!.searchHash
         btnback.setOnClickListener {
             goToHomeFragment()
         }
@@ -51,9 +54,11 @@ private lateinit var btnback : ImageButton
     }
 
     private fun  goToHomeFragment() {
+        val navController = findNavController()
         if (findNavController().currentDestination!!.id == R.id.searchCommunityFragment) {
-            val action = searchCommunityFragmentDirections.actionSearchCommunityFragmentToNavigationHome()
-            findNavController().navigate(action)
+//            val action = searchCommunityFragmentDirections.actionSearchCommunityFragmentToNavigationHome()
+//            findNavController().navigate(action)
+            navController.popBackStack()
         }
     }
 }

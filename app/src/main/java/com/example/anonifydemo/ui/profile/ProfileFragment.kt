@@ -35,6 +35,12 @@ class ProfileFragment : Fragment() {
     private lateinit var authUtil: AuthenticationUtil
     private lateinit var imgusr : CircleImageView
     private lateinit var txtusrnm: TextView
+    private lateinit var txtbio: TextView
+    private lateinit var txtfollowing: TextView
+    private lateinit var txtpo: TextView
+    private lateinit var txtpoints: TextView
+    private lateinit var btnpost: Button
+    private lateinit var btnsaved: Button
     private var avatarId : Long = -1L
 
     private var avatar : Int = -1
@@ -55,6 +61,12 @@ class ProfileFragment : Fragment() {
         btnsettings = binding!!.btnsettings
         imgusr = binding!!.imgusr
         txtusrnm = binding!!.txtusrnm
+        txtbio = binding!!.txtbio
+        txtfollowing = binding!!.txtfollowing
+        txtpo = binding!!.txtpo
+        txtpoints = binding!!.txtpoints
+        btnpost = binding!!.btnpost
+        btnsaved = binding!!.btnsaved
 
         avatar = userViewModel.getUser()!!.avatar.url
         imgusr.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))

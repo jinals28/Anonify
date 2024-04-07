@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
@@ -19,7 +21,9 @@ class createCommunityFragment : Fragment() {
 
     private val binding get() = _binding
     private lateinit var btnback:ImageButton
-
+    private lateinit var txthashnm:EditText
+    private lateinit var txthbio:EditText
+    private lateinit var btncreate:Button
     //private lateinit var viewModel: CreateCommunityViewModel
 
     override fun onCreateView(
@@ -37,10 +41,15 @@ class createCommunityFragment : Fragment() {
         val adapter = customAdapter(requireContext(), items)
         binding!!.spinner.adapter = adapter
         btnback = binding!!.btnback
+        txthashnm = binding!!.txthashnm
+        txthbio = binding!!.txthbio
+        btncreate = binding!!.btncreate
         btnback.setOnClickListener {
+            val navController = findNavController()
             if (findNavController().currentDestination!!.id == R.id.createCommunityFragment){
-                val action = createCommunityFragmentDirections.actionCreateCommunityFragmentToSearchCommunityFragment()
-                findNavController().navigate(action)
+//                val action = createCommunityFragmentDirections.actionCreateCommunityFragmentToSearchCommunityFragment()
+//                findNavController().navigate(action)
+                navController.popBackStack()
             }
         }
         binding!!.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

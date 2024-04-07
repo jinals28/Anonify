@@ -63,7 +63,7 @@
                 android:layout_weight="1" />
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/commentOption"
                 android:layout_width="33dp"
                 android:layout_height="25dp"
                 android:layout_gravity="bottom"
@@ -97,6 +97,7 @@
                     android:layout_height="0dp" />
 
                 <ImageButton
+                    android:id="@+id/btnlike"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:background="@color/windowBackground"
@@ -122,6 +123,7 @@
                     android:layout_height="0dp" />
 
                 <ImageButton
+                    android:id="@+id/btncomment"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:background="@color/windowBackground"
@@ -165,6 +167,7 @@
                     android:textStyle="bold" />
 
                 <ImageButton
+                    android:id="@+id/btnAdvicePoint"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginEnd="5dp"
