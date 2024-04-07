@@ -190,6 +190,7 @@ object AuthenticationUtil : Utils {
 
     fun saveCredentials(context: Context, email: String, password: String) {
         getSharedPreferences(context).edit()
+            
             .putString(KEY_EMAIL, email)
             .putString(KEY_PASSWORD, password)
             .apply()

@@ -1,5 +1,6 @@
 package com.example.anonifydemo.ui.activity
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -26,6 +27,8 @@ import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ActivityMainBinding
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.repository.AppRepository
+import com.example.anonifydemo.ui.utils.AuthenticationUtil
+
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
@@ -75,6 +78,10 @@ class MainActivity : AppCompatActivity()  {
         bottomNavigationView.setupWithNavController(navController)
 
         bottomNavigationView.itemIconTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.btn))
+//remember me
+//        if (AuthenticationUtil.isLoggedIn(this)) {
+//            navController.navigate(R.id.navigation_home)
+//        }
 
 //        bottomNavigationView.itemIconTintList = getColorStateList(R.color.bottom_navigation_icon_selector)
         navController.addOnDestinationChangedListener{ _, destination, _ ->
@@ -105,8 +112,5 @@ class MainActivity : AppCompatActivity()  {
 //           Log
 //            findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_onboardFragment_to_chooseAvatarFragment)
 //       }
-
-
     }
-
 }
