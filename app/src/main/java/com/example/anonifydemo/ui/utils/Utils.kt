@@ -17,7 +17,7 @@ interface Utils {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
-    fun handleFailure(context: Context, e: Exception){
+    fun handleFailure(context: Context? = null, e: Exception){
         when(e){
 //            is GetCredentialProviderConfigurationException -> {
 //                toast(context, "No Google Account Found, Please Add a Gmail Account")
@@ -26,7 +26,7 @@ interface Utils {
 //
 //            }
             is FirebaseAuthInvalidCredentialsException -> {
-                toast(context, "Invalid email or password, Try again!!")
+                toast(context!!, "Invalid email or password, Try again!!")
             }
             else -> {
 

@@ -3,24 +3,47 @@ package com.example.anonifydemo.ui.comment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.anonifydemo.ui.dataClasses.Comment
+import com.example.anonifydemo.ui.dataClasses.DisplayComment
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
-import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.repository.PostManager
+import kotlinx.coroutines.launch
 
 class CommentViewModel : ViewModel() {
+
 
     private val _post = MutableLiveData<DisplayPost>()
 
     val post : LiveData<DisplayPost> = _post
-    suspend fun getPostById(postId: String){
 
-        _post.value = AppRepository.fetchPost(postId)
+    private val _commentLiveData = MutableLiveData<List<DisplayComment>>()
+
+    val commentsLiveData: LiveData<List<DisplayComment>> = _commentLiveData
+
+    suspend fun getPostById(postId: String){
+        viewModelScope.launch {
+            _post.value = AppRepository.fetchPost(postId)
+            _commentLiveData.value = AppRepository.fetchComments(postId)
+        }
+
 
     }
 
-    fun postComment(commentText: String) {
+    suspend fun postComment( userId: String, postId: String, commentText: String, onSuccess : (String) -> Unit) {
 
+        val comment = Comment(
+            userId = userId,
+            postId = postId,
+            commentText = commentText,
+            commentedAt = System.currentTimeMillis()
+        )
+        AppRepository.addCommentToPost(comment, onSuccess) {
+                viewModelScope.launch {
+                    _commentLiveData.value = it
+                }
+            }
 
     }
 

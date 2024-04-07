@@ -31,10 +31,7 @@ class HomeViewModel : ViewModel() {
 //
 //    }
 
-  fun getPostsForUser(userId: Long){
-      Log.d("Anonify : homeVm", "HomeVM $userId")
-        _postList.value = AppRepository.getDisplayPostsForUser(userId)
-    }
+
 
     init {
 

@@ -23,12 +23,22 @@ data class DisplayLike(
 )
 
 data class Comment(
-//    val commentId: Long, // Room: Long (Primary key)
-    val userId: Long, // Room: Long (Foreign key)
-    val postId: Long, // Room: Long (Foreign key)
+    val userId: String, // Room: Long (Foreign key)
+    val postId: String, // Room: Long (Foreign key)
     val commentText: String,
     val commentedAt: Long, // Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
-    val commentLikeCount : Long
+    val commentLikeCount : Long = 0,
+    val advicePointCount: Long = 0,
+    val reportedCount : Long = 0
+
+)
+
+data class DisplayComment(
+    val userName: String,
+    val avatarUrl: Int, // Assuming it's the resource ID of the avatar image
+    val postContent: String,
+    val likeCount: Long,
+    val commentId: String
 )
 
 data class CommentLike(

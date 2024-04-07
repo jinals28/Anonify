@@ -71,10 +71,9 @@
                 android:src="@drawable/options2" />
             </LinearLayout>
             <TextView
-                android:id="@+id/txtpost"
+                android:id="@+id/txtComment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="5dp"
                 android:fontFamily="@font/montserrat"

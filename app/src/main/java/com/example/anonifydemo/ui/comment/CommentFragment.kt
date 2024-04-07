@@ -11,15 +11,20 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentCommentBinding
-import com.example.anonifydemo.databinding.FragmentCreatePostBinding
+import com.example.anonifydemo.ui.comment.commentRv.CommentAdapter
+import com.example.anonifydemo.ui.dataClasses.DisplayPost
+import com.example.anonifydemo.ui.dataClasses.UserViewModel
+import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
+import com.google.android.material.snackbar.Snackbar
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
 
@@ -36,9 +41,12 @@ class CommentFragment : Fragment(), Utils {
 
     private lateinit var noOfComments : TextView
 
+    private lateinit var commentAdapter : CommentAdapter
+
     private var _binding: FragmentCommentBinding?=null
     private val binding get() = _binding
 
+    private val userViewModel : UserViewModel by activityViewModels()
 
     private val viewModel: CommentViewModel by viewModels()
 
@@ -52,6 +60,10 @@ class CommentFragment : Fragment(), Utils {
     private lateinit var commentPostButton : Button
 
     private lateinit var commentRv : RecyclerView
+
+    private lateinit var displayPost : DisplayPost
+
+
 
 
     override fun onCreateView(
@@ -94,8 +106,19 @@ class CommentFragment : Fragment(), Utils {
         noOfComments = binding!!.noOfComments
         commentRv = binding!!.commentRv
 
+        commentAdapter = CommentAdapter(requireContext())
+
+        commentRv.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = commentAdapter
+        }
+
+        val userId = userViewModel.getUserId()
+
+//TODO: CREATE A LIST OF LOCAL DISPLAYED POSTS FOR CACHING
 
         viewModel.post.observe(viewLifecycleOwner){ post ->
+            displayPost = post
 
             txtHashtag.text = post.topicName
 
@@ -110,6 +133,15 @@ class CommentFragment : Fragment(), Utils {
             noOfComment.text = post.commentCount.toString()
 
             noOfComments.text = post.commentCount.toString()
+
+        }
+
+        viewModel.commentsLiveData.observe(viewLifecycleOwner){ comments ->
+            log("Comment Fragemnet $comments.toString()")
+            comments.let {
+                commentAdapter.submitList(comments)
+            }
+
         }
 
         commentPostButton.setOnClickListener {
@@ -119,7 +151,14 @@ class CommentFragment : Fragment(), Utils {
             if (commentText.isEmpty()){
                 toast(requireContext(), "comments cannot be blank")
             }else{
-                viewModel.postComment(commentText)
+                lifecycleScope.launch {
+                    viewModel.postComment(postId = displayPost.postId, userId = userId, commentText = commentText,
+                        onSuccess = {
+                            commentEditText.setText("")
+                            Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
+                        })
+                }
+
             }
         }
 

@@ -68,7 +68,7 @@ class HomeFragment : Fragment(), Utils {
 //                }
 //            }
 //            val adapter = PostRecyclerViewAdapter(requireContext(), posts, userViewModel.getUser()!!)
-            log("In Home Fragment ${posts.toString()}")
+//            log("In Home Fragment ${posts.toString()}")
             val adapter = PostRecyclerViewAdapter(requireContext(), posts, user.uid)
             postRv.adapter = adapter
         }

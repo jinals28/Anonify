@@ -50,9 +50,6 @@ class CreatePostViewModel : ViewModel() {
 //        return ValidationUtil.isHashtagValid(hashtag, topics) // Replace with your validation logic
     }
 
-    private fun getHashtagId(hashtag: String): Long {
-        return AppRepository.getHashtagId(hashtag)
-    }
 
     fun addPost(userId: String, content: String, hashtag: String) {
        val post =  Post(

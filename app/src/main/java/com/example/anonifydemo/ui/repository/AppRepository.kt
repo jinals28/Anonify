@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.example.anonifydemo.R
 import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Comment
+import com.example.anonifydemo.ui.dataClasses.DisplayComment
 import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.FollowingTopic
-import com.example.anonifydemo.ui.dataClasses.Like
 import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.dataClasses.Topic
 import com.example.anonifydemo.ui.dataClasses.User
@@ -18,24 +18,22 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.*
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 object AppRepository : Utils {
-    // Users table
-// Pos
-//    ts table
+
     private val posts = mutableListOf<Post>()
 
-    // Comments table
-    private val comments = mutableListOf<Comment>()
-
-    val likeList = mutableListOf<Like>()
-
     const val TAG = "Anonify: USER_REPOSITORY"
+
+    private val _commentsLiveData = MutableLiveData<List<DisplayComment>>()
+    val commentsLiveData: LiveData<List<DisplayComment>> get() = _commentsLiveData
 
     private val users = Firebase.firestore.collection("users")
 
@@ -49,6 +47,8 @@ object AppRepository : Utils {
 
     private val likesCollection = Firebase.firestore.collection("likes")
 
+    private val commentCollection = Firebase.firestore.collection("comments")
+
     private var _topicList = MutableLiveData<List<Topic>>()
 
     val topicsList: LiveData<List<Topic>> = _topicList
@@ -61,7 +61,7 @@ object AppRepository : Utils {
 
     //TODO: Figure out what to do about topics list, should it be stored permannetly in the app like this or should it be fetched for the first time and then stored in app always.
     //Topics table
-    var topicList = mutableListOf(
+    private var topicList = mutableListOf(
         Topic("#Entertainment"),
         Topic("#Social"),
         Topic("#FashionAndBeauty"),
@@ -107,8 +107,6 @@ object AppRepository : Utils {
 
     var followingTopicList = mutableListOf<FollowingTopic>()
 
-    // Likes table
-    private val likes = mutableListOf<Like>()
 
     suspend fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         Log.d(TAG, "Add user")
@@ -292,21 +290,21 @@ object AppRepository : Utils {
     }
 
     suspend fun fetchPosts(userId: String, followingTopicsList: List<FollowingTopic>) {
-        log("In Fetch Posts")
+//        log("In Fetch Posts")
             val posts = mutableListOf<DisplayPost>()
 
         val followingTopic = followingTopicsList.map { it.topic }
             try {
                 val querySnapshot: QuerySnapshot = postsList.whereIn("topicName", followingTopic).orderBy("postCreatedAt", Query.Direction.DESCENDING).get().await()
                 for (document in querySnapshot.documents) {
-                    log("App REpo: Post Id: ${document.id}")
+//                    log("App REpo: Post Id: ${document.id}")
                     val userId = document.getString("userId") ?: ""
                     val topicName = document.getString("topicName") ?: ""
                     val postContent = document.getString("postContent") ?: ""
                     val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
                     val likeCount = document.getLong("likeCount") ?: -1L
                     val avatarName = fetchAvatarName(userId)
-                    log("Avatar name from userId: $avatarName")
+//                    log("Avatar name from userId: $avatarName")
                     val url = avatarList.find { it.name == avatarName }!!.url
 
                     val likedByUser = isPostLikedByCurrentUser(document.id, userId)
@@ -321,7 +319,7 @@ object AppRepository : Utils {
                         likedByCurrentUser = likedByUser
                     )
                     posts.add(post)
-                    log("App Repo, ${posts.toString()}")
+//                    log("App Repo, ${posts.toString()}")
                 }
                 _postList.value = posts
             } catch (e: Exception) {
@@ -332,7 +330,7 @@ object AppRepository : Utils {
 
     private suspend fun fetchAvatarName(userId: String): String{
         try {
-            log("App Repo: fetchAvatarName : In fun")
+//            log("App Repo: fetchAvatarName : In fun")
             val documentSnapshot = users.document(userId).get().await()
             return documentSnapshot.getString("avatar") ?: ""
         } catch (e: Exception) {
@@ -348,7 +346,6 @@ object AppRepository : Utils {
     }
 
     suspend fun addPost(post: Post) {
-            Log.d("Anonify : Post", posts.toString())
             try {
                 val postCollection = Firebase.firestore.collection("posts")
                 postCollection.add(post)
@@ -378,7 +375,8 @@ object AppRepository : Utils {
                 if (documentSnapshot.exists()) {
                     val data = documentSnapshot.data
                     if (data != null) {
-                        val existingLikes = data["likes"] as? List<HashMap<String, Any>> // Assuming the likes are stored as a list of HashMaps
+                        val existingLikes =
+                            data["likes"] as? List<HashMap<String, Any>> // Assuming the likes are stored as a list of HashMaps
                         existingLikes?.forEach { likeData ->
                             val userId = likeData["userId"] as? String
                             val likedAt = likeData["likedAt"] as? Long
@@ -413,7 +411,7 @@ object AppRepository : Utils {
                                 }
                             }
                     }
-                }else {
+                } else {
 
                     if (likesList.filter { it["userId"] == userId }.isNotEmpty()) {
                         likesList.removeIf { it["userId"] == userId }
@@ -439,11 +437,8 @@ object AppRepository : Utils {
                                     )
                                 }
                         }
-                    } else {
-
                     }
                 }
-
                 // Update the likes collection with the updated list
                 val updateMap = hashMapOf("likes" to likesList)
                 likesCollection.document(postId).set(updateMap).await()
@@ -456,146 +451,19 @@ object AppRepository : Utils {
         }
     }
 
-        // Add comment to repository
-        fun addComment(comment: Comment) {
-            comments.add(comment)
-        }
-
-        // Add topic to repository
-        fun addTopic(topic: Topic) {
-//            topics.add(topic)
-        }
-
-        fun addFollowingTopic(followingTopic: FollowingTopic) {
-            followingTopicList.add(followingTopic)
-        }
-
-        // Add like to repository
-        fun addLike(like: Like) {
-            likes.add(like)
-        }
-
-        // Other CRUD operations can be added similarly
-
-        // Get all users from repository
-        fun getUsers(): List<User> {
-            return mutableListOf()
-        }
-
-        // Get all posts from repository
-        fun getPosts(): List<Post> {
-            return posts
-        }
-
-        // Get all comments from repository
-        fun getComments(): List<Comment> {
-            return comments
-        }
-
-        fun getFollowingTopics(): List<FollowingTopic> {
-            return followingTopicList
-        }
-
-        // Get all likes from repository
-        fun getLikes(): List<Like> {
-            return likes
-        }
-
-        fun getUser(uid: String): User? {
-
-            return null
-
-        }
-
-        fun getHashtagId(hashtag: String): Long {
-
-            return -1L
-
-        }
-
-        fun getPostsForUser(userId: Long): List<Post> {
-
-//            val list = followingTopicList.filter { it.userId == userId }.map {
-//                it.topicId
-//            }
-//            Log.d("Anonify: Repo", list.toString())
-//            Log.d("Anonify: Repo", "Followinglist" + followingTopicList.toString())
-//            return getPosts().filter { post ->
-//                list.contains(post.topicId)
-//            }.sortedByDescending { post ->
-//                post.postCreatedAt
-//            }
-            return listOf()
-        }
-
-        fun getAvatarOb(avatarId: Long): Avatar {
-//        return avatarList.find { it.avatarId == avatarId }!!
-            return Avatar()
-        }
-
-        fun getDisplayPostsForUser(userId: Long): List<DisplayPost> {
-
-            val userPosts = getPostsForUser(userId)
-            Log.d("Anonify, Repo.DisplaYPOst", "${userPosts.toString()}")
-            try {
-//            val displayPostlist = userPosts.map { post ->
-//                val user = getUserById(post.userId)
-//                Log.d("Anonify : App Repo", "${user.toString()} ")
-//                val avatarUrl = getAvatarOb(user.avatarId)
-//                Log.d("Anonify : App Repo", "${avatarUrl.toString()} ")
-//                val topicName = getTopicById(post.topicId).name
-//                val likeCount = getLikes().count { it.postId == post.postId }
-//                val commentCount = getComments().count { it.postId == post.postId }
-//                DisplayPost(
-//                    postId = post.postId,
-//                    postContent = post.postContent,
-//                    avatarUrl = avatarUrl.url,
-//                    avatarName = avatarUrl.name, // Use any user identifier you want to display
-//                    topicName = topicName,
-//                    likeCount = likeCount,
-//                    commentCount = commentCount
-//                )
-
-                return mutableListOf()
-            } catch (e: Exception) {
-                Log.d("Anonify : App Repo", "Exception ${e.message}toString() ")
-
-            }
-            return mutableListOf()
-
-        }
-
-        fun getTopicById(topicId: Long): Topic {
-            return Topic("")
-        }
-
-        fun updateUser(updatedUser: User) {
-            try {
-//        val existingIndex = users.indexOfFirst { it.userId == updatedUser.userId }
-//        if (existingIndex != -1) {
-//            users.removeAt(existingIndex)
-//            users.add(existingIndex, updatedUser)
-//        }else{
-//            Log.d("Anonfy repo", "-1 found")
-//        }
-            } catch (e: Exception) {
-                Log.d("Anonify Repo", e.toString())
-            }
-
-        }
-
+    //For Comment Fragment
     suspend fun fetchPost(postId: String): DisplayPost? {
 
         try {
+            fetchComments(postId)
             val document: DocumentSnapshot = postsList.document(postId).get().await()
-                log("App REpo: Post Id: ${document.id}")
+
                 val userId = document.getString("userId") ?: ""
                 val topicName = document.getString("topicName") ?: ""
                 val postContent = document.getString("postContent") ?: ""
-                val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
-                val likeCount = document.getLong("likeCount") ?: -1L
+                val likeCount = document.getLong("likeCount") ?: 0L
                 val avatarName = fetchAvatarName(userId)
-                log("Avatar name from userId: $avatarName")
+
                 val url = avatarList.find { it.name == avatarName }!!.url
 
                 val likedByUser = isPostLikedByCurrentUser(document.id, userId)
@@ -614,6 +482,108 @@ object AppRepository : Utils {
             } catch (e: Exception) {
             // Handle exceptions, such as Firestore errors or parsing errors
             log(e.message.toString())
+        }
+        return null
+    }
+
+    suspend fun addCommentToPost(comment: Comment, showSnackbar: (String) -> Unit, onNext: (List<DisplayComment>) -> Unit) {
+        try {
+            // Add comment to Comment Collection and obtain the generated document ID
+            val documentReference = commentCollection.add(comment).await()
+            val commentId = documentReference.id
+
+            // Update the comment object with the generated commentI
+
+            // Add comment reference to Post's comments collection
+            val postRef = postsList.document(comment.postId)
+            val commentsRef = postRef.collection("comments")
+
+            // Add comment reference to Post's comments collection
+            val commentMap = hashMapOf(
+                "commentId" to commentId,
+                "commentedAt" to System.currentTimeMillis() // Or use the commentedAt from the comment object
+            )
+
+            try {
+                // Try to add comment reference to Post's comments collection
+                commentsRef.document(commentId)
+                    .set(commentMap, SetOptions.merge())
+                    .await()
+
+                postRef.update("commentCount", FieldValue.increment(1)).await()
+                val commentList = fetchComments(comment.postId)
+                onNext(commentList)
+                // Show success Snackbar
+                showSnackbar("Comment added successfully")
+
+
+            } catch (e: Exception) {
+                // Handle errors specific to adding comment reference to Post's comments collection
+                showSnackbar("Failed to add comment reference to Post's comments collection: ${e.message}")
+                // Rollback by deleting the comment from Comment Collection
+                commentCollection.document(commentId).delete().await()
+            }
+
+        } catch (e: Exception) {
+            // Handle errors specific to adding comment to Comment Collection
+            showSnackbar("Failed to add comment to Comment Collection: ${e.message}")
+        }
+    }
+
+    suspend fun fetchComments(postId: String) : List<DisplayComment> {
+
+        val commentList = mutableListOf<DisplayComment>()
+
+        val commentCollection = Firebase.firestore.collection("posts/$postId/comments")
+
+        val deferred = CompletableDeferred<List<String>>()
+
+        try {
+
+            val snapshot = commentCollection.orderBy("commentedAt", Query.Direction.DESCENDING).get().await()
+            for (document in snapshot.documents) {
+                val commentId = document.id
+                val comment = fetchCommentObject(commentId)
+                if (comment != null) {
+                    commentList.add(comment)
+                }
+            }
+        } catch (e: Exception) {
+            log(e.message.toString())
+        }
+
+        return commentList
+    }
+
+    private suspend fun fetchCommentObject(commentId: String) : DisplayComment? {
+        val doc = commentCollection.document(commentId)
+
+        try {
+
+                val document = doc.get().await()
+                if (document.exists()) {
+                    val userId = document.getString("userId") ?: ""
+                    val commentId = document.getString("commentId") ?: ""
+                    val commentText = document.getString("commentText") ?: ""
+                    val commentLikeCount = document.getLong("commentLikeCount") ?: 0L
+                    val userName = fetchAvatarName(userId)
+                    val url = avatarList.find { it.name == userName }!!.url
+
+//                    val likedByUser = isPostLikedByCurrentUser(document.id, userId)
+
+                    val comment = DisplayComment(
+                        userName = userName,
+                        avatarUrl = url,
+                        postContent = commentText,
+                        likeCount = commentLikeCount,
+                        commentId = commentId
+                    )
+                    log(TAG + " Comment : " +comment.toString())
+                    return comment
+                }
+
+        }catch (e : Exception){
+            e.localizedMessage?.let { log(it) }
         }
         return null
     }
