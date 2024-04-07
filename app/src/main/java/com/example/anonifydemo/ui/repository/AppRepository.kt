@@ -14,6 +14,7 @@ import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.dataClasses.Topic
 import com.example.anonifydemo.ui.dataClasses.User
 import com.example.anonifydemo.ui.utils.Utils
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
@@ -583,9 +584,44 @@ object AppRepository : Utils {
 
         }
 
+    suspend fun fetchPost(postId: String): DisplayPost? {
+
+        try {
+            val document: DocumentSnapshot = postsList.document(postId).get().await()
+                log("App REpo: Post Id: ${document.id}")
+                val userId = document.getString("userId") ?: ""
+                val topicName = document.getString("topicName") ?: ""
+                val postContent = document.getString("postContent") ?: ""
+                val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
+                val likeCount = document.getLong("likeCount") ?: -1L
+                val avatarName = fetchAvatarName(userId)
+                log("Avatar name from userId: $avatarName")
+                val url = avatarList.find { it.name == avatarName }!!.url
+
+                val likedByUser = isPostLikedByCurrentUser(document.id, userId)
+
+                val post = DisplayPost(
+                    postId = document.id,
+                    postContent = postContent,
+                    topicName = topicName,
+                    likeCount = likeCount.toInt(),
+                    avatarName = avatarName,
+                    avatarUrl = url,
+                    likedByCurrentUser = likedByUser
+                )
+                return post
+
+            } catch (e: Exception) {
+            // Handle exceptions, such as Firestore errors or parsing errors
+            log(e.message.toString())
+        }
+        return null
+    }
+}
+
 
     // Other methods for fetching data can be added similarly
-    }
+
 
 
 //    suspend fun getAvatars() {

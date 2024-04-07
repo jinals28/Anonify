@@ -7,12 +7,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemPostBinding
 import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
+import com.example.anonifydemo.ui.home.HomeFragmentDirections
 import com.example.anonifydemo.ui.repository.AppRepository
+import com.example.anonifydemo.ui.utils.Likeable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,18 +23,18 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PostRecyclerViewAdapter(val context : Context, val postList : List<DisplayPost>, val userId : String) :  RecyclerView.Adapter<PostRecyclerViewAdapter.PostViewHolder>() {
+class PostRecyclerViewAdapter(val context : Context, val postList : List<DisplayPost>, val userId : String,
+) :  RecyclerView.Adapter<PostRecyclerViewAdapter.PostViewHolder>(), Likeable {
 
-    private val userLikes = postList.map{
+    var userLikes: MutableList<DisplayLike> = postList.map {
         DisplayLike(
             postId = it.postId,
             likedAt = -1L,
             liked = it.likedByCurrentUser
         )
     }.toMutableList()
-
     init {
-        Log.d(TAG, userLikes.toString())
+        initializeUserLikes(postList)
     }
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -95,10 +98,12 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             }
 
             commentButton.setOnClickListener {
-//                val action =
-//                    HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
-//                it.findNavController().navigate(action)
+
+                val action =
+                    HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
+                it.findNavController().navigate(action)
             }
+
             moreOptions.setOnClickListener{
                 val popupMenu = PopupMenu(context, moreOptions)
                 popupMenu.menuInflater.inflate(R.menu.post_popup_menu, popupMenu.menu)
@@ -165,17 +170,6 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
 
         private fun setLikeCountText(likeCount: Int) {
             noOfLike.text = likeCount.toString()
-//            if (likeCount > 2) {
-//                // Show the total like count if more than 2 likes
-////                likeButton.text = "$likeCount likes"
-//                Log.d("Anonify : $TAG", "$likeCount likes")
-//            } else {
-//                // Show the names of users who liked the post if less than 3 likes
-//                // Replace "likedByUser1, likedByUser2, likedByUser3" with the actual user names
-//                val likedByUsers = likedBy.subList(0, min(likedBy.size, 3)).joinToString(", ")
-////                likeButton.text =
-//                Log.d("Anonify : $TAG", "$likedByUsers and ${likeCount - likedBy.size} others")
-//            }
         }
 
         private fun likePost(post: DisplayPost) {
@@ -184,15 +178,7 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             setLikeButtonState(true)
             setLikeCountText(post.likeCount)
             userLikes.find { it.postId == post.postId }?.liked = true
-//            post.likeCount++
-//            post.likedBy.add(user.uid)
-//            // Update the UI
-//            setLikeButtonState(true)
-//            setLikeCountText(post.likedBy, post.likeCount)
-//            // Update the PostManager
-//            PostManager.updatePost(post)
         }
-//
         private fun unlikePost(post: DisplayPost) {
             setLikeButtonState(false)
             post.likeCount--
@@ -201,8 +187,7 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             Log.d(TAG, userLikes.toString())
             // Update the UI
             setLikeCountText(post.likeCount)
-            // Update the PostManager
-//            PostManager.updatePost(post)
+
         }
 
     }

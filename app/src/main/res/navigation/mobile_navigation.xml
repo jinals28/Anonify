@@ -100,12 +100,6 @@
             app:argType="string" />
     </fragment>
 
-    <fragment
-        android:id="@+id/feedFragment"
-        android:name="com.example.anonifydemo.ui.homeScreen.FeedFragment"
-        android:label="FeedFragment" >
-    </fragment>
-
 
     <fragment
         android:id="@+id/navigation_home"
@@ -182,10 +176,11 @@
         android:name="com.example.anonifydemo.ui.comment.CommentFragment"
         android:label="fragment_comment"
         tools:layout="@layout/fragment_comment" >
+
         <argument
             android:name="postId"
-            app:argType="long"
-            android:defaultValue="0L" />
+            app:argType="string"
+            android:defaultValue="" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
