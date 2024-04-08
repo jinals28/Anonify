@@ -26,14 +26,13 @@ import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
-import com.facebook.shimmer.ShimmerFrameLayout
+//import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
 
 class CommentFragment : Fragment(), Utils {
 
-    private lateinit var adapter: PostRecyclerViewAdapter
     private lateinit var noOfLike: TextView
     private lateinit var noOfComment: TextView
     private lateinit var moreOptions: ImageButton
@@ -42,7 +41,7 @@ class CommentFragment : Fragment(), Utils {
     private lateinit var userAvatar: CircleImageView
     private lateinit var userName: TextView
     private lateinit var txtPostContent: TextView
-    private lateinit var shimmerViewContainer: ShimmerFrameLayout
+//    private lateinit var shimmerViewContainer: ShimmerFrameLayout
 
     private lateinit var noOfComments: TextView
 
@@ -81,7 +80,7 @@ class CommentFragment : Fragment(), Utils {
         val postId = args.postId
 
         lifecycleScope.launch {
-            viewModel.getPostById(userViewModel.getUserId(), postId)
+            viewModel.getPostById(postId)
         }
 
         return binding!!.root
@@ -92,9 +91,6 @@ class CommentFragment : Fragment(), Utils {
 
         val userId = userViewModel.getUserId()
 
-        adapter = PostRecyclerViewAdapter(requireContext(), userId)
-
-        postRv.adapter = adapter
         btnback = binding!!.btnback
 
         val postId = args.postId
@@ -160,7 +156,8 @@ class CommentFragment : Fragment(), Utils {
 
         noOfComments.text = post.commentCount.toString()
 
-        adapter.submitList(mutableListOf(post))
+        val adapter = PostRecyclerViewAdapter(requireContext(), mutableListOf(post), userId)
+        postRv.adapter = adapter
 
     }
 
