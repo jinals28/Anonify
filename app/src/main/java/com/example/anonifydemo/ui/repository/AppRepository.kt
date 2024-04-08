@@ -7,6 +7,7 @@ import com.example.anonifydemo.R
 import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Comment
 import com.example.anonifydemo.ui.dataClasses.DisplayComment
+import com.example.anonifydemo.ui.dataClasses.DisplayCommentLike
 import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.FollowingTopic
@@ -27,6 +28,8 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 object AppRepository : Utils {
+
+    private val firestore = Firebase.firestore
 
     private val posts = mutableListOf<Post>()
 
@@ -289,6 +292,8 @@ object AppRepository : Utils {
         return false
     }
 
+
+
     suspend fun fetchPosts(userId: String, followingTopicsList: List<FollowingTopic>) {
 //        log("In Fetch Posts")
             val posts = mutableListOf<DisplayPost>()
@@ -416,14 +421,8 @@ object AppRepository : Utils {
                 } else {
 
                     if (likesList.filter { it["userId"] == userId }.isNotEmpty()) {
+
                         likesList.removeIf { it["userId"] == userId }
-
-
-                        // Case 3: Remove userId if not in userLikes
-//                    val userLikes = likesList.map { it["userId"] }
-//                    Log.d(TAG, userLikes.toString())
-//                    likesList.removeIf { it["userId"] !in userLikes }
-//                    Log.d(TAG, likesList.toString())
 
                         val likesRemoved = likesList.filter { it["userId"] == userId }.isEmpty()
                         if (likesRemoved) {
@@ -449,7 +448,6 @@ object AppRepository : Utils {
             } catch (e: Exception) {
                 Log.e(TAG, "Error adding like to collection for postId: $postId, ${e.message}", e)
             }
-
         }
     }
 
@@ -491,6 +489,7 @@ object AppRepository : Utils {
     }
 
     suspend fun addCommentToPost(comment: Comment, showSnackbar: (String) -> Unit, onNext: (List<DisplayComment>) -> Unit) {
+
         try {
             // Add comment to Comment Collection and obtain the generated document ID
             val documentReference = commentCollection.add(comment).await()
@@ -569,7 +568,6 @@ object AppRepository : Utils {
                 val document = doc.get().await()
                 if (document.exists()) {
                     val userId = document.getString("userId") ?: ""
-                    val commentId = document.getString("commentId") ?: ""
                     val commentText = document.getString("commentText") ?: ""
                     val commentLikeCount = document.getLong("commentLikeCount") ?: 0L
                     val userName = fetchAvatarName(userId)
@@ -577,12 +575,14 @@ object AppRepository : Utils {
 
 //                    val likedByUser = isPostLikedByCurrentUser(document.id, userId)
 
+                    val likedByUser = isCommentLikedByUser(userId, commentId)
                     val comment = DisplayComment(
                         userName = userName,
                         avatarUrl = url,
                         postContent = commentText,
                         likeCount = commentLikeCount,
-                        commentId = commentId
+                        commentId = commentId,
+                        likedByUser = likedByUser
                     )
                     log(TAG + " Comment : " +comment.toString())
                     return comment
@@ -593,6 +593,60 @@ object AppRepository : Utils {
         }
         return null
     }
+
+    fun updateCommentLikes(userId: String, userLikes: MutableList<DisplayCommentLike>) {
+        val batch = Firebase.firestore.batch()
+
+        userLikes.forEach { like ->
+            val commentRef = firestore.collection("comments")
+                .document(like.commentId)
+
+                val commentLikeRef = commentRef
+                .collection("commentLikes")
+                .document(userId)
+
+            if (like.liked) {
+                // Liked, add or update the like
+                val likeData = hashMapOf(
+                    "commentLikedAt" to like.likedAt,
+                    "userId" to userId
+                )
+                batch.set(commentLikeRef, likeData)
+                batch.update(commentRef, "likeCount", FieldValue.increment(1))
+            } else {
+                // Unliked, remove the like
+                batch.delete(commentLikeRef)
+                batch.update(commentRef, "likeCount", FieldValue.increment(-1))
+            }
+        }
+
+        // Commit the batch operation
+        batch.commit()
+            .addOnSuccessListener {
+                // Success
+
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+            }
+
+
+    }
+    suspend fun isCommentLikedByUser(userId: String, commentId: String): Boolean {
+        val commentLikeRef = commentCollection
+            .document(commentId)
+            .collection("commentLikes")
+            .document(userId)
+
+        return try {
+            val documentSnapshot = commentLikeRef.get().await()
+            documentSnapshot.exists()
+        } catch (e: Exception) {
+            // Handle exceptions, such as Firestore errors
+            false
+        }
+    }
+
 }
 
 

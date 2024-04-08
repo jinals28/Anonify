@@ -81,14 +81,7 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             // Handle like button click
             likeButton.setOnClickListener {
                 togglePost(post)
-//                if (post.likedBy.contains(user.uid)) {
-//                    // Unlike the post
-//                    unlikePost(post)
-//                } else {
-//                    // com.example.anonifydemo.ui.dataClasses.Like the post
-//                    likePost(post)
-//                }
-//                likePost(post.postId)
+//
             }
 
             btnsave.setOnClickListener {

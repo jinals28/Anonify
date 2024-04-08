@@ -26,7 +26,7 @@ import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
-import com.facebook.shimmer.ShimmerFrameLayout
+//import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
@@ -41,7 +41,7 @@ class CommentFragment : Fragment(), Utils {
     private lateinit var userAvatar: CircleImageView
     private lateinit var userName: TextView
     private lateinit var txtPostContent: TextView
-    private lateinit var shimmerViewContainer: ShimmerFrameLayout
+//    private lateinit var shimmerViewContainer: ShimmerFrameLayout
 
     private lateinit var noOfComments: TextView
 
@@ -88,8 +88,13 @@ class CommentFragment : Fragment(), Utils {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val userId = userViewModel.getUserId()
+
         btnback = binding!!.btnback
+
         val postId = args.postId
+
         btnback.setOnClickListener {
             goToHomeFragment()
         }
@@ -115,14 +120,14 @@ class CommentFragment : Fragment(), Utils {
         // Start shimmer effect
         //shimmerViewContainer.startShimmer()
 
-    commentAdapter = CommentAdapter(requireContext())
+    commentAdapter = CommentAdapter(requireContext(), userViewModel.getUserId())
 
     commentRv.apply{
         layoutManager = LinearLayoutManager(requireContext())
         adapter = commentAdapter
     }
 
-    val userId = userViewModel.getUserId()
+
 
 //TODO: CREATE A LIST OF LOCAL DISPLAYED POSTS FOR CACHING
 
@@ -158,7 +163,7 @@ class CommentFragment : Fragment(), Utils {
         comments ->
         log("Comment Fragemnet $comments.toString()")
         comments.let {
-            commentAdapter.submitList(comments)
+            commentAdapter.submitList(comments.toMutableList())
         }
 
     }
