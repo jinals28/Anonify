@@ -19,6 +19,7 @@ import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
+import com.facebook.shimmer.ShimmerFrameLayout
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(), Utils {
@@ -32,7 +33,8 @@ class HomeFragment : Fragment(), Utils {
     private lateinit var postRv : RecyclerView
 
     private lateinit var btncommunity : ImageButton
-    private lateinit var loading : ProgressBar
+//    private lateinit var loading : ProgressBar
+    private lateinit var shimmerPosts: ShimmerFrameLayout
 
     private val homeViewModel: HomeViewModel by viewModels()
 
@@ -57,7 +59,9 @@ class HomeFragment : Fragment(), Utils {
         super.onViewCreated(view, savedInstanceState)
         btncommunity = binding.toolbarCommunityIcon
         postRv = binding.postRv
-        loading = binding.loading
+        shimmerPosts = binding.shimmerPosts
+        shimmerPosts.startShimmer()
+//        loading = binding.loading
 
         lifecycleScope.launch {
             AppRepository.fetchPosts(user.uid, user.followingTopics)
@@ -72,7 +76,9 @@ class HomeFragment : Fragment(), Utils {
 //            }
 //            val adapter = PostRecyclerViewAdapter(requireContext(), posts, userViewModel.getUser()!!)
 
-            loading.visibility = View.GONE
+//            loading.visibility = View.GONE
+            shimmerPosts.stopShimmer()
+            shimmerPosts.visibility = View.GONE
             postRv.visibility = View.VISIBLE
             log("In Home Fragment ${posts.toString()}")
             val adapter = PostRecyclerViewAdapter(requireContext(), posts, user.uid)

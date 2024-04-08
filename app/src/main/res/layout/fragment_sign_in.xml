@@ -132,7 +132,8 @@
                 android:id="@+id/RememberMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Remember me" />
+                android:text="Remember me"
+                android:buttonTint="@color/btn"/>
             <TextView
                 android:id="@+id/ForgetPass"
                 android:layout_width="wrap_content"

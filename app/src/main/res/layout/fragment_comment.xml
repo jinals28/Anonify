@@ -56,22 +56,25 @@
         </androidx.appcompat.widget.Toolbar>
 
 
-        <!--        <com.facebook.shimmer.ShimmerFrameLayout-->
-        <!--            android:id="@+id/shimmer_view_container"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="8dp"-->
-        <!--            android:layout_marginBottom="8dp"-->
-        <!--            app:shimmer_duration="1000"></com.facebook.shimmer.ShimmerFrameLayout>-->
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:shimmer_duration="1000">
+                    <include
+                        android:id="@+id/shimmer_post"
+                        layout="@layout/shimmer_layout" />
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/postLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:itemCount="1"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_post"/>
-<!--        <include-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/postLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:itemCount="1"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_post"/>
+    <!--        <include-->
 <!--            android:id="@+id/postLayout"-->
 <!--            layout="@layout/item_post"-->
 <!--            android:layout_width="match_parent"-->
@@ -94,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:paddingStart="5dp"
-                android:text="5"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -110,13 +113,33 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_view_container2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:shimmer_duration="1000">
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical">
 
+                <include
+                    layout="@layout/shimmer_layout" />
+                <include
+                    layout="@layout/shimmer_layout" />
+                <include
+                    layout="@layout/shimmer_layout" />
+                <include
+                    layout="@layout/shimmer_layout" />
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/commentRv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="0dp"
+            android:visibility="gone"
             android:layout_marginBottom="65dp"
             tools:listitem="@layout/row_comment" />
     </LinearLayout>

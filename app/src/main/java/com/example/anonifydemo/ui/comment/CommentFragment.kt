@@ -66,7 +66,7 @@ class CommentFragment : Fragment(), Utils {
     private lateinit var commentPostButton: Button
 
     private lateinit var commentRv: RecyclerView
-
+    private lateinit var shimmerViewContainer2: ShimmerFrameLayout
     private lateinit var displayPost: DisplayPost
 
 
@@ -110,10 +110,12 @@ class CommentFragment : Fragment(), Utils {
 //    noOfComment = binding!!.postLayout.Nocomment
     noOfComments = binding!!.noOfComments
     commentRv = binding!!.commentRv
-        //shimmerViewContainer = binding!!.shimmerViewContainer
+        shimmerViewContainer = binding!!.shimmerViewContainer
+        shimmerViewContainer2 = binding!!.shimmerViewContainer2
 
         // Start shimmer effect
-        //shimmerViewContainer.startShimmer()
+        shimmerViewContainer.startShimmer()
+        shimmerViewContainer2.startShimmer()
 
     commentAdapter = CommentAdapter(requireContext())
 
@@ -128,8 +130,9 @@ class CommentFragment : Fragment(), Utils {
 
     viewModel.post.observe(viewLifecycleOwner)
     { post ->
-       // shimmerViewContainer.stopShimmer()
-        //shimmerViewContainer.visibility = View.GONE
+        shimmerViewContainer.stopShimmer()
+        shimmerViewContainer.visibility = View.GONE
+        postRv.visibility = View.VISIBLE
         displayPost = post
 
 //        txtHashtag.text = post.topicName
@@ -156,6 +159,10 @@ class CommentFragment : Fragment(), Utils {
     viewModel.commentsLiveData.observe(viewLifecycleOwner)
     {
         comments ->
+
+        shimmerViewContainer2.stopShimmer()
+        shimmerViewContainer2.visibility = View.GONE
+        commentRv.visibility = View.VISIBLE
         log("Comment Fragemnet $comments.toString()")
         comments.let {
             commentAdapter.submitList(comments)
