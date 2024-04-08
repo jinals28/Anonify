@@ -19,6 +19,7 @@ import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.DisplaySaved
 import com.example.anonifydemo.ui.home.HomeFragmentDirections
 import com.example.anonifydemo.ui.repository.AppRepository
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -126,25 +127,40 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
                         R.id.block -> {
                             // Handle block post action
                             Log.d("Anonify : $TAG", "blocked")
+                            if (post.userId == userId) {
+                                Snackbar.make(
+                                    itemView,
+                                    "A user cannot report his own Post",
+                                    Snackbar.ANIMATION_MODE_SLIDE
+                                ).show()
+                            } else {
+                                Snackbar.make(itemView, "Post Reported", Snackbar.ANIMATION_MODE_SLIDE).show()
+                                hidePost()
+                                reportUserPost(post)
+                            }
                             true
                         }
                         R.id.report -> {
                             // Handle report post action
                             Log.d("Anonify : $TAG", "reported")
+                            if (post.userId == userId) {
+                                Snackbar.make(
+                                    it,
+                                    "A user cannot report himself",
+                                    Snackbar.ANIMATION_MODE_SLIDE
+                                ).show()
+                            } else {
+                                Snackbar.make(it, "User Reported", Snackbar.ANIMATION_MODE_SLIDE).show()
+                                hidePost()
+                                reportUser(userId)
+                            }
                             true
                         }
                         R.id.hide -> {
                             // Handle hide post action
                             Log.d("Anonify : $TAG", "hide post")
-                            val position = adapterPosition
-                            // Check if the position is valid
-                            if (position != RecyclerView.NO_POSITION) {
-                                // Apply animation
-                                val animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right)
-                                itemView.startAnimation(animation)
-                                // Remove the item from the list
-                                removeItem(position)
-                            }
+                            hidePost()
+
                             true
                         }
                         else -> false
@@ -152,6 +168,33 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
                 }
                 popupMenu.show()
             }
+        }
+
+        private fun reportUser(userId: String) {
+            coroutineScope.launch {
+                AppRepository.reportUser(userId)
+            }
+        }
+
+        private fun hidePost() {
+            val position = adapterPosition
+            // Check if the position is valid
+            if (position != RecyclerView.NO_POSITION) {
+                // Apply animation
+                val animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right)
+                itemView.startAnimation(animation)
+                // Remove the item from the list
+                removeItem(position)
+            }
+        }
+
+        private fun reportUserPost(post: DisplayPost) {
+
+            coroutineScope.launch {
+                AppRepository.reportPost(this, userId, post.postId)
+            }
+
+
         }
 
         fun removeItem(position: Int) {

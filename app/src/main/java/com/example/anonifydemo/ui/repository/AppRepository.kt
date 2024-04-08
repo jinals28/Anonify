@@ -1,5 +1,7 @@
 package com.example.anonifydemo.ui.repository
 
+import com.google.firebase.auth.FirebaseAuth
+
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -25,7 +27,9 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.*
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
@@ -331,6 +335,7 @@ object AppRepository : Utils {
 
                     val post = DisplayPost(
                         postId = document.id,
+                        userId = postedUserId,
                         postContent = postContent,
                         topicName = topicName,
                         likeCount = likeCount,
@@ -524,6 +529,7 @@ object AppRepository : Utils {
 
                 val post = DisplayPost(
                     postId = document.id,
+                    userId = postedUserId,
                     postContent = postContent,
                     topicName = topicName,
                     likeCount = likeCount,
@@ -821,8 +827,87 @@ object AppRepository : Utils {
 
     }
 
+    suspend fun reportPost(coroutineScope: CoroutineScope, userId: String, postId: String) {
+        try {
+            var updatedReportedCount = 0L
+            // Get the post document reference
+            val postRef = postsList.document(postId)
+
+            // Update reported count by 1 using Firestore transaction
+            Firebase.firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(postRef)
+                val currentReportedCount = snapshot.getLong("reportedCount") ?: 0
+                updatedReportedCount = currentReportedCount + 1
+                transaction.update(postRef, "reportedCount", updatedReportedCount)
+                if (updatedReportedCount >= 5) {
+                    coroutineScope.launch {
+                        increaseReportCount(userId)
+                    }
+                    transaction.delete(postRef)
+
+                }
+            }.addOnSuccessListener {
+                Log.d(TAG, "Report count updated for post: $postId")
+                // Check if reported count is 5, and if so, permanently delete the post
+
+            }.addOnFailureListener { e ->
+                Log.e(TAG, "Failed to update report count for post: $postId, ${e.message}", e)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error reporting post: $postId, ${e.message}", e)
+        }
+    }
+
+    private suspend fun increaseReportCount(userId: String) {
+        firestore.runTransaction { transaction ->
+            val userRef = users.document(userId)
+            val snapshot = transaction.get(userRef)
+
+            // Increment the report count
+            val currentReportCount = snapshot.getLong("reportCount") ?: 0
+            transaction.update(userRef, "reportCount", currentReportCount + 1)
+            if (currentReportCount + 1 >= 15) {
+                transaction.delete(userRef)
+                // Permanently delete the user and block in Firebase Auth
+                disableAccount(userId)
+            }
+        }.addOnSuccessListener {
+            // Transaction succeeded
+            Log.d(TAG, "Report count increased for user: $userId")
+        }.addOnFailureListener { e ->
+            // Transaction failed
+            Log.e(TAG, "Failed to increase report count for user: $userId, $e")
+        }
+    }
 
 
+    fun disableAccount(userId: String) {
+
+            // Get the user record from Firebase Auth
+            try {
+                // Disable the account using Firebase Auth
+                val user = FirebaseAuth.getInstance().currentUser
+
+                user!!.delete()
+
+                // Log success
+
+            } catch (e: Exception) {
+                // Log error
+                println("Error disabling account for user: $userId, ${e.message}")
+            }
+    }
+
+
+    // Helper function to get the report count of a user
+    suspend fun getUserReportCount(userId: String): Int {
+        val userSnapshot = firestore.collection("users").document(userId).get().await()
+        return userSnapshot.getLong("reportCount")?.toInt() ?: 0
+    }
+
+    suspend fun reportUser(userId: String) {
+        increaseReportCount(userId)
+    }
 
 
 }

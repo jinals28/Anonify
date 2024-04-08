@@ -2,6 +2,7 @@ package com.example.anonifydemo.ui.dataClasses
 
 data class DisplayPost(
     val postId: String = "",
+    val userId : String = "",
     val postContent: String,
     val avatarUrl: Int, // Assuming this is the URL of the avatar image
     val avatarName: String,
