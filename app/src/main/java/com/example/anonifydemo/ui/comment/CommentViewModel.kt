@@ -22,9 +22,9 @@ class CommentViewModel : ViewModel() {
 
     val commentsLiveData: LiveData<List<DisplayComment>> = _commentLiveData
 
-    suspend fun getPostById(postId: String){
+    suspend fun getPostById(userId: String, postId: String){
         viewModelScope.launch {
-            _post.value = AppRepository.fetchPost(postId)
+            _post.value = AppRepository.fetchPost(userId, postId)
             _commentLiveData.value = AppRepository.fetchComments(postId)
         }
 

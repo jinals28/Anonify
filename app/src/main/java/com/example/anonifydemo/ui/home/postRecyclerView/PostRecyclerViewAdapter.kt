@@ -13,6 +13,7 @@ import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemPostBinding
 import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
+import com.example.anonifydemo.ui.dataClasses.DisplaySaved
 import com.example.anonifydemo.ui.home.HomeFragmentDirections
 import com.example.anonifydemo.ui.repository.AppRepository
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +32,16 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             likedAt = -1L,
             liked = it.likedByCurrentUser
         )
+    }.toMutableList()
+
+    var savedPost : MutableList<DisplaySaved> = postList.map {
+
+        DisplaySaved(
+            postId = it.postId,
+            savedAt = -1L,
+            save = it.isSavedByUser
+        )
+
     }.toMutableList()
 
 
@@ -74,6 +85,8 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
 
             // Set the like button icon based on whether the user has liked the post
             setLikeButtonState(post.likedByCurrentUser)
+
+            setSavedState(post.isSavedByUser)
 //////
 //////            // Set the like count text
 //            setLikeCountText(post.likedBy, post.likeCount)
@@ -86,6 +99,7 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
 
             btnsave.setOnClickListener {
                 //onsave code
+                toggleSave(post)
             }
 
             commentButton.setOnClickListener {
@@ -124,6 +138,26 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             }
         }
 
+        private fun toggleSave(post: DisplayPost) {
+
+            val isSaved = savedPost.find { it.postId == post.postId }?.save ?: false
+            if (isSaved!!){
+                unSavePost(post)
+//                userLikes.removeAll { it.postId == post.postId }
+            } else {
+                savePost(post)
+
+            }
+            debounceSaveUpdateToDatabase(savedPost)
+        }
+
+        private fun setSavedState(savedByUser: Boolean) {
+            if (savedByUser) {
+                btnsave.setImageResource(R.drawable.baseline_bookmark_24)
+            } else {
+                btnsave.setImageResource(R.drawable.baseline_bookmark_border_24)
+            }
+        }
         private fun togglePost(post: DisplayPost) {
             Log.d(TAG, userLikes.toString())
             val isLiked = userLikes.find { it.postId == post.postId }?.liked
@@ -138,21 +172,6 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             debounceUpdateToDatabase(userLikes)
         }
 
-        private fun debounceUpdateToDatabase(userLikes: MutableList<DisplayLike>) {
-
-            coroutineScope.coroutineContext.cancelChildren()
-
-            coroutineScope.launch {
-                delay(debounceDuration)
-                updateLikesToDatabase(userLikes)
-            }
-        }
-
-        private suspend fun updateLikesToDatabase(userLikes: MutableList<DisplayLike>) {
-            Log.d(TAG, "in updateLikes ${userLikes.toString()}")
-            AppRepository.updatesLikes(userId, userLikes)
-        }
-
         private fun setLikeButtonState(isLiked: Boolean) {
             if (isLiked) {
                 likeButton.setImageResource(R.drawable.baseline_thumb_up_alt_24)
@@ -160,11 +179,9 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
                 likeButton.setImageResource(R.drawable.baseline_thumb_up_off_alt_24)
             }
         }
-
         private fun setLikeCountText(likeCount: Long) {
             noOfLike.text = likeCount.toString()
         }
-
         private fun likePost(post: DisplayPost) {
             post.likeCount++
             post.likedByCurrentUser = true
@@ -189,6 +206,47 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
 
         }
 
+        private fun savePost(post: DisplayPost) {
+            post.isSavedByUser = true
+            setSavedState(true)
+            savedPost.find { it.postId == post.postId }?.apply {
+                save = true
+                savedAt = System.currentTimeMillis()
+            }
+        }
+
+        private fun unSavePost(post: DisplayPost) {
+            post.isSavedByUser = false
+            setSavedState(false)
+            savedPost.find { it.postId == post.postId }?.apply {
+                save = false
+                savedAt = System.currentTimeMillis()
+            }
+        }
+
+        private fun debounceUpdateToDatabase(userLikes: MutableList<DisplayLike>) {
+            coroutineScope.coroutineContext.cancelChildren()
+            coroutineScope.launch {
+                delay(debounceDuration)
+                updateLikesToDatabase(userLikes)
+            }
+        }
+        private fun debounceSaveUpdateToDatabase(userLikes: MutableList<DisplaySaved>) {
+
+            coroutineScope.coroutineContext.cancelChildren()
+
+            coroutineScope.launch {
+                delay(debounceDuration)
+                updateSavesToDatabase(userLikes)
+            }
+        }
+        private fun updateSavesToDatabase(userLikes: MutableList<DisplaySaved>) {
+            AppRepository.updateSavedPosts(userId, userLikes)
+        }
+        private suspend fun updateLikesToDatabase(userLikes: MutableList<DisplayLike>) {
+            Log.d(TAG, "in updateLikes ${userLikes.toString()}")
+            AppRepository.updatesLikes(userId, userLikes)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {

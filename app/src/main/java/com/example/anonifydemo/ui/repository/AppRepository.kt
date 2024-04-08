@@ -11,6 +11,7 @@ import com.example.anonifydemo.ui.dataClasses.DisplayComment
 import com.example.anonifydemo.ui.dataClasses.DisplayCommentLike
 import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
+import com.example.anonifydemo.ui.dataClasses.DisplaySaved
 import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.Post
 import com.example.anonifydemo.ui.dataClasses.Topic
@@ -305,8 +306,6 @@ object AppRepository : Utils {
         }
     }
 
-
-
     suspend fun fetchPosts(userId: String, followingTopicsList: List<FollowingTopic>) {
 //        log("In Fetch Posts")
             val posts = mutableListOf<DisplayPost>()
@@ -316,17 +315,19 @@ object AppRepository : Utils {
                 val querySnapshot: QuerySnapshot = postsList.whereIn("topicName", followingTopic).orderBy("postCreatedAt", Query.Direction.DESCENDING).get().await()
                 for (document in querySnapshot.documents) {
 //                    log("App REpo: Post Id: ${document.id}")
-                    val userId = document.getString("userId") ?: ""
+                    val postedUserId = document.getString("userId") ?: ""
                     val topicName = document.getString("topicName") ?: ""
                     val postContent = document.getString("postContent") ?: ""
                     val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
                     val likeCount = document.getLong("likeCount") ?: 0L
                     val commentCount = document.getLong("commentCount") ?: 0L
-                    val avatarName = fetchAvatarName(userId)
+                    val avatarName = fetchAvatarName(postedUserId)
 //                    log("Avatar name from userId: $avatarName")
                     val url = avatarList.find { it.name == avatarName }!!.url
 
                     val likedByUser = isPostLikedByCurrentUser(document.id, userId)
+
+                    val savedByUser = isSavedByUser(document.id, userId)
 
                     val post = DisplayPost(
                         postId = document.id,
@@ -336,7 +337,8 @@ object AppRepository : Utils {
                         avatarName = avatarName,
                         avatarUrl = url,
                         likedByCurrentUser = likedByUser,
-                        commentCount = commentCount
+                        commentCount = commentCount,
+                        isSavedByUser = savedByUser
                     )
                     posts.add(post)
 //                    log("App Repo, ${posts.toString()}")
@@ -501,22 +503,24 @@ object AppRepository : Utils {
     }
 
     //For Comment Fragment
-    suspend fun fetchPost(postId: String): DisplayPost? {
+    suspend fun fetchPost(userId : String, postId: String): DisplayPost? {
 
         try {
             fetchComments(postId)
             val document: DocumentSnapshot = postsList.document(postId).get().await()
 
-                val userId = document.getString("userId") ?: ""
+                val postedUserId = document.getString("userId") ?: ""
                 val topicName = document.getString("topicName") ?: ""
                 val postContent = document.getString("postContent") ?: ""
                 val likeCount = document.getLong("likeCount") ?: 0L
                 val commentCount = document.getLong("commentCount") ?: 0L
-                val avatarName = fetchAvatarName(userId)
+                val avatarName = fetchAvatarName(postedUserId)
 
                 val url = avatarList.find { it.name == avatarName }!!.url
 
                 val likedByUser = isPostLikedByCurrentUser(document.id, userId)
+
+                val isSavedByUser = isSavedByUser(document.id, userId)
 
                 val post = DisplayPost(
                     postId = document.id,
@@ -526,7 +530,8 @@ object AppRepository : Utils {
                     avatarName = avatarName,
                     avatarUrl = url,
                     likedByCurrentUser = likedByUser,
-                    commentCount = commentCount
+                    commentCount = commentCount,
+                    isSavedByUser = isSavedByUser
                 )
                 return post
 
@@ -756,6 +761,64 @@ object AppRepository : Utils {
             // Handle exceptions, such as Firestore errors
             false
         }
+    }
+
+    suspend fun isSavedByUser(userId: String, postId: String): Boolean {
+        val savedPostRef = users
+            .document(userId)
+            .collection("savedPosts")
+            .document(postId)
+
+        return try {
+            val documentSnapshot = savedPostRef.get().await()
+            documentSnapshot.exists()
+        } catch (e: Exception) {
+            // Handle exceptions, such as Firestore errors
+            false
+        }
+    }
+
+    fun updateSavedPosts(userId: String, userLikes: MutableList<DisplaySaved>) {
+        val batch = Firebase.firestore.batch()
+
+        userLikes.forEach { like ->
+            val commentRef = users
+                .document(userId)
+
+            val commentLikeRef = commentRef
+                .collection("savedPosts")
+                .document(like.postId)
+
+            val userRef = users.document(userId)
+
+            if (like.save) {
+                // Liked, add or update the like
+                val likeData = hashMapOf(
+                    "SavedAt" to like.savedAt,
+                    "postId" to like.postId
+                )
+                batch.set(commentLikeRef, likeData)
+//                batch.update(commentRef, "advicePointCount", FieldValue.increment(1))
+//                batch.update(userRef, "advicePoint", FieldValue.increment(1))
+            } else {
+                // Unliked, remove the like
+                batch.delete(commentLikeRef)
+//                batch.update(commentRef, "advicePointCount", FieldValue.increment(-1))
+//                batch.update(userRef, "advicePoint", FieldValue.increment(-1))
+            }
+        }
+
+        // Commit the batch operation
+        batch.commit()
+            .addOnSuccessListener {
+                // Success
+
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+            }
+
+
     }
 
 

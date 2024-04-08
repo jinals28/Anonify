@@ -80,7 +80,7 @@ class CommentFragment : Fragment(), Utils {
         val postId = args.postId
 
         lifecycleScope.launch {
-            viewModel.getPostById(postId)
+            viewModel.getPostById(userViewModel.getUserId(), postId)
         }
 
         return binding!!.root

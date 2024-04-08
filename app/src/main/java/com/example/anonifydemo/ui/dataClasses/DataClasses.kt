@@ -24,6 +24,12 @@ data class DisplayLike(
     var liked: Boolean // Indicator to show if it was liked or not
 )
 
+data class DisplaySaved(
+    val postId: String,
+    var savedAt: Long,
+    var save: Boolean // Indicator to show if it was liked or not
+)
+
 data class DisplayCommentLike(
     val commentId: String,
     var likedAt: Long,

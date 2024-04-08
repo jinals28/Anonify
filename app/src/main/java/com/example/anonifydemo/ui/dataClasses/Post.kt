@@ -8,7 +8,8 @@ data class DisplayPost(
     val topicName: String,
     var likeCount: Long,
     val commentCount: Long = 0L,
-    var likedByCurrentUser: Boolean
+    var likedByCurrentUser: Boolean,
+    var isSavedByUser : Boolean
 )
 
 data class Post(// Room: Long (Primary key)
