@@ -555,6 +555,8 @@ object AppRepository : Utils {
         return commentList
     }
 
+    //TODO: ONLY FETCH NEW COMMENTS BY USING TIME RANGE OF LAST COMMENT IN PREVIOUS LIST AND CURRENT TIME
+    
     private suspend fun fetchCommentObject(commentId: String) : DisplayComment? {
         val doc = commentCollection.document(commentId)
 
