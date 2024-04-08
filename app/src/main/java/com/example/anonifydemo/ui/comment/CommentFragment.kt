@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 
 class CommentFragment : Fragment(), Utils {
 
+    private lateinit var adapter: PostRecyclerViewAdapter
     private lateinit var noOfLike: TextView
     private lateinit var noOfComment: TextView
     private lateinit var moreOptions: ImageButton
@@ -91,6 +92,9 @@ class CommentFragment : Fragment(), Utils {
 
         val userId = userViewModel.getUserId()
 
+        adapter = PostRecyclerViewAdapter(requireContext(), userId)
+
+        postRv.adapter = adapter
         btnback = binding!!.btnback
 
         val postId = args.postId
@@ -156,8 +160,7 @@ class CommentFragment : Fragment(), Utils {
 
         noOfComments.text = post.commentCount.toString()
 
-        val adapter = PostRecyclerViewAdapter(requireContext(), mutableListOf(post), userId)
-        postRv.adapter = adapter
+        adapter.submitList(mutableListOf(post))
 
     }
 

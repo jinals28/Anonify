@@ -80,7 +80,6 @@ class CommentAdapter(private val context: Context, private val userId : String) 
         private val btnAdvicePoint : ImageButton = binding.btnAdvicePoint
         // Initialize views here
 
-
         fun bind(comment: DisplayComment) {
             // Bind data to views here
             userName.text = comment.userName
@@ -228,8 +227,6 @@ class CommentAdapter(private val context: Context, private val userId : String) 
         private fun setLikeCountText(likeCount: Long) {
             noLike.text = likeCount.toString()
         }
-
-
 
     }
 

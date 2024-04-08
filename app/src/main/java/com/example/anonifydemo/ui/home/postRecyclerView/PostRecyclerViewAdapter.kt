@@ -5,9 +5,12 @@ import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemPostBinding
@@ -23,34 +26,46 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PostRecyclerViewAdapter(val context : Context, val postList : List<DisplayPost>, val userId : String,
-) :  RecyclerView.Adapter<PostRecyclerViewAdapter.PostViewHolder>() {
+class PostRecyclerViewAdapter(val context : Context, val userId : String
+) :  ListAdapter<DisplayPost, PostRecyclerViewAdapter.PostViewHolder>(PostDiffCallback()) {
 
-    var userLikes: MutableList<DisplayLike> = postList.map {
-        DisplayLike(
-            postId = it.postId,
-            likedAt = -1L,
-            liked = it.likedByCurrentUser
-        )
-    }.toMutableList()
+    var userLikes: MutableList<DisplayLike> = mutableListOf()
 
-    var savedPost : MutableList<DisplaySaved> = postList.map {
+    var savedPost : MutableList<DisplaySaved> = mutableListOf()
 
-        DisplaySaved(
-            postId = it.postId,
-            savedAt = -1L,
-            save = it.isSavedByUser
-        )
+    init {
+        updateUserLikes()
+        updateSavedList()
+    }
 
-    }.toMutableList()
+    private fun updateSavedList() {
+        savedPost.clear()
+        savedPost = currentList.map {
 
+            DisplaySaved(
+                postId = it.postId,
+                savedAt = -1L,
+                save = it.isSavedByUser
+            )
 
+        }.toMutableList()
+    }
+
+    private fun updateUserLikes() {
+        userLikes.clear()
+        userLikes = currentList.map {
+            DisplayLike(
+                postId = it.postId,
+                likedAt = -1L,
+                liked = it.likedByCurrentUser
+            )
+        }.toMutableList()
+    }
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     private val debounceDuration = 1_000L
 
-    private val debounceHandler = android.os.Handler(Looper.getMainLooper())
     inner class PostViewHolder(binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private val txtHashtag = binding.txtHashtag
@@ -78,19 +93,11 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
 
             noOfComment.text = post.commentCount.toString()
 
-//            if (user.uid == post.uid){
-
-//                userAvatar.setImageDrawable(ContextCompat.getDrawable(context, user.avatarUrl.id))
-//                userName.text = user.avatarUrl.name
-
             // Set the like button icon based on whether the user has liked the post
             setLikeButtonState(post.likedByCurrentUser)
 
             setSavedState(post.isSavedByUser)
-//////
-//////            // Set the like count text
-//            setLikeCountText(post.likedBy, post.likeCount)
-//
+
             // Handle like button click
             likeButton.setOnClickListener {
                 togglePost(post)
@@ -129,6 +136,15 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
                         R.id.hide -> {
                             // Handle hide post action
                             Log.d("Anonify : $TAG", "hide post")
+                            val position = adapterPosition
+                            // Check if the position is valid
+                            if (position != RecyclerView.NO_POSITION) {
+                                // Apply animation
+                                val animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right)
+                                itemView.startAnimation(animation)
+                                // Remove the item from the list
+                                removeItem(position)
+                            }
                             true
                         }
                         else -> false
@@ -137,6 +153,18 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
                 popupMenu.show()
             }
         }
+
+        fun removeItem(position: Int) {
+            if (position != RecyclerView.NO_POSITION) {
+                // Remove the item from the list
+                // Notify the adapter about the item removal
+                val newList = currentList.toMutableList()
+                newList.removeAt(position)
+                // Submit the new list to the ListAdapter
+                submitList(newList)
+            }
+        }
+
 
         private fun toggleSave(post: DisplayPost) {
 
@@ -249,22 +277,38 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
         }
     }
 
+    class PostDiffCallback : DiffUtil.ItemCallback<DisplayPost>() {
+        override fun areItemsTheSame(oldItem: DisplayPost, newItem: DisplayPost): Boolean {
+            return oldItem.postId == newItem.postId
+        }
+
+        override fun areContentsTheSame(oldItem: DisplayPost, newItem: DisplayPost): Boolean {
+            return  oldItem == newItem
+        }
+
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return postList.size
-    }
-
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
 
-        val post = postList[position]
+        val post = getItem(position)
 
         holder.bind(post)
 
 
+    }
+
+    override fun submitList(list: MutableList<DisplayPost>?) {
+        super.submitList(list)
+
+        list?.let {
+            updateUserLikes()
+            updateSavedList()
+        }
     }
 
     companion object {

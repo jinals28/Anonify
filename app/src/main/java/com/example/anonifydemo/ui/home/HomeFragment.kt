@@ -42,6 +42,8 @@ class HomeFragment : Fragment(), Utils {
 
     private lateinit var user : ActiveUser
 
+    private lateinit var adapter : PostRecyclerViewAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,6 +65,10 @@ class HomeFragment : Fragment(), Utils {
         shimmerPosts.startShimmer()
 //        loading = binding.loading
 
+        adapter = PostRecyclerViewAdapter(requireContext(), user.uid)
+
+        postRv.adapter = adapter
+
         lifecycleScope.launch {
             AppRepository.fetchPosts(user.uid, user.followingTopics)
         }
@@ -81,8 +87,7 @@ class HomeFragment : Fragment(), Utils {
             shimmerPosts.visibility = View.GONE
             postRv.visibility = View.VISIBLE
             log("In Home Fragment ${posts.toString()}")
-            val adapter = PostRecyclerViewAdapter(requireContext(), posts, user.uid)
-            postRv.adapter = adapter
+            adapter.submitList(posts.toMutableList())
         }
 
         btncommunity.setOnClickListener {
