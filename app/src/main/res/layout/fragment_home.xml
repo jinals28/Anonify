@@ -78,7 +78,19 @@
         </LinearLayout>
         
     </androidx.appcompat.widget.Toolbar>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:progress="10"
+            android:indeterminateTint="@color/btn"
+            android:visibility="visible" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postRv"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -86,7 +98,8 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/item_post"
         android:scrollbars="vertical"
+        android:visibility="gone"
         android:layout_marginBottom="64dp"/>
 
-
+    </FrameLayout>
 </LinearLayout>

@@ -37,7 +37,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
             <TextView
-                android:id="@+id/txtusr"
+                android:id="@+id/txtnotifi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
@@ -54,7 +54,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
             <TextView
-                android:id="@+id/txt"
+                android:id="@+id/txttime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"

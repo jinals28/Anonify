@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -31,6 +32,7 @@ class HomeFragment : Fragment(), Utils {
     private lateinit var postRv : RecyclerView
 
     private lateinit var btncommunity : ImageButton
+    private lateinit var loading : ProgressBar
 
     private val homeViewModel: HomeViewModel by viewModels()
 
@@ -55,6 +57,7 @@ class HomeFragment : Fragment(), Utils {
         super.onViewCreated(view, savedInstanceState)
         btncommunity = binding.toolbarCommunityIcon
         postRv = binding.postRv
+        loading = binding.loading
 
         lifecycleScope.launch {
             AppRepository.fetchPosts(user.uid, user.followingTopics)
@@ -68,7 +71,10 @@ class HomeFragment : Fragment(), Utils {
 //                }
 //            }
 //            val adapter = PostRecyclerViewAdapter(requireContext(), posts, userViewModel.getUser()!!)
-//            log("In Home Fragment ${posts.toString()}")
+
+            loading.visibility = View.GONE
+            postRv.visibility = View.VISIBLE
+            log("In Home Fragment ${posts.toString()}")
             val adapter = PostRecyclerViewAdapter(requireContext(), posts, user.uid)
             postRv.adapter = adapter
         }

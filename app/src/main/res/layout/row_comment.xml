@@ -7,14 +7,14 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
         android:visibility="visible"
         android:backgroundTint="@color/windowBackground"
         app:cardCornerRadius="2dp"
         app:cardElevation="2dp">
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:layout_marginRight="10dp"-->
+<!--        android:layout_marginBottom="5dp"-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:text="Zink"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="#F4F5FC"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
             <View
                 android:layout_width="0dp"
@@ -64,11 +64,12 @@
 
             <ImageButton
                 android:id="@+id/commentOption"
-                android:layout_width="33dp"
+                android:layout_width="27dp"
                 android:layout_height="25dp"
                 android:layout_gravity="bottom"
                 android:backgroundTint="@color/windowBackground"
-                android:src="@drawable/options2" />
+                android:src="@drawable/baseline_more_horiz_24" />
+
             </LinearLayout>
             <TextView
                 android:id="@+id/txtComment"
@@ -101,7 +102,7 @@
                     android:layout_height="22dp"
                     android:background="@color/windowBackground"
 
-                    app:srcCompat="@drawable/like" />
+                    app:srcCompat="@drawable/baseline_thumb_up_off_alt_24" />
                 <TextView
                     android:id="@+id/Nolike"
                     android:layout_width="wrap_content"
@@ -127,7 +128,7 @@
                     android:layout_height="22dp"
                     android:background="@color/windowBackground"
 
-                    app:srcCompat="@drawable/comment" />
+                    app:srcCompat="@drawable/comment2" />
                 <TextView
                     android:id="@+id/Nocomment"
                     android:layout_width="wrap_content"
@@ -167,8 +168,8 @@
 
                 <ImageButton
                     android:id="@+id/btnAdvicePoint"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_marginEnd="5dp"
                     android:background="@color/windowBackground"
                     app:srcCompat="@drawable/baseline_star_border_24" />

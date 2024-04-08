@@ -26,6 +26,7 @@ import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
@@ -40,6 +41,7 @@ class CommentFragment : Fragment(), Utils {
     private lateinit var userAvatar: CircleImageView
     private lateinit var userName: TextView
     private lateinit var txtPostContent: TextView
+    private lateinit var shimmerViewContainer: ShimmerFrameLayout
 
     private lateinit var noOfComments: TextView
 
@@ -108,6 +110,10 @@ class CommentFragment : Fragment(), Utils {
 //    noOfComment = binding!!.postLayout.Nocomment
     noOfComments = binding!!.noOfComments
     commentRv = binding!!.commentRv
+        //shimmerViewContainer = binding!!.shimmerViewContainer
+
+        // Start shimmer effect
+        //shimmerViewContainer.startShimmer()
 
     commentAdapter = CommentAdapter(requireContext())
 
@@ -122,6 +128,8 @@ class CommentFragment : Fragment(), Utils {
 
     viewModel.post.observe(viewLifecycleOwner)
     { post ->
+       // shimmerViewContainer.stopShimmer()
+        //shimmerViewContainer.visibility = View.GONE
         displayPost = post
 
 //        txtHashtag.text = post.topicName
@@ -181,6 +189,11 @@ class CommentFragment : Fragment(), Utils {
         if (findNavController().currentDestination!!.id == R.id.commentFragment) {
             navController.popBackStack()
         }
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Stop shimmer effect and release resources
+       // shimmerViewContainer.stopShimmer()
     }
 
 }
