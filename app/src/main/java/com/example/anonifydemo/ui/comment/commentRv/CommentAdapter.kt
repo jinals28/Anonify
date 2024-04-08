@@ -14,10 +14,13 @@ import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.RowCommentBinding
 import com.example.anonifydemo.ui.dataClasses.Comment
 import com.example.anonifydemo.ui.dataClasses.DisplayComment
+import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import de.hdodenhof.circleimageview.CircleImageView
 
 class CommentAdapter(private val context: Context) :
     ListAdapter<DisplayComment, CommentAdapter.CommentViewHolder>(CommentDiffCallback()) {
+
+    private var userLikes: MutableList<DisplayLike> = mutableListOf()
 
     inner class CommentViewHolder(binding : RowCommentBinding) : RecyclerView.ViewHolder(binding.root) {
         private val userName : TextView = binding.txtusrnm

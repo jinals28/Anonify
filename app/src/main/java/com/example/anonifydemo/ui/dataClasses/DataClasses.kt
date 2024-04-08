@@ -22,6 +22,11 @@ data class DisplayLike(
     var liked: Boolean // Indicator to show if it was liked or not
 )
 
+data class DisplayCommentLike(
+    val commentId: String,
+    val likedAt: Long,
+    var liked: Boolean // Indicator to show if it was liked or not
+)
 data class Comment(
     val userId: String, // Room: Long (Foreign key)
     val postId: String, // Room: Long (Foreign key)

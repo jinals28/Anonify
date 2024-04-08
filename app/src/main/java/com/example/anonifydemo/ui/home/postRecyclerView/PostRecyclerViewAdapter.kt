@@ -96,10 +96,12 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             }
 
             commentButton.setOnClickListener {
+                if (it.findNavController().currentDestination!!.id == R.id.navigation_home){
+                    val action =
+                        HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
+                    it.findNavController().navigate(action)
+                }
 
-                val action =
-                    HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
-                it.findNavController().navigate(action)
             }
 
             moreOptions.setOnClickListener{
