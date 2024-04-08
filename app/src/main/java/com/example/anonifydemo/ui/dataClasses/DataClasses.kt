@@ -24,7 +24,7 @@ data class DisplayLike(
 
 data class DisplayCommentLike(
     val commentId: String,
-    val likedAt: Long,
+    var likedAt: Long,
     var liked: Boolean // Indicator to show if it was liked or not
 )
 data class Comment(
@@ -42,8 +42,9 @@ data class DisplayComment(
     val userName: String,
     val avatarUrl: Int, // Assuming it's the resource ID of the avatar image
     val postContent: String,
-    val likeCount: Long,
-    val commentId: String
+    var likeCount: Long,
+    val commentId: String,
+    var likedByUser : Boolean = false
 )
 
 data class CommentLike(
