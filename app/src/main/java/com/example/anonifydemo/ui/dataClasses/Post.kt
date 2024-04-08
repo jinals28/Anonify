@@ -4,7 +4,7 @@ data class DisplayPost(
     val postId: String = "",
     val userId : String = "",
     val postContent: String,
-    val avatarUrl: Int, // Assuming this is the URL of the avatar image
+    val avatarUrl: Int , // Assuming this is the URL of the avatar image
     val avatarName: String,
     val topicName: String,
     var likeCount: Long,

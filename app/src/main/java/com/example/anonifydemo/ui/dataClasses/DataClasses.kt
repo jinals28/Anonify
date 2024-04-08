@@ -7,9 +7,10 @@ data class ActiveUser(
     val email: String = "",
     val avatar: Avatar = Avatar(), // Assuming this is a unique identifier for the avatar
     val createdAt: Long = -1,
-    val followingTopics : List<FollowingTopic> = listOf(),
-    var advicePointCount : Long = 0,
-    var followingTopicsCount : Long = 0
+    val followingTopics: List<FollowingTopic> = listOf(),
+    var advicePointCount: Long = 0,
+    var followingTopicsCount: Long = 0,
+    var postCount: Long = 0
 )
 data class Like(
     val likeId: String = "", // Room: Long (Primary key)

@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.anonifydemo.R
+import com.example.anonifydemo.ui.dataClasses.ActiveUser
 import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Comment
 import com.example.anonifydemo.ui.dataClasses.DisplayAdvicePoint
@@ -35,7 +36,7 @@ import kotlinx.coroutines.withContext
 
 object AppRepository : Utils {
 
-    private val firestore = Firebase.firestore
+    val firestore = Firebase.firestore
 
     private val posts = mutableListOf<Post>()
 
@@ -115,7 +116,6 @@ object AppRepository : Utils {
     )
 
     var followingTopicList = mutableListOf<FollowingTopic>()
-
 
     suspend fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         Log.d(TAG, "Add user")
@@ -224,6 +224,8 @@ object AppRepository : Utils {
 
         // Save the map to Firestore
         userDocRef.set(topicsMap)
+
+
     }
 
     private fun User.toMap(): Map<String, Any?> {
@@ -373,19 +375,39 @@ object AppRepository : Utils {
     }
 
     suspend fun addPost(post: Post) {
-            try {
-                val postCollection = Firebase.firestore.collection("posts")
-                postCollection.add(post)
-                    .addOnSuccessListener { documentReference ->
-                        Log.d("AppRepository", "Post added with ID: ${documentReference.id}")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e("AppRepository", "Error adding post", e)
-                    }
-            } catch (e: Exception) {
-                Log.e("AppRepository", "Exception adding post", e)
+                try {
+                    // Get a reference to the posts collection
+                    val postCollection = Firebase.firestore.collection("postsList")
+
+                    // Add the post to the posts collection
+                    val postDocRef = postCollection.add(post).await()
+                    val postId = postDocRef.id
+
+                    // Get a reference to the user's document
+                    val userRef = users.document(post.userId)
+
+                    // Create a reference to the user's posts subcollection
+                    val userPostsCollection = userRef.collection("posts")
+
+                    // Add the postId to the user's posts subcollection
+                    val postData = hashMapOf(
+                        "postId" to postId,
+                        "postedAt" to post.postCreatedAt
+                    )
+                    userPostsCollection.document(postId).set(postData)
+
+                    // Increment postCount for the user
+                    userRef.update("postCount", FieldValue.increment(1))
+                        .addOnSuccessListener {
+                            Log.d("AppRepository", "Post added successfully")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("AppRepository", "Error updating postCount", e)
+                        }
+                } catch (e: Exception) {
+                    Log.e("AppRepository", "Exception adding post", e)
+                }
             }
-        }
 
     suspend fun updatesLikes(userId: String, userLikes: MutableList<DisplayLike>) {
 //        Log.d(TAG, userLikes.toString())
@@ -898,7 +920,6 @@ object AppRepository : Utils {
             }
     }
 
-
     // Helper function to get the report count of a user
     suspend fun getUserReportCount(userId: String): Int {
         val userSnapshot = firestore.collection("users").document(userId).get().await()
@@ -907,6 +928,91 @@ object AppRepository : Utils {
 
     suspend fun reportUser(userId: String) {
         increaseReportCount(userId)
+    }
+
+    suspend fun getUser(userId: String): ActiveUser? {
+
+        val userRef = users.document(userId).get().await()
+        if (userRef.exists()) {
+            val avatarName = userRef.getString("avatar") ?: ""
+            val advicePointCount = userRef.getLong("advicePoint") ?: 0L
+            val followingTopic = followingTopics.document(userId).get().await()
+            val followingTopicSize = followingTopic.data!!.size.toLong()
+            val url = avatarList.find { it.name == avatarName }!!.url
+            val postCount = userRef.getLong("postCount") ?: 0L
+
+            return ActiveUser(
+                avatar = Avatar(url, avatarName),
+                advicePointCount = advicePointCount,
+                followingTopicsCount = followingTopicSize,
+                postCount = postCount
+            )
+        }else {
+            return null
+        }
+    }
+
+    suspend fun getUserPosts(userId: String): List<DisplayPost> {
+        val userPostsCollection = users.document(userId).collection("posts")
+        val postIds = mutableListOf<String>()
+
+        try {
+            // Fetch all documents from the user's posts subcollection
+            val querySnapshot = userPostsCollection.get().await()
+
+            // Extract the post IDs from the documents
+            for (document in querySnapshot.documents) {
+                val postId = document.getString("postId")
+                if (postId != null) {
+                    postIds.add(postId)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("AppRepository", "Error fetching user posts", e)
+        }
+
+        // Fetch the posts from the postsList collection using the retrieved post IDs
+        val userPosts = mutableListOf<DisplayPost>()
+        val postCollection = Firebase.firestore.collection("posts")
+
+        for (postId in postIds) {
+            try {
+                val document = postCollection.document(postId).get().await()
+                if (document.exists()) {
+                    val postedUserId = document.getString("userId") ?: ""
+                    val topicName = document.getString("topicName") ?: ""
+                    val postContent = document.getString("postContent") ?: ""
+                    val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
+                    val likeCount = document.getLong("likeCount") ?: 0L
+                    val commentCount = document.getLong("commentCount") ?: 0L
+                    val avatarName = fetchAvatarName(postedUserId)
+//                    log("Avatar name from userId: $avatarName")
+                    val url = avatarList.find { it.name == avatarName }!!.url
+
+                    val likedByUser = isPostLikedByCurrentUser(document.id, userId)
+
+                    val savedByUser = isSavedByUser(document.id, userId)
+
+                    val post = DisplayPost(
+                        postId = document.id,
+                        userId = postedUserId,
+                        postContent = postContent,
+                        topicName = topicName,
+                        likeCount = likeCount,
+                        avatarName = avatarName,
+                        avatarUrl = url,
+                        likedByCurrentUser = likedByUser,
+                        commentCount = commentCount,
+                        isSavedByUser = savedByUser
+                    )
+                    post?.let { userPosts.add(it) }
+                }
+            } catch (e: Exception) {
+                Log.e("AppRepository", "Error fetching post with ID $postId", e)
+            }
+        }
+
+        return userPosts
     }
 
 

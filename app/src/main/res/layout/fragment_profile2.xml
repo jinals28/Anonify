@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/windowBackground"
     android:orientation="vertical"
-    tools:context=".ui.profile.Profile2Fragment">
+    tools:context=".ui.displayProfile.Profile2Fragment">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -226,9 +226,10 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"></androidx.recyclerview.widget.RecyclerView>
+            android:orientation="vertical" />
     </LinearLayout>
 
 

@@ -119,6 +119,15 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
 
             }
 
+            userName.setOnClickListener {
+                if (it.findNavController().currentDestination!!.id == R.id.navigation_home){
+                    val action =
+                        HomeFragmentDirections.actionHomeFragmentToProfile2Fragment(userId = post.userId)
+                    it.findNavController().navigate(action)
+                }
+
+            }
+
             moreOptions.setOnClickListener{
                 val popupMenu = PopupMenu(context, moreOptions)
                 popupMenu.menuInflater.inflate(R.menu.post_popup_menu, popupMenu.menu)

@@ -196,7 +196,12 @@
     </fragment>
     <fragment
         android:id="@+id/profile2Fragment"
-        android:name="com.example.anonifydemo.ui.profile.Profile2Fragment"
+        android:name="com.example.anonifydemo.ui.displayProfile.Profile2Fragment"
         android:label="fragment_profile2"
-        tools:layout="@layout/fragment_profile2" />
+        tools:layout="@layout/fragment_profile2" >
+        <argument
+            android:name="userId"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
 </navigation>
