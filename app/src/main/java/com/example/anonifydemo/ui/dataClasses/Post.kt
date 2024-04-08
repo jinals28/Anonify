@@ -6,8 +6,8 @@ data class DisplayPost(
     val avatarUrl: Int, // Assuming this is the URL of the avatar image
     val avatarName: String,
     val topicName: String,
-    var likeCount: Int,
-    val commentCount: Int = 0,
+    var likeCount: Long,
+    val commentCount: Long = 0L,
     var likedByCurrentUser: Boolean
 )
 

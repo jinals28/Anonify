@@ -23,6 +23,7 @@ import com.example.anonifydemo.databinding.FragmentCommentBinding
 import com.example.anonifydemo.ui.comment.commentRv.CommentAdapter
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
+import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
 import com.google.android.material.snackbar.Snackbar
@@ -41,6 +42,8 @@ class CommentFragment : Fragment(), Utils {
     private lateinit var txtPostContent: TextView
 
     private lateinit var noOfComments: TextView
+
+    private lateinit var postRv : RecyclerView
 
     private lateinit var commentAdapter: CommentAdapter
 
@@ -93,15 +96,16 @@ class CommentFragment : Fragment(), Utils {
 
     commentPostButton = binding!!.postCommentButton
     commentEditText = binding!!.commentEditText
-    txtHashtag = binding!!.postLayout.txtHashtag
-    txtPostContent = binding!!.postLayout.txtpost
-    userName = binding!!.postLayout.txtusrnm
-    userAvatar = binding!!.postLayout.imgUsr
-    likeButton = binding!!.postLayout.likeBtn
-    commentButton = binding!!.postLayout.commentBtn
-    moreOptions =binding!!.postLayout.moreOptions
-    noOfLike = binding!!.postLayout.Nolike
-    noOfComment = binding!!.postLayout.Nocomment
+    postRv = binding!!.postLayout
+//    txtHashtag = binding!!.postLayout.txtHashtag
+//    txtPostContent = binding!!.postLayout.txtpost
+//    userName = binding!!.postLayout.txtusrnm
+//    userAvatar = binding!!.postLayout.imgUsr
+//    likeButton = binding!!.postLayout.likeBtn
+//    commentButton = binding!!.postLayout.commentBtn
+//    moreOptions =binding!!.postLayout.moreOptions
+//    noOfLike = binding!!.postLayout.Nolike
+//    noOfComment = binding!!.postLayout.Nocomment
     noOfComments = binding!!.noOfComments
     commentRv = binding!!.commentRv
 
@@ -120,19 +124,24 @@ class CommentFragment : Fragment(), Utils {
     { post ->
         displayPost = post
 
-        txtHashtag.text = post.topicName
-
-        txtPostContent.text = post.postContent
-
-        userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), post.avatarUrl))
-
-        userName.text = post.avatarName
-
-        noOfLike.text = post.likeCount.toString()
-
-        noOfComment.text = post.commentCount.toString()
+//        txtHashtag.text = post.topicName
+//
+//        txtPostContent.text = post.postContent
+//
+//        userAvatar.setImageDrawable(ContextCompat.getDrawable(requireContext(), post.avatarUrl))
+//
+//        userName.text = post.avatarName
+//
+//        noOfLike.text = post.likeCount.toString()
+//
+//        noOfComment.text = post.commentCount.toString()
+//
+//        noOfComments.text = post.commentCount.toString()
 
         noOfComments.text = post.commentCount.toString()
+
+        val adapter = PostRecyclerViewAdapter(requireContext(), mutableListOf(post), userId)
+        postRv.adapter = adapter
 
     }
 
@@ -145,8 +154,7 @@ class CommentFragment : Fragment(), Utils {
         }
 
     }
-
-    commentPostButton.setOnClickListener{
+        commentPostButton.setOnClickListener{
 
         val commentText = commentEditText.text.toString()
 

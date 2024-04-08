@@ -55,11 +55,18 @@
 
         </androidx.appcompat.widget.Toolbar>
         <!--    provide post with the navigation-->
-        <include
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/postLayout"
-            layout="@layout/item_post"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:itemCount="1"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_post"/>
+<!--        <include-->
+<!--            android:id="@+id/postLayout"-->
+<!--            layout="@layout/item_post"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content" />-->
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"

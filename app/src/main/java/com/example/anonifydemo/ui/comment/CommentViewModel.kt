@@ -41,6 +41,8 @@ class CommentViewModel : ViewModel() {
         )
         AppRepository.addCommentToPost(comment, onSuccess) {
                 viewModelScope.launch {
+                    val post = _post.value!!.copy(commentCount = it.size.toLong())
+                    _post.value = post
                     _commentLiveData.value = it
                 }
             }

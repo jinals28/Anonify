@@ -15,7 +15,6 @@ import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.home.HomeFragmentDirections
 import com.example.anonifydemo.ui.repository.AppRepository
-import com.example.anonifydemo.ui.utils.Likeable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,7 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PostRecyclerViewAdapter(val context : Context, val postList : List<DisplayPost>, val userId : String,
-) :  RecyclerView.Adapter<PostRecyclerViewAdapter.PostViewHolder>(), Likeable {
+) :  RecyclerView.Adapter<PostRecyclerViewAdapter.PostViewHolder>() {
 
     var userLikes: MutableList<DisplayLike> = postList.map {
         DisplayLike(
@@ -33,9 +32,8 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             liked = it.likedByCurrentUser
         )
     }.toMutableList()
-    init {
-        initializeUserLikes(postList)
-    }
+
+
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -168,7 +166,7 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             }
         }
 
-        private fun setLikeCountText(likeCount: Int) {
+        private fun setLikeCountText(likeCount: Long) {
             noOfLike.text = likeCount.toString()
         }
 

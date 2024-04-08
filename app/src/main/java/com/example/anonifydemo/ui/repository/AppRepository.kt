@@ -302,7 +302,8 @@ object AppRepository : Utils {
                     val topicName = document.getString("topicName") ?: ""
                     val postContent = document.getString("postContent") ?: ""
                     val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
-                    val likeCount = document.getLong("likeCount") ?: -1L
+                    val likeCount = document.getLong("likeCount") ?: 0L
+                    val commentCount = document.getLong("commentCount") ?: 0L
                     val avatarName = fetchAvatarName(userId)
 //                    log("Avatar name from userId: $avatarName")
                     val url = avatarList.find { it.name == avatarName }!!.url
@@ -313,10 +314,11 @@ object AppRepository : Utils {
                         postId = document.id,
                         postContent = postContent,
                         topicName = topicName,
-                        likeCount = likeCount.toInt(),
+                        likeCount = likeCount,
                         avatarName = avatarName,
                         avatarUrl = url,
-                        likedByCurrentUser = likedByUser
+                        likedByCurrentUser = likedByUser,
+                        commentCount = commentCount
                     )
                     posts.add(post)
 //                    log("App Repo, ${posts.toString()}")
@@ -462,6 +464,7 @@ object AppRepository : Utils {
                 val topicName = document.getString("topicName") ?: ""
                 val postContent = document.getString("postContent") ?: ""
                 val likeCount = document.getLong("likeCount") ?: 0L
+                val commentCount = document.getLong("commentCount") ?: 0L
                 val avatarName = fetchAvatarName(userId)
 
                 val url = avatarList.find { it.name == avatarName }!!.url
@@ -472,10 +475,11 @@ object AppRepository : Utils {
                     postId = document.id,
                     postContent = postContent,
                     topicName = topicName,
-                    likeCount = likeCount.toInt(),
+                    likeCount = likeCount,
                     avatarName = avatarName,
                     avatarUrl = url,
-                    likedByCurrentUser = likedByUser
+                    likedByCurrentUser = likedByUser,
+                    commentCount = commentCount
                 )
                 return post
 
