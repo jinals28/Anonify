@@ -26,7 +26,7 @@ import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
-//import com.facebook.shimmer.ShimmerFrameLayout
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
@@ -41,7 +41,7 @@ class CommentFragment : Fragment(), Utils {
     private lateinit var userAvatar: CircleImageView
     private lateinit var userName: TextView
     private lateinit var txtPostContent: TextView
-//    private lateinit var shimmerViewContainer: ShimmerFrameLayout
+    private lateinit var shimmerViewContainer: ShimmerFrameLayout
 
     private lateinit var noOfComments: TextView
 

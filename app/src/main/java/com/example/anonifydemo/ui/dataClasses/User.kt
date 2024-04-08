@@ -13,5 +13,6 @@ data class User(
     val uid: String = "", // Firebase: String, Room: String
     val email: String = "",
     val avatar: String = "", // Assuming this is a unique identifier for the avatar
-    val createdAt: Long = -1 // Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
+    val createdAt: Long = -1,
+    var advicePoint : Long = 0// Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
 )

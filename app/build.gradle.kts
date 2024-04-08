@@ -69,6 +69,7 @@ dependencies {
 //    implementation("androidx.credentials:credentials:1.3.0-alpha01")
 //    implementation("com.firebaseui:firebase-ui-storage:7.2.0")
     implementation ("com.google.android.flexbox:flexbox:3.0.0")
+
     implementation ("com.facebook.shimmer:shimmer:0.5.0")
 
 

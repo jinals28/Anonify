@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.RowCommentBinding
 import com.example.anonifydemo.ui.dataClasses.Comment
+import com.example.anonifydemo.ui.dataClasses.DisplayAdvicePoint
 import com.example.anonifydemo.ui.dataClasses.DisplayComment
 import com.example.anonifydemo.ui.dataClasses.DisplayCommentLike
 import com.example.anonifydemo.ui.dataClasses.DisplayLike
@@ -33,19 +34,32 @@ class CommentAdapter(private val context: Context, private val userId : String) 
 
     private var userLikes: MutableList<DisplayCommentLike> = mutableListOf()
 
+    private var advicePointsList: MutableList<DisplayAdvicePoint> = mutableListOf()
+
+
+
     init {
         updateLikesList()
+        updateAdvicePointsList()
+    }
+
+    private fun updateAdvicePointsList() {
+        advicePointsList.clear()
+        currentList.forEach { comment ->
+            advicePointsList.add(DisplayAdvicePoint(comment.commentId, -1L, comment.advicePointByUser))
+        }
     }
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private val debounceDuration = 10_000L
+    private val debounceDuration = 1_000L
 
     override fun submitList(list: MutableList<DisplayComment>?) {
         super.submitList(list)
 
         list?.let {
             updateLikesList()
+            updateAdvicePointsList()
         }
     }
 
@@ -62,6 +76,8 @@ class CommentAdapter(private val context: Context, private val userId : String) 
         private val content : TextView = binding.txtComment
         private val noLike : TextView = binding.Nolike
         private val btnLike : ImageButton = binding.btnlike
+        private val noAdvicePoint : TextView = binding.NoAdvice
+        private val btnAdvicePoint : ImageButton = binding.btnAdvicePoint
         // Initialize views here
 
 
@@ -73,13 +89,103 @@ class CommentAdapter(private val context: Context, private val userId : String) 
             noLike.text = comment.likeCount.toString()
 
             setLikeButtonState(comment.likedByUser)
+            setAdvicePointState(comment.advicePointByUser)
 
             btnLike.setOnClickListener {
 
                 toggleComment(comment)
             }
 
+            btnAdvicePoint.setOnClickListener {
 
+                toggleAdviceComment(comment)
+            }
+
+
+        }
+
+        private fun toggleAdviceComment(comment: DisplayComment) {
+            val isLiked = advicePointsList.find { it.commentId == comment.commentId }?.given ?: false
+//            Log.d(PostRecyclerViewAdapter.TAG, isLiked.toString())
+            if (isLiked){
+                unlikePoint(comment)
+//                userLikes.removeAll { it.postId == post.postId }
+            } else {
+                likePoint(comment)
+
+            }
+            debounceAdviceUpdateToDatabase(advicePointsList)
+
+        }
+
+        private fun debounceAdviceUpdateToDatabase(userLikes: MutableList<DisplayAdvicePoint>) {
+            coroutineScope.coroutineContext.cancelChildren()
+
+            coroutineScope.launch {
+                delay(debounceDuration)
+                updateAdviceToDatabase(userLikes)
+            }
+        }
+
+        private suspend fun updateAdviceToDatabase(userLikes: MutableList<DisplayAdvicePoint>) {
+            AppRepository.updateAdvicePoints(userId, userLikes)
+        }
+
+        private fun likePost(comment: DisplayComment) {
+            comment.likeCount++
+            comment.likedByUser = true
+            setLikeButtonState(true)
+            setLikeCountText(comment.likeCount)
+            userLikes.find { it.commentId == comment.commentId }?.apply {
+                liked= true
+                likedAt = System.currentTimeMillis()
+            }
+        }
+
+        private fun unlikePost(comment: DisplayComment) {
+            setLikeButtonState(false)
+            comment.likeCount--
+            comment.likedByUser = false
+            userLikes.find { it.commentId == comment.commentId }?.apply {
+                liked = false
+                likedAt = -1
+            }
+            Log.d(PostRecyclerViewAdapter.TAG, userLikes.toString())
+            // Update the UI
+            setLikeCountText(comment.likeCount)
+        }
+        private fun likePoint(comment: DisplayComment) {
+            comment.advicePointCount++
+            comment.advicePointByUser = true
+            setAdvicePointState(true)
+            setAdvicePointCountText(comment.advicePointCount)
+            advicePointsList.find { it.commentId == comment.commentId }?.apply {
+                given= true
+                advicepPointGivenAt = System.currentTimeMillis()
+            }
+        }
+
+        private fun setAdvicePointCountText(advicePointCount: Long) {
+                noAdvicePoint.text = advicePointCount.toString()
+        }
+
+        private fun unlikePoint(comment: DisplayComment) {
+            comment.advicePointCount--
+            comment.advicePointByUser = false
+            setAdvicePointState(false)
+            setAdvicePointCountText(comment.advicePointCount)
+            advicePointsList.find { it.commentId == comment.commentId }?.apply {
+                given= false
+                advicepPointGivenAt = System.currentTimeMillis()
+            }
+        }
+
+        private fun setAdvicePointState(advicePointByUser: Boolean) {
+            if (advicePointByUser) {
+                btnAdvicePoint.setImageResource(R.drawable.baseline_thumb_up_alt_24)
+            } else {
+                btnAdvicePoint.setImageResource(R.drawable.baseline_star_border_24)
+            }
         }
 
         private fun setLikeButtonState(likedByUser: Boolean) {
@@ -92,9 +198,9 @@ class CommentAdapter(private val context: Context, private val userId : String) 
 
         private fun toggleComment(comment: DisplayComment) {
 //            Log.d(P.TAG, userLikes.toString())
-            val isLiked = userLikes.find { it.commentId == comment.commentId }?.liked
+            val isLiked = userLikes.find { it.commentId == comment.commentId }?.liked ?: false
 //            Log.d(PostRecyclerViewAdapter.TAG, isLiked.toString())
-            if (isLiked!!){
+            if (isLiked){
                 unlikePost(comment)
 //                userLikes.removeAll { it.postId == post.postId }
             } else {
@@ -123,29 +229,7 @@ class CommentAdapter(private val context: Context, private val userId : String) 
             noLike.text = likeCount.toString()
         }
 
-        private fun likePost(comment: DisplayComment) {
-            comment.likeCount++
-            comment.likedByUser = true
-            setLikeButtonState(true)
-            setLikeCountText(comment.likeCount)
-            userLikes.find { it.commentId == comment.commentId }?.apply {
-                liked= true
-                likedAt = System.currentTimeMillis()
-            }
-        }
 
-        private fun unlikePost(comment: DisplayComment) {
-            setLikeButtonState(false)
-            comment.likeCount--
-            comment.likedByUser = false
-            userLikes.find { it.commentId == comment.commentId }?.apply {
-                liked = false
-                likedAt = -1
-            }
-            Log.d(PostRecyclerViewAdapter.TAG, userLikes.toString())
-            // Update the UI
-            setLikeCountText(comment.likeCount)
-        }
 
     }
 

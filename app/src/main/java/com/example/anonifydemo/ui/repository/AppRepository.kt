@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.anonifydemo.R
 import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.Comment
+import com.example.anonifydemo.ui.dataClasses.DisplayAdvicePoint
 import com.example.anonifydemo.ui.dataClasses.DisplayComment
 import com.example.anonifydemo.ui.dataClasses.DisplayCommentLike
 import com.example.anonifydemo.ui.dataClasses.DisplayLike
@@ -268,28 +269,40 @@ object AppRepository : Utils {
 
     private suspend fun isPostLikedByCurrentUser(postId: String, userId: String): Boolean {
 
-        try {
-            val documentSnapshot = likesCollection.document(postId).get().await()
-            if (documentSnapshot.exists()) {
-                val data = documentSnapshot.data
-                if (data != null) {
-                    val likes = data["likes"] as? List<HashMap<String, Any>> // Assuming the likes are stored as a list of HashMaps
-                    likes?.forEach { likeData ->
-                        val likeUserId = likeData["userId"] as? String
-                        if (likeUserId == userId) {
-                            // The post is liked by the user
-                            return true
-                        }
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            // Handle exceptions, such as Firestore errors or parsing errors
-            Log.e(TAG, "Error checking if post is liked by user: ${e.message}", e)
-        }
+//        try {
+//            val documentSnapshot = likesCollection.document(postId).get().await()
+//            if (documentSnapshot.exists()) {
+//                val data = documentSnapshot.data
+//                if (data != null) {
+//                    val likes = data["likes"] as? List<HashMap<String, Any>> // Assuming the likes are stored as a list of HashMaps
+//                    likes?.forEach { likeData ->
+//                        val likeUserId = likeData["userId"] as? String
+//                        if (likeUserId == userId) {
+//                            // The post is liked by the user
+//                            return true
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (e: Exception) {
+//            // Handle exceptions, such as Firestore errors or parsing errors
+//            Log.e(TAG, "Error checking if post is liked by user: ${e.message}", e)
+//        }
+//
+//        // The post is not liked by the user
+//        return false
+        val commentLikeRef = postsList
+            .document(postId)
+            .collection("likes")
+            .document(userId)
 
-        // The post is not liked by the user
-        return false
+        return try {
+            val documentSnapshot = commentLikeRef.get().await()
+            documentSnapshot.exists()
+        } catch (e: Exception) {
+            // Handle exceptions, such as Firestore errors
+            false
+        }
     }
 
 
@@ -368,87 +381,123 @@ object AppRepository : Utils {
         }
 
     suspend fun updatesLikes(userId: String, userLikes: MutableList<DisplayLike>) {
-        Log.d(TAG, userLikes.toString())
+//        Log.d(TAG, userLikes.toString())
+//        userLikes.forEach { like ->
+//            Log.d(TAG, like.toString())
+//            val postId = like.postId
+//            val userId = userId
+//            val likeDoc = likesCollection.document(postId)
+//
+//            try {
+//                val documentSnapshot = likeDoc.get().await()
+//                val likesList = mutableListOf<HashMap<String, Any>>()
+//
+//                if (documentSnapshot.exists()) {
+//                    val data = documentSnapshot.data
+//                    if (data != null) {
+//                        val existingLikes =
+//                            data["likes"] as? List<HashMap<String, Any>> // Assuming the likes are stored as a list of HashMaps
+//                        existingLikes?.forEach { likeData ->
+//                            val userId = likeData["userId"] as? String
+//                            val likedAt = likeData["likedAt"] as? Long
+//                            if (userId != null && likedAt != null) {
+//                                likesList.add(hashMapOf("userId" to userId, "likedAt" to likedAt))
+//                            }
+//                        }
+//                    }
+//                }
+//                if (like.liked) {
+//                    if (!likesList.any { it["userId"] == userId }) {
+//                        likesList.add(hashMapOf("userId" to userId, "likedAt" to like.likedAt))
+//
+//                        postsList.document(postId).update("likeCount", FieldValue.increment(1))
+//                            .addOnSuccessListener {
+//                                Log.d(TAG, "likeCount incremented for postId: $postId")
+//                            }
+//                            .addOnFailureListener { e ->
+//                                Log.e(
+//                                    TAG,
+//                                    "Failed to increment likeCount for postId: $postId, ${e.message}",
+//                                    e
+//                                )
+//                            }
+//
+//                    } else {
+//                        // Case 2: Update likedAt for existing userId
+//                        likesList.filter { it["userId"] == userId }
+//                            .forEach {
+//                                if (like.likedAt != -1L) {
+//                                    it["likedAt"] = like.likedAt
+//                                }
+//                            }
+//                    }
+//                } else {
+//
+//                    if (likesList.filter { it["userId"] == userId }.isNotEmpty()) {
+//
+//                        likesList.removeIf { it["userId"] == userId }
+//
+//                        val likesRemoved = likesList.filter { it["userId"] == userId }.isEmpty()
+//                        if (likesRemoved) {
+//                            postsList.document(postId).update("likeCount", FieldValue.increment(-1))
+//                                .addOnSuccessListener {
+//                                    Log.d(TAG, "likeCount decremented for postId: $postId")
+//                                }
+//                                .addOnFailureListener { e ->
+//                                    Log.e(
+//                                        TAG,
+//                                        "Failed to decrement likeCount for postId: $postId, ${e.message}",
+//                                        e
+//                                    )
+//                                }
+//                        }
+//                    }
+//                }
+//                // Update the likes collection with the updated list
+//                val updateMap = hashMapOf("likes" to likesList)
+//                likesCollection.document(postId).set(updateMap).await()
+//
+//                Log.d(TAG, "Like added to collection for postId: $postId")
+//            } catch (e: Exception) {
+//                Log.e(TAG, "Error adding like to collection for postId: $postId, ${e.message}", e)
+//            }
+//
+    //        }
+        val batch = firestore.batch()
+
         userLikes.forEach { like ->
-            Log.d(TAG, like.toString())
-            val postId = like.postId
-            val userId = userId
-            val likeDoc = likesCollection.document(postId)
+            val commentRef = postsList
+                .document(like.postId)
 
-            try {
-                val documentSnapshot = likeDoc.get().await()
-                val likesList = mutableListOf<HashMap<String, Any>>()
+            val likeRef = commentRef
+                .collection("likes")
+                .document(userId)
 
-                if (documentSnapshot.exists()) {
-                    val data = documentSnapshot.data
-                    if (data != null) {
-                        val existingLikes =
-                            data["likes"] as? List<HashMap<String, Any>> // Assuming the likes are stored as a list of HashMaps
-                        existingLikes?.forEach { likeData ->
-                            val userId = likeData["userId"] as? String
-                            val likedAt = likeData["likedAt"] as? Long
-                            if (userId != null && likedAt != null) {
-                                likesList.add(hashMapOf("userId" to userId, "likedAt" to likedAt))
-                            }
-                        }
-                    }
-                }
-                if (like.liked) {
-                    if (!likesList.any { it["userId"] == userId }) {
-                        likesList.add(hashMapOf("userId" to userId, "likedAt" to like.likedAt))
-
-                        postsList.document(postId).update("likeCount", FieldValue.increment(1))
-                            .addOnSuccessListener {
-                                Log.d(TAG, "likeCount incremented for postId: $postId")
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e(
-                                    TAG,
-                                    "Failed to increment likeCount for postId: $postId, ${e.message}",
-                                    e
-                                )
-                            }
-
-                    } else {
-                        // Case 2: Update likedAt for existing userId
-                        likesList.filter { it["userId"] == userId }
-                            .forEach {
-                                if (like.likedAt != -1L) {
-                                    it["likedAt"] = like.likedAt
-                                }
-                            }
-                    }
-                } else {
-
-                    if (likesList.filter { it["userId"] == userId }.isNotEmpty()) {
-
-                        likesList.removeIf { it["userId"] == userId }
-
-                        val likesRemoved = likesList.filter { it["userId"] == userId }.isEmpty()
-                        if (likesRemoved) {
-                            postsList.document(postId).update("likeCount", FieldValue.increment(-1))
-                                .addOnSuccessListener {
-                                    Log.d(TAG, "likeCount decremented for postId: $postId")
-                                }
-                                .addOnFailureListener { e ->
-                                    Log.e(
-                                        TAG,
-                                        "Failed to decrement likeCount for postId: $postId, ${e.message}",
-                                        e
-                                    )
-                                }
-                        }
-                    }
-                }
-                // Update the likes collection with the updated list
-                val updateMap = hashMapOf("likes" to likesList)
-                likesCollection.document(postId).set(updateMap).await()
-
-                Log.d(TAG, "Like added to collection for postId: $postId")
-            } catch (e: Exception) {
-                Log.e(TAG, "Error adding like to collection for postId: $postId, ${e.message}", e)
+            if (like.liked) {
+                // Liked, add or update the like
+                val likeData = hashMapOf(
+                    "likedAt" to like.likedAt,
+                    "userId" to userId
+                )
+                batch.set(likeRef, likeData)
+                batch.update(commentRef, "likeCount", FieldValue.increment(1))
+            } else {
+                // Unliked, remove the like
+                batch.delete(likeRef)
+                batch.update(commentRef, "likeCount", FieldValue.increment(-1))
             }
         }
+
+        // Commit the batch operation
+        batch.commit()
+            .addOnSuccessListener {
+                // Success
+
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+            }
+
     }
 
     //For Comment Fragment
@@ -569,20 +618,24 @@ object AppRepository : Utils {
                 if (document.exists()) {
                     val userId = document.getString("userId") ?: ""
                     val commentText = document.getString("commentText") ?: ""
-                    val commentLikeCount = document.getLong("commentLikeCount") ?: 0L
+                    val commentLikeCount = document.getLong("likeCount") ?: 0L
+                    val advicePointCount = document.getLong("advicePointCount") ?: 0L
                     val userName = fetchAvatarName(userId)
                     val url = avatarList.find { it.name == userName }!!.url
 
 //                    val likedByUser = isPostLikedByCurrentUser(document.id, userId)
 
                     val likedByUser = isCommentLikedByUser(userId, commentId)
+                    val advicePointByUser = isAdvicePointByUser(userId, commentId)
                     val comment = DisplayComment(
                         userName = userName,
                         avatarUrl = url,
                         postContent = commentText,
                         likeCount = commentLikeCount,
                         commentId = commentId,
-                        likedByUser = likedByUser
+                        likedByUser = likedByUser,
+                        advicePointByUser = advicePointByUser,
+                        advicePointCount = advicePointCount
                     )
                     log(TAG + " Comment : " +comment.toString())
                     return comment
@@ -632,6 +685,49 @@ object AppRepository : Utils {
 
 
     }
+
+    fun updateAdvicePoints(userId: String, userLikes: MutableList<DisplayAdvicePoint>) {
+        val batch = Firebase.firestore.batch()
+
+        userLikes.forEach { like ->
+            val commentRef = firestore.collection("comments")
+                .document(like.commentId)
+
+            val commentLikeRef = commentRef
+                .collection("advicePoints")
+                .document(userId)
+
+            val userRef = users.document(userId)
+
+            if (like.given) {
+                // Liked, add or update the like
+                val likeData = hashMapOf(
+                    "advicePointGivenAt" to like.advicepPointGivenAt,
+                    "userId" to userId
+                )
+                batch.set(commentLikeRef, likeData)
+                batch.update(commentRef, "advicePointCount", FieldValue.increment(1))
+                batch.update(userRef, "advicePoint", FieldValue.increment(1))
+            } else {
+                // Unliked, remove the like
+                batch.delete(commentLikeRef)
+                batch.update(commentRef, "advicePointCount", FieldValue.increment(-1))
+                batch.update(userRef, "advicePoint", FieldValue.increment(-1))
+            }
+        }
+
+        // Commit the batch operation
+        batch.commit()
+            .addOnSuccessListener {
+                // Success
+
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+            }
+
+
+    }
     suspend fun isCommentLikedByUser(userId: String, commentId: String): Boolean {
         val commentLikeRef = commentCollection
             .document(commentId)
@@ -646,6 +742,25 @@ object AppRepository : Utils {
             false
         }
     }
+
+    suspend fun isAdvicePointByUser(userId: String, commentId: String): Boolean {
+        val commentLikeRef = commentCollection
+            .document(commentId)
+            .collection("advicePoints")
+            .document(userId)
+
+        return try {
+            val documentSnapshot = commentLikeRef.get().await()
+            documentSnapshot.exists()
+        } catch (e: Exception) {
+            // Handle exceptions, such as Firestore errors
+            false
+        }
+    }
+
+
+
+
 
 }
 

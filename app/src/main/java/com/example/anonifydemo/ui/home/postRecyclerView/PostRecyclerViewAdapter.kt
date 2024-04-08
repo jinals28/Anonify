@@ -37,7 +37,7 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private val debounceDuration = 10_000L
+    private val debounceDuration = 1_000L
 
     private val debounceHandler = android.os.Handler(Looper.getMainLooper())
     inner class PostViewHolder(binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -170,13 +170,19 @@ class PostRecyclerViewAdapter(val context : Context, val postList : List<Display
             post.likedByCurrentUser = true
             setLikeButtonState(true)
             setLikeCountText(post.likeCount)
-            userLikes.find { it.postId == post.postId }?.liked = true
+            userLikes.find { it.postId == post.postId }?.apply {
+                liked = true
+                likedAt = System.currentTimeMillis()
+            }
         }
         private fun unlikePost(post: DisplayPost) {
             setLikeButtonState(false)
             post.likeCount--
             post.likedByCurrentUser = false
-            userLikes.find { it.postId == post.postId }?.apply { liked = false }
+            userLikes.find { it.postId == post.postId }?.apply {
+                liked = false
+
+            }
             Log.d(TAG, userLikes.toString())
             // Update the UI
             setLikeCountText(post.likeCount)

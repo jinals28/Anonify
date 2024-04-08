@@ -7,7 +7,9 @@ data class ActiveUser(
     val email: String = "",
     val avatar: Avatar = Avatar(), // Assuming this is a unique identifier for the avatar
     val createdAt: Long = -1,
-    val followingTopics : List<FollowingTopic> = listOf()
+    val followingTopics : List<FollowingTopic> = listOf(),
+    var advicePointCount : Long = 0,
+    var followingTopicsCount : Long = 0
 )
 data class Like(
     val likeId: String = "", // Room: Long (Primary key)
@@ -18,7 +20,7 @@ data class Like(
 
 data class DisplayLike(
     val postId: String,
-    val likedAt: Long,
+    var likedAt: Long,
     var liked: Boolean // Indicator to show if it was liked or not
 )
 
@@ -27,6 +29,13 @@ data class DisplayCommentLike(
     var likedAt: Long,
     var liked: Boolean // Indicator to show if it was liked or not
 )
+
+data class DisplayAdvicePoint(
+    val commentId: String,
+    var advicepPointGivenAt: Long,
+    var given: Boolean // Indicator to show if it was liked or not
+)
+
 data class Comment(
     val userId: String, // Room: Long (Foreign key)
     val postId: String, // Room: Long (Foreign key)
@@ -44,7 +53,10 @@ data class DisplayComment(
     val postContent: String,
     var likeCount: Long,
     val commentId: String,
-    var likedByUser : Boolean = false
+    var likedByUser : Boolean = false,
+    var advicePointByUser : Boolean = false,
+    var advicePointCount : Long
+
 )
 
 data class CommentLike(
