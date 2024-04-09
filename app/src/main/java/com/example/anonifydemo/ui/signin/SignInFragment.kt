@@ -92,12 +92,12 @@ class SignInFragment : Fragment(), Utils {
                 if (viewModel.validateFields(email, password)) {
                     viewModel.signInWithEmailAndPassword(requireContext(), email, password)
 
-                    if (rememberMe) {
-                        AuthenticationUtil.saveCredentials(requireContext(), email, password)
-                        AuthenticationUtil.setLoggedIn(requireContext(), true)
-                    } else {
-                        AuthenticationUtil.clearCredentials(requireContext())
-                    }
+//                    if (rememberMe) {
+//                        AuthenticationUtil.saveCredentials(requireContext(), email, password)
+//                        AuthenticationUtil.setLoggedIn(requireContext(), true)
+//                    } else {
+//                        AuthenticationUtil.clearCredentials(requireContext())
+//                    }
                 }
             }catch (e : Exception){
                 log(e.toString())
