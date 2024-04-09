@@ -56,16 +56,8 @@ class MainActivity : AppCompatActivity()  {
 
         lifecycleScope.launch {
             AppRepository.getTopics()
-//            AppRepository.fetchPosts()
         }
-//        val resourceId = R.drawable.dog
-//        Log.d("Drawable ID", "The drawable ID is: $resourceId")
 
-
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
-//        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
-//            insets.consumeSystemWindowInsets()
-//        }
     }
 
     override fun onStart() {

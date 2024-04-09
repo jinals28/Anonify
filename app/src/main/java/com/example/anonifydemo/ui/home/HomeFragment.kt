@@ -54,6 +54,12 @@ class HomeFragment : Fragment(), Utils {
 
         user = userViewModel.getUser()!!
 
+        log("home fragment, oncreate")
+
+        lifecycleScope.launch {
+            AppRepository.fetchPosts(user.uid, user.followingTopics)
+        }
+
         return binding.root
     }
 
@@ -68,10 +74,6 @@ class HomeFragment : Fragment(), Utils {
         adapter = PostRecyclerViewAdapter(requireContext(), user.uid)
 
         postRv.adapter = adapter
-
-        lifecycleScope.launch {
-            AppRepository.fetchPosts(user.uid, user.followingTopics)
-        }
 
         AppRepository.postList.observe(viewLifecycleOwner){ posts ->
 //            val userTopics = userViewModel.getUser()?.topics ?: emptyList()

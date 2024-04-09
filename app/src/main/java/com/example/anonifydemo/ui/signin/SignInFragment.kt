@@ -174,8 +174,8 @@ class SignInFragment : Fragment(), Utils {
                         email = it.second!!.first.email,
                         createdAt = it.second!!.first.createdAt,
                         avatar = avatar,
-                        followingTopics = list
-
+                        followingTopics = list,
+                        followingTopicsCount = list.size.toLong()
                     )
                 )
                 toast(requireContext(), "Welcome User!!")

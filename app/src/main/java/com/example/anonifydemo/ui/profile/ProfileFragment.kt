@@ -18,22 +18,34 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentProfileBinding
+import com.example.anonifydemo.ui.dataClasses.ActiveUser
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
+import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.launch
 
 
 class ProfileFragment : Fragment() {
 
+    private lateinit var postAdapter: PostRecyclerViewAdapter
+    private lateinit var rv: RecyclerView
     private var _binding :FragmentProfileBinding?=null
     private val binding get() = _binding
     //private lateinit var viewModel: ProfileViewModel
     private val userViewModel : UserViewModel by activityViewModels()
+
+    private val viewModel : ProfileViewModel by viewModels()
+
     private lateinit var editprofile: Button
     private lateinit var btnsettings: ImageButton
     private lateinit var authUtil: AuthenticationUtil
@@ -51,13 +63,21 @@ class ProfileFragment : Fragment() {
 
     private var avatar : Int = -1
 
-    private var userId : Long = -1L
+    private var userId : String = ""
+
+    private lateinit var user : ActiveUser
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
         _binding=FragmentProfileBinding.inflate(layoutInflater, container, false)
+        userId = userViewModel.getUserId()
+        lifecycleScope.launch {
+
+            viewModel.getUser(userId)
+        }
         return binding!!.root
     }
 
@@ -73,12 +93,49 @@ class ProfileFragment : Fragment() {
         txtpoints = binding!!.txtpoints
         btnpost = binding!!.btnpost
         btnsaved = binding!!.btnsaved
+        rv = binding!!.rv
+
         layoutfollowing = binding!!.layoutfollowing
         shimmerpostrv = binding!!.shimmerpostrv
 
-        avatar = userViewModel.getUser()!!.avatar.url
-        imgusr.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
-        shimmerpostrv.startShimmer()
+        postAdapter = PostRecyclerViewAdapter(requireContext(), userViewModel.getUserId())
+
+        rv.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = postAdapter
+        }
+
+        viewModel.currentUser.observe(viewLifecycleOwner){ user ->
+
+            avatar = user.avatar.url
+
+            imgusr.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
+//        shimmerpostrv.startShimmer()
+
+            txtusrnm.text = user.avatar.name
+
+            txtfollowing.text = user.followingTopicsCount.toString()
+
+            txtpo.text = user.postCount.toString()
+
+            txtpoints.text = user.advicePointCount.toString()
+
+        }
+
+        viewModel.list.observe(viewLifecycleOwner){
+//            shimmerpostrv.stopShimmer()
+            postAdapter.submitList(it.toMutableList())
+        }
+
+        btnpost.setOnClickListener {
+//            shimmerpostrv.startShimmer()
+            viewModel.getPost()
+        }
+
+        btnsaved.setOnClickListener {
+//            shimmerpostrv.startShimmer()
+            viewModel.getSavedPost()
+        }
 
         editprofile.setOnClickListener {
             //function for edit profile fragment

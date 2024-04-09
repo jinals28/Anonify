@@ -280,28 +280,6 @@ object AppRepository : Utils {
 
     private suspend fun isPostLikedByCurrentUser(postId: String, userId: String): Boolean {
 
-//        try {
-//            val documentSnapshot = likesCollection.document(postId).get().await()
-//            if (documentSnapshot.exists()) {
-//                val data = documentSnapshot.data
-//                if (data != null) {
-//                    val likes = data["likes"] as? List<HashMap<String, Any>> // Assuming the likes are stored as a list of HashMaps
-//                    likes?.forEach { likeData ->
-//                        val likeUserId = likeData["userId"] as? String
-//                        if (likeUserId == userId) {
-//                            // The post is liked by the user
-//                            return true
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (e: Exception) {
-//            // Handle exceptions, such as Firestore errors or parsing errors
-//            Log.e(TAG, "Error checking if post is liked by user: ${e.message}", e)
-//        }
-//
-//        // The post is not liked by the user
-//        return false
         val commentLikeRef = postsList
             .document(postId)
             .collection("likes")
@@ -342,9 +320,9 @@ object AppRepository : Utils {
 //                    log("Avatar name from userId: $avatarName")
                         val url = avatarList.find { it.name == avatarName }!!.url
 
-                        val likedByUser = isPostLikedByCurrentUser(document.id, userId)
+                        val likedByUser = isPostLikedByCurrentUser(postId = document.id, userId = userId)
 
-                        val savedByUser = isSavedByUser(document.id, userId)
+                        val savedByUser = isSavedByUser(postId = document.id, userId = userId)
 
                         val post = DisplayPost(
                             postId = document.id,
@@ -422,88 +400,7 @@ object AppRepository : Utils {
             }
 
     suspend fun updatesLikes(userId: String, userLikes: MutableList<DisplayLike>) {
-//        Log.d(TAG, userLikes.toString())
-//        userLikes.forEach { like ->
-//            Log.d(TAG, like.toString())
-//            val postId = like.postId
-//            val userId = userId
-//            val likeDoc = likesCollection.document(postId)
-//
-//            try {
-//                val documentSnapshot = likeDoc.get().await()
-//                val likesList = mutableListOf<HashMap<String, Any>>()
-//
-//                if (documentSnapshot.exists()) {
-//                    val data = documentSnapshot.data
-//                    if (data != null) {
-//                        val existingLikes =
-//                            data["likes"] as? List<HashMap<String, Any>> // Assuming the likes are stored as a list of HashMaps
-//                        existingLikes?.forEach { likeData ->
-//                            val userId = likeData["userId"] as? String
-//                            val likedAt = likeData["likedAt"] as? Long
-//                            if (userId != null && likedAt != null) {
-//                                likesList.add(hashMapOf("userId" to userId, "likedAt" to likedAt))
-//                            }
-//                        }
-//                    }
-//                }
-//                if (like.liked) {
-//                    if (!likesList.any { it["userId"] == userId }) {
-//                        likesList.add(hashMapOf("userId" to userId, "likedAt" to like.likedAt))
-//
-//                        postsList.document(postId).update("likeCount", FieldValue.increment(1))
-//                            .addOnSuccessListener {
-//                                Log.d(TAG, "likeCount incremented for postId: $postId")
-//                            }
-//                            .addOnFailureListener { e ->
-//                                Log.e(
-//                                    TAG,
-//                                    "Failed to increment likeCount for postId: $postId, ${e.message}",
-//                                    e
-//                                )
-//                            }
-//
-//                    } else {
-//                        // Case 2: Update likedAt for existing userId
-//                        likesList.filter { it["userId"] == userId }
-//                            .forEach {
-//                                if (like.likedAt != -1L) {
-//                                    it["likedAt"] = like.likedAt
-//                                }
-//                            }
-//                    }
-//                } else {
-//
-//                    if (likesList.filter { it["userId"] == userId }.isNotEmpty()) {
-//
-//                        likesList.removeIf { it["userId"] == userId }
-//
-//                        val likesRemoved = likesList.filter { it["userId"] == userId }.isEmpty()
-//                        if (likesRemoved) {
-//                            postsList.document(postId).update("likeCount", FieldValue.increment(-1))
-//                                .addOnSuccessListener {
-//                                    Log.d(TAG, "likeCount decremented for postId: $postId")
-//                                }
-//                                .addOnFailureListener { e ->
-//                                    Log.e(
-//                                        TAG,
-//                                        "Failed to decrement likeCount for postId: $postId, ${e.message}",
-//                                        e
-//                                    )
-//                                }
-//                        }
-//                    }
-//                }
-//                // Update the likes collection with the updated list
-//                val updateMap = hashMapOf("likes" to likesList)
-//                likesCollection.document(postId).set(updateMap).await()
-//
-//                Log.d(TAG, "Like added to collection for postId: $postId")
-//            } catch (e: Exception) {
-//                Log.e(TAG, "Error adding like to collection for postId: $postId, ${e.message}", e)
-//            }
-//
-    //        }
+
         val batch = firestore.batch()
 
         userLikes.forEach { like ->
@@ -559,7 +456,7 @@ object AppRepository : Utils {
 
                 val likedByUser = isPostLikedByCurrentUser(document.id, userId)
 
-                val isSavedByUser = isSavedByUser(document.id, userId)
+                val isSavedByUser = isSavedByUser(postId = document.id, userId = userId)
 
                 val post = DisplayPost(
                     postId = document.id,
@@ -1025,6 +922,8 @@ object AppRepository : Utils {
         }
     }
 
+
+
     suspend fun getUserPosts(userId: String): List<DisplayPost> {
         val userPostsCollection = users.document(userId).collection("posts")
         val postIds = mutableListOf<String>()
@@ -1091,10 +990,72 @@ object AppRepository : Utils {
         return userPosts
     }
 
-    fun addInHiddenComment(commentId: String) {
-        _hideCommentList.add(commentId)
-    }
 
+    suspend fun getSavedPosts(userId: String): List<DisplayPost>? {
+
+        val userPostsCollection = users.document(userId).collection("savedPosts")
+        val postIds = mutableListOf<String>()
+
+        try {
+            // Fetch all documents from the user's posts subcollection
+            val querySnapshot = userPostsCollection.get().await()
+
+            // Extract the post IDs from the documents
+            for (document in querySnapshot.documents) {
+                val postId = document.getString("postId")
+                log("get User Posts : postId $postId")
+                if (postId != null) {
+                    postIds.add(postId)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("AppRepository", "Error fetching user posts", e)
+        }
+
+        // Fetch the posts from the postsList collection using the retrieved post IDs
+        val userPosts = mutableListOf<DisplayPost>()
+        val postCollection = Firebase.firestore.collection("posts")
+
+        for (postId in postIds) {
+            try {
+                val document = postCollection.document(postId).get().await()
+                if (document.exists()) {
+                    val postedUserId = document.getString("userId") ?: ""
+                    val topicName = document.getString("topicName") ?: ""
+                    val postContent = document.getString("postContent") ?: ""
+                    val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
+                    val likeCount = document.getLong("likeCount") ?: 0L
+                    val commentCount = document.getLong("commentCount") ?: 0L
+                    val avatarName = fetchAvatarName(postedUserId)
+//                    log("Avatar name from userId: $avatarName")
+                    val url = avatarList.find { it.name == avatarName }!!.url
+
+                    val likedByUser = isPostLikedByCurrentUser(document.id, userId)
+
+//                    val savedByUser = isSavedByUser(document.id, userId)
+
+                    val post = DisplayPost(
+                        postId = document.id,
+                        userId = postedUserId,
+                        postContent = postContent,
+                        topicName = topicName,
+                        likeCount = likeCount,
+                        avatarName = avatarName,
+                        avatarUrl = url,
+                        likedByCurrentUser = likedByUser,
+                        commentCount = commentCount,
+                        isSavedByUser = true
+                    )
+
+                    log("posts in getUser ${post.toString()}")
+                    post?.let { userPosts.add(it) }
+                }
+            } catch (e: Exception) {
+                Log.e("AppRepository", "Error fetching post with ID $postId", e)
+            }
+        }
+        return userPosts
+    }
 
 }
 
