@@ -57,6 +57,7 @@ class HomeFragment : Fragment(), Utils {
         log("home fragment, oncreate")
 
         lifecycleScope.launch {
+            log("home followingTopics ${user.followingTopics}")
             AppRepository.fetchPosts(user.uid, user.followingTopics)
         }
 

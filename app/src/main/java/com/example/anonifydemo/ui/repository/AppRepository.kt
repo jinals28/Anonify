@@ -240,34 +240,10 @@ object AppRepository : Utils {
         )
     }
 
-    suspend fun addTopics(topicsList: List<Topic>) {
-        try {
-//            for (topic in topicsList) {
-//                topics
-//                    .document(topic.name)
-//                    .set(mapOf("name" to topic.name))
-//                    .addOnSuccessListener { documentReference ->
-//                        Log.d(TAG, "DocumentSnapshot added with ID:")
-//
-//                    }
-//                    .addOnCanceledListener {
-//                        Log.d(TAG, "cancelled ")
-//                    }
-//                    .addOnFailureListener { e ->
-//                        Log.d(TAG, "DocumentSnapshot added with ID: ${e.localizedMessage}")
-//                    }
-//            }
 
-        } catch (e: Exception) {
-            println("Error adding topics to Firestore: ${e.localizedMessage}")
-        }
-    }
+
     suspend fun updateUserAvatar(userId: String, avatar: String) {
             try {
-                // Create a map with the avatar details to update in the user document
-//                val avatarMap = mapOf(
-//                    "name" to avatar,
-//                )
 
                 // Update the avatar field in the user document
                 users.document(userId)
@@ -304,6 +280,7 @@ object AppRepository : Utils {
         }
 
         val followingTopic = followingTopicsList.map { it.topic }
+        log("followingTopics ${followingTopic.toString()}")
             try {
                 val querySnapshot: QuerySnapshot = postsList.whereIn("topicName", followingTopic).orderBy("postCreatedAt", Query.Direction.DESCENDING).get().await()
                 for (document in querySnapshot.documents) {
@@ -1074,6 +1051,47 @@ object AppRepository : Utils {
 
     suspend fun deleteUser(userId: String) {
 
+        val batch = firestore.batch()
+
+        postsList.whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    batch.delete(document.reference)
+                }
+                // Commit the batch delete operation for posts
+                batch.commit()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Posts deleted successfully")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e(TAG, "Error deleting posts: $e")
+                    }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error querying posts: $e")
+            }
+
+
+        // Delete comments of the user
+        firestore.collection("comments").whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    batch.delete(document.reference)
+                }
+                // Commit the batch delete operation for comments
+                batch.commit()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Comments deleted successfully")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e(TAG, "Error deleting comments: $e")
+                    }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error querying comments: $e")
+            }
 
     }
 

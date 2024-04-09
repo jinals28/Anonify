@@ -67,11 +67,6 @@ class MainActivity : AppCompatActivity()  {
             }
         }
 
-        lifecycleScope.launch {
-
-            AppRepository.getTopics()
-
-        }
     }
 
     private fun getActiveUser(): ActiveUser? {
@@ -83,11 +78,12 @@ class MainActivity : AppCompatActivity()  {
             val avatarName = sharedPreferences.getString("avatarName", "")
             val avatarUrl = sharedPreferences.getInt("avatarUrl", 0)
             val followingTopicsSet = sharedPreferences.getStringSet("followingTopics", setOf()) ?: setOf()
+            val followingTopicsList = followingTopicsSet.map { FollowingTopic(it, -1) }
             val followingTopicsCount = sharedPreferences.getLong("followingTopicsCount", 0)
             ActiveUser(uid = uid,
                 email = email!!,
                 createdAt = createdAt!!,
-                avatar = Avatar(url = avatarUrl, name = avatarName!!), followingTopics = mutableListOf(), followingTopicsCount = followingTopicsCount)
+                avatar = Avatar(url = avatarUrl, name = avatarName!!), followingTopics = followingTopicsList, followingTopicsCount = followingTopicsCount)
         } else {
             null
         }
