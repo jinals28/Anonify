@@ -23,6 +23,7 @@ import com.example.anonifydemo.databinding.FragmentProfileBinding
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.utils.Utils
+import com.facebook.shimmer.ShimmerFrameLayout
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
 import org.w3c.dom.Text
@@ -47,6 +48,8 @@ class Profile2Fragment : Fragment(), Utils {
     private lateinit var postBtn : Button
     private lateinit var rv : RecyclerView
     private lateinit var img_back : ImageButton
+    private lateinit var shimmerpostrv: ShimmerFrameLayout
+
 
     private lateinit var adapter : PostRecyclerViewAdapter
 
@@ -75,6 +78,8 @@ class Profile2Fragment : Fragment(), Utils {
         postCount = binding!!.txtpo
         rv = binding!!.rv
         img_back =binding!!.imgBack
+        shimmerpostrv = binding!!.shimmerpostrv
+        shimmerpostrv.startShimmer()
 
         adapter = PostRecyclerViewAdapter(requireContext(), userViewModel.getUserId())
 
@@ -95,16 +100,18 @@ class Profile2Fragment : Fragment(), Utils {
         }
         
         viewModel.postList.observe(viewLifecycleOwner){
+            shimmerpostrv.stopShimmer()
+            shimmerpostrv.visibility = View.GONE
+            rv.visibility = View.VISIBLE
             log("profile fragment $it")
             adapter.submitList(it.toMutableList())
         }
         img_back.setOnClickListener {
             goToHome()
         }
-
-
     }
-    private fun  goToHome() {
+
+    private fun goToHome() {
         val navController = findNavController()
         if (findNavController().currentDestination!!.id == R.id.profile2Fragment) {
             navController.popBackStack()

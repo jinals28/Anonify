@@ -23,6 +23,7 @@ import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentProfileBinding
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -43,6 +44,7 @@ class ProfileFragment : Fragment() {
     private lateinit var txtpo: TextView
     private lateinit var txtpoints: TextView
     private lateinit var btnpost: Button
+    private lateinit var shimmerpostrv: ShimmerFrameLayout
     private lateinit var btnsaved: Button
     private lateinit var layoutfollowing: LinearLayout
     private var avatarId : Long = -1L
@@ -72,9 +74,11 @@ class ProfileFragment : Fragment() {
         btnpost = binding!!.btnpost
         btnsaved = binding!!.btnsaved
         layoutfollowing = binding!!.layoutfollowing
+        shimmerpostrv = binding!!.shimmerpostrv
 
         avatar = userViewModel.getUser()!!.avatar.url
         imgusr.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
+        shimmerpostrv.startShimmer()
 
         editprofile.setOnClickListener {
             //function for edit profile fragment
