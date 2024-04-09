@@ -31,7 +31,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class CommentAdapter(private val context: Context, private val userId : String) :
+class CommentAdapter(val context: Context, private val userId : String) :
     ListAdapter<DisplayComment, CommentAdapter.CommentViewHolder>(CommentDiffCallback()) {
 
     private var userLikes: MutableList<DisplayCommentLike> = mutableListOf()
@@ -80,7 +80,7 @@ class CommentAdapter(private val context: Context, private val userId : String) 
         private val btnLike : ImageButton = binding.btnlike
         private val noAdvicePoint : TextView = binding.NoAdvice
         private val btnAdvicePoint : ImageButton = binding.btnAdvicePoint
-        private val commentOption:ImageButton=binding.commentOption
+        private val commentOption : ImageButton = binding.commentOption
         // Initialize views here
 
         fun bind(comment: DisplayComment) {
@@ -122,24 +122,25 @@ class CommentAdapter(private val context: Context, private val userId : String) 
                         R.id.hide -> {
                             // Handle hide post action
                             Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "hide post")
-                            val position = adapterPosition
-                            // Check if the position is valid
-                            if (position != RecyclerView.NO_POSITION) {
-                                // Apply animation
-                                val animation = AnimationUtils.loadAnimation(
-                                    context,
-                                    android.R.anim.slide_out_right
-                                )
-                                itemView.startAnimation(animation)
-                                // Remove the item from the list
-                                //removeItem(position)
-                            }
+////                            val position = adapterPosition
+////                            // Check if the position is valid
+////                            if (position != RecyclerView.NO_POSITION) {
+////                                // Apply animation
+////                                val animation = AnimationUtils.loadAnimation(
+////                                    context,
+////                                    android.R.anim.slide_out_right
+////                                )
+////                                itemView.startAnimation(animation)
+//                                // Remove the item from the list
+//                                //removeItem(position)
+//                            }
                             true
                         }
 
                         else -> false
                     }
                 }
+                popupMenu.show()
             }
 
         }
