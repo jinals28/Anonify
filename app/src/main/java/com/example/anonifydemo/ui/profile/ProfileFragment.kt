@@ -41,6 +41,7 @@ class ProfileFragment : Fragment() {
     private lateinit var txtpoints: TextView
     private lateinit var btnpost: Button
     private lateinit var btnsaved: Button
+    private lateinit var layoutfollowing: LinearLayout
     private var avatarId : Long = -1L
 
     private var avatar : Int = -1
@@ -67,6 +68,7 @@ class ProfileFragment : Fragment() {
         txtpoints = binding!!.txtpoints
         btnpost = binding!!.btnpost
         btnsaved = binding!!.btnsaved
+        layoutfollowing = binding!!.layoutfollowing
 
         avatar = userViewModel.getUser()!!.avatar.url
         imgusr.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
@@ -77,6 +79,9 @@ class ProfileFragment : Fragment() {
         }
         btnsettings.setOnClickListener{
             showBottomSheetDialog()
+        }
+        layoutfollowing.setOnClickListener{
+            goToTopics()
         }
     }
     private fun goToEditProfileFragment() {
@@ -137,6 +142,12 @@ class ProfileFragment : Fragment() {
     private fun goToSignInFragment() {
         if (findNavController().currentDestination!!.id == R.id.navigation_profile) {
             val action = ProfileFragmentDirections.actionNavigationProfileToSignInFragment()
+            findNavController().navigate(action)
+        }
+    }
+    private fun goToTopics() {
+        if (findNavController().currentDestination!!.id == R.id.navigation_profile) {
+            val action = ProfileFragmentDirections.actionNavigationProfileToChooseTopic()
             findNavController().navigate(action)
         }
     }

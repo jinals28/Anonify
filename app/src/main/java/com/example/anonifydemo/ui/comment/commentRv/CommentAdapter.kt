@@ -5,7 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -78,6 +80,7 @@ class CommentAdapter(private val context: Context, private val userId : String) 
         private val btnLike : ImageButton = binding.btnlike
         private val noAdvicePoint : TextView = binding.NoAdvice
         private val btnAdvicePoint : ImageButton = binding.btnAdvicePoint
+        private val commentOption:ImageButton=binding.commentOption
         // Initialize views here
 
         fun bind(comment: DisplayComment) {
@@ -99,7 +102,45 @@ class CommentAdapter(private val context: Context, private val userId : String) 
 
                 toggleAdviceComment(comment)
             }
+            commentOption.setOnClickListener {
+                val popupMenu = PopupMenu(context, commentOption)
+                popupMenu.menuInflater.inflate(R.menu.post_popup_menu, popupMenu.menu)
+                popupMenu.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.block -> {
+                            // Handle block post action
+                            Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "blocked")
+                            true
+                        }
 
+                        R.id.report -> {
+                            // Handle report post action
+                            Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "reported")
+                            true
+                        }
+
+                        R.id.hide -> {
+                            // Handle hide post action
+                            Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "hide post")
+                            val position = adapterPosition
+                            // Check if the position is valid
+                            if (position != RecyclerView.NO_POSITION) {
+                                // Apply animation
+                                val animation = AnimationUtils.loadAnimation(
+                                    context,
+                                    android.R.anim.slide_out_right
+                                )
+                                itemView.startAnimation(animation)
+                                // Remove the item from the list
+                                //removeItem(position)
+                            }
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+            }
 
         }
 
@@ -181,7 +222,7 @@ class CommentAdapter(private val context: Context, private val userId : String) 
 
         private fun setAdvicePointState(advicePointByUser: Boolean) {
             if (advicePointByUser) {
-                btnAdvicePoint.setImageResource(R.drawable.baseline_thumb_up_alt_24)
+                btnAdvicePoint.setImageResource(R.drawable.baseline_star_24)
             } else {
                 btnAdvicePoint.setImageResource(R.drawable.baseline_star_border_24)
             }
