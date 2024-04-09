@@ -75,6 +75,7 @@
         android:gravity="center"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
+        android:iconifiedByDefault="false"
         android:queryBackground="@drawable/search_bg"
         android:queryHint="Search topics or hashtags"
         android:searchIcon="@drawable/baseline_search_24" />
