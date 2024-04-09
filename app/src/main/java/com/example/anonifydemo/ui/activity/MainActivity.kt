@@ -97,7 +97,8 @@ class MainActivity : AppCompatActivity()  {
                 R.id.searchCommunityFragment,
                 R.id.createCommunityFragment,
                 R.id.communityProfileFragment,
-                R.id.editProfileFragment->{
+                R.id.editProfileFragment,
+                R.id.profile2Fragment->{
                     bottomNavigationView.visibility = View.GONE
                 }
                 else -> {

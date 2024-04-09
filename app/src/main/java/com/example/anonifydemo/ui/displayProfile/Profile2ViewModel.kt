@@ -21,12 +21,10 @@ class Profile2ViewModel : ViewModel() {
 
 
 
-    fun getUser(userId: String) {
+    suspend fun getUser(userId: String) {
 
-        viewModelScope.launch {
             _currentUser.value = AppRepository.getUser(userId)
             _postList.value = AppRepository.getUserPosts(userId)
-        }
     }
     // TODO: Implement the ViewModel
 }

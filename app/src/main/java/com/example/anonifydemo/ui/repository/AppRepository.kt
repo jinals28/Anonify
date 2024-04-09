@@ -377,10 +377,10 @@ object AppRepository : Utils {
     suspend fun addPost(post: Post) {
                 try {
                     // Get a reference to the posts collection
-                    val postCollection = Firebase.firestore.collection("postsList")
+
 
                     // Add the post to the posts collection
-                    val postDocRef = postCollection.add(post).await()
+                    val postDocRef = postsList.add(post).await()
                     val postId = postDocRef.id
 
                     // Get a reference to the user's document
@@ -963,6 +963,7 @@ object AppRepository : Utils {
             // Extract the post IDs from the documents
             for (document in querySnapshot.documents) {
                 val postId = document.getString("postId")
+                log("get User Posts : postId $postId")
                 if (postId != null) {
                     postIds.add(postId)
                 }
@@ -1005,6 +1006,8 @@ object AppRepository : Utils {
                         commentCount = commentCount,
                         isSavedByUser = savedByUser
                     )
+
+                    log("posts in getUser ${post.toString()}")
                     post?.let { userPosts.add(it) }
                 }
             } catch (e: Exception) {

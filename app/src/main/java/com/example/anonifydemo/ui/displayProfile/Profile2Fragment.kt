@@ -20,11 +20,12 @@ import com.example.anonifydemo.databinding.FragmentProfile2Binding
 import com.example.anonifydemo.databinding.FragmentProfileBinding
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
+import com.example.anonifydemo.ui.utils.Utils
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
 import org.w3c.dom.Text
 
-class Profile2Fragment : Fragment() {
+class Profile2Fragment : Fragment(), Utils {
 
     private val args : Profile2FragmentArgs by navArgs()
 
@@ -73,6 +74,8 @@ class Profile2Fragment : Fragment() {
 
         adapter = PostRecyclerViewAdapter(requireContext(), userViewModel.getUserId())
 
+        rv.adapter = adapter
+
         viewModel.currentUser.observe(viewLifecycleOwner){
 
             imgUser.setImageDrawable(ContextCompat.getDrawable(requireContext(), it.avatar.url))
@@ -88,6 +91,7 @@ class Profile2Fragment : Fragment() {
         }
         
         viewModel.postList.observe(viewLifecycleOwner){
+            log("profile fragment $it")
             adapter.submitList(it.toMutableList())
         }
 
