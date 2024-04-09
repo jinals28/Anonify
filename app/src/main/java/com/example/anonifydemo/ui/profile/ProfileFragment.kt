@@ -1,6 +1,7 @@
 package com.example.anonifydemo.ui.profile
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -120,6 +121,8 @@ class ProfileFragment : Fragment() {
 
             txtpoints.text = user.advicePointCount.toString()
 
+            txtbio.text = user.bio
+
         }
 
         viewModel.list.observe(viewLifecycleOwner){
@@ -147,6 +150,7 @@ class ProfileFragment : Fragment() {
         layoutfollowing.setOnClickListener{
             goToTopics()
         }
+
     }
     private fun goToEditProfileFragment() {
         if (findNavController().currentDestination!!.id == R.id.navigation_profile) {
@@ -183,19 +187,27 @@ class ProfileFragment : Fragment() {
             Toast.makeText(requireContext(), "delete account", Toast.LENGTH_SHORT).show()
           //  dialog.dismiss()
         }
-            item5.setOnClickListener {
+        item5.setOnClickListener {
                     //logout code
+                removeActiveUser()
                 AuthenticationUtil.logout(requireContext())
-                AuthenticationUtil.clearRememberMe(requireContext())
+//                AuthenticationUtil.clearRememberMe(requireContext())
                 dialog.dismiss()
                 goToSignInFragment()
                  // Dismiss the dialog if needed
-            }
+        }
         dialog.show()
 
         dialog.window?.setLayout (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color. TRANSPARENT))
         dialog.window?.setGravity (Gravity. BOTTOM)
+    }
+
+    private fun removeActiveUser() {
+        val sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
     }
     private fun goToSignInFragment() {
         if (findNavController().currentDestination!!.id == R.id.navigation_profile) {

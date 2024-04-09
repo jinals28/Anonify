@@ -10,8 +10,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentEditProfileBinding
@@ -23,7 +25,11 @@ import de.hdodenhof.circleimageview.CircleImageView
 class editProfileFragment : Fragment() {
     private var _binding : FragmentEditProfileBinding? = null
     private val binding get() = _binding
+
     private val userViewModel : UserViewModel by activityViewModels()
+
+    private val viewModel : EditProfileViewModel by viewModels()
+
     private lateinit var editemail: EditText
     private lateinit var editbio : EditText
     private lateinit var lblemail:TextView
@@ -37,13 +43,15 @@ class editProfileFragment : Fragment() {
 
     private var avatar : Int = -1
 
-    private var userId : Long = -1L
+    private var userId : String= ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentEditProfileBinding.inflate(layoutInflater, container, false)
+
+        userId = userViewModel.getUserId()
         return binding!!.root
     }
 
@@ -64,10 +72,19 @@ class editProfileFragment : Fragment() {
 
         btnedit.setOnClickListener{
             //update profile
+            val bio = editbio.text.toString()
+
+            viewModel.updateBio(userId, bio){
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+            }
+            goToProfileFragment()
+
         }
+
         btnback.setOnClickListener {
             goToProfileFragment()
         }
+
         editemail.setOnFocusChangeListener { _, hasFocus ->
             handleFocusChange(hasFocus, editemail, lblemail)
         }
@@ -101,7 +118,7 @@ class editProfileFragment : Fragment() {
         if (findNavController().currentDestination!!.id == R.id.editProfileFragment) {
 //            val action = editProfileFragmentDirections.actionEditProfileFragmentToNavigationProfile()
 //            findNavController().navigate(action)
-               navController.popBackStack()
+               navController.navigateUp()
         }
     }
     private fun  gotoavatarFragment() {

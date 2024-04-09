@@ -10,8 +10,10 @@ data class ActiveUser(
     val followingTopics: List<FollowingTopic> = listOf(),
     var advicePointCount: Long = 0,
     var followingTopicsCount: Long = 0,
-    var postCount: Long = 0
+    var postCount: Long = 0,
+    var bio : String = ""
 )
+
 data class Like(
     val likeId: String = "", // Room: Long (Primary key)
     val userId: String= "", // Room: Long (Foreign key)

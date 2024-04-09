@@ -25,6 +25,7 @@ import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.example.anonifydemo.ui.utils.Utils
 import com.google.android.gms.common.SignInButton
+import io.grpc.Context
 
 
 class SignInFragment : Fragment(), Utils {
@@ -168,16 +169,18 @@ class SignInFragment : Fragment(), Utils {
                 } else {
                     Avatar()
                 }
-                userViewModel.setUser(
-                    user = ActiveUser(
-                        uid = it.second!!.first.uid,
-                        email = it.second!!.first.email,
-                        createdAt = it.second!!.first.createdAt,
-                        avatar = avatar,
-                        followingTopics = list,
-                        followingTopicsCount = list.size.toLong()
-                    )
+                val user = ActiveUser(
+                    uid = it.second!!.first.uid,
+                    email = it.second!!.first.email,
+                    createdAt = it.second!!.first.createdAt,
+                    avatar = avatar,
+                    followingTopics = list,
+                    followingTopicsCount = list.size.toLong()
                 )
+                userViewModel.setUser(
+                    user
+                )
+                storeActiveUser(user)
                 toast(requireContext(), "Welcome User!!")
                 if (it.second!!.first.avatar != "") {
                     if (it.second!!.second.isNotEmpty()) {
@@ -194,7 +197,23 @@ class SignInFragment : Fragment(), Utils {
                 handleFailure(requireContext(), e)
             }
         }
-        private fun goToHomeFragment() {
+
+    // Storing the active user data in SharedPreferences
+    fun storeActiveUser(user: ActiveUser) {
+        val sharedPreferences = requireContext().getSharedPreferences("user_data", android.content.Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("uid", user.uid)
+        editor.putString("email", user.email)
+        editor.putLong("createdAt", user.createdAt)
+        editor.putString("avatarName", user.avatar.name)
+        editor.putInt("avatarUrl", user.avatar.url)
+        val followingTopicsSet = user.followingTopics.map { it.topic }.toSet()
+        editor.putStringSet("followingTopics", followingTopicsSet)
+        editor.putLong("followingTopicsCount", user.followingTopicsCount)
+        editor.apply()
+    }
+
+    private fun goToHomeFragment() {
             if (findNavController().currentDestination!!.id == R.id.signInFragment) {
                 val action = SignInFragmentDirections.actionSignInFragmentToNavigationHome()
                 findNavController().navigate(action)
@@ -220,6 +239,8 @@ class SignInFragment : Fragment(), Utils {
             }
         }
 }
+
+
 //    signInWithGoogle.setOnClickListener {
 //
 ////            authUtil.signInWithGoogle(this, getString(R.string.web_client_id), onSuccess = { user ->

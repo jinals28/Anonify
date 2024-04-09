@@ -278,8 +278,9 @@ object AuthenticationUtil : Utils {
 
     fun logout(context: Context) {
         auth.signOut()
-        clearCredentials(context)
-        setLoggedIn(context, false)
+
+//        clearCredentials(context)
+//        setLoggedIn(context, false)
     }
 
     fun clearRememberMe(context: Context) {

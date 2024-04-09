@@ -25,6 +25,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ActivityMainBinding
+import com.example.anonifydemo.ui.dataClasses.ActiveUser
+import com.example.anonifydemo.ui.dataClasses.Avatar
+import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
@@ -58,7 +61,31 @@ class MainActivity : AppCompatActivity()  {
             AppRepository.getTopics()
         }
 
+
+
+
     }
+
+    fun getActiveUser(): ActiveUser? {
+        val sharedPreferences = this.getSharedPreferences("user_data", Context.MODE_PRIVATE)
+        val uid = sharedPreferences.getString("uid", null)
+        return if (uid != null) {
+            val email = sharedPreferences.getString("email", "")
+            val createdAt = sharedPreferences.getLong("createdAt", 0)
+            val avatarName = sharedPreferences.getString("avatarName", "")
+            val avatarUrl = sharedPreferences.getInt("avatarUrl", 0)
+            val followingTopicsSet = sharedPreferences.getStringSet("followingTopics", setOf()) ?: setOf()
+            val followingTopicsList = followingTopicsSet.map { FollowingTopic(it, -1) }
+            val followingTopicsCount = sharedPreferences.getLong("followingTopicsCount", 0)
+            ActiveUser(uid = uid,
+                email = email!!,
+                createdAt = createdAt!!,
+                avatar = Avatar(url = avatarUrl, name = avatarName!!), followingTopics = followingTopicsList, followingTopicsCount = followingTopicsCount)
+        } else {
+            null
+        }
+    }
+
 
     override fun onStart() {
         super.onStart()
@@ -74,6 +101,11 @@ class MainActivity : AppCompatActivity()  {
 //        if (AuthenticationUtil.isLoggedIn(this)) {
 //            navController.navigate(R.id.navigation_home)
 //        }
+        val user = getActiveUser()
+        if (user != null){
+            userViewModel.setUser(user)
+            navController.navigate(R.id.navigation_home)
+        }
 
 //        bottomNavigationView.itemIconTintList = getColorStateList(R.color.bottom_navigation_icon_selector)
         navController.addOnDestinationChangedListener{ _, destination, _ ->

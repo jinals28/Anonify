@@ -905,6 +905,7 @@ object AppRepository : Utils {
         val userRef = users.document(userId).get().await()
         if (userRef.exists()) {
             val avatarName = userRef.getString("avatar") ?: ""
+            val bio = userRef.getString("bio") ?: ""
             val advicePointCount = userRef.getLong("advicePoint") ?: 0L
             val followingTopic = followingTopics.document(userId).get().await()
             val followingTopicSize = followingTopic.data!!.size.toLong()
@@ -915,14 +916,13 @@ object AppRepository : Utils {
                 avatar = Avatar(url, avatarName),
                 advicePointCount = advicePointCount,
                 followingTopicsCount = followingTopicSize,
-                postCount = postCount
+                postCount = postCount,
+                bio = bio
             )
         }else {
             return null
         }
     }
-
-
 
     suspend fun getUserPosts(userId: String): List<DisplayPost> {
         val userPostsCollection = users.document(userId).collection("posts")
@@ -1057,95 +1057,21 @@ object AppRepository : Utils {
         return userPosts
     }
 
+    suspend fun updateBio(userId: String, bio: String): String {
+        return try {
+            // Get reference to the user document
+            val userRef = users.document(userId)
+
+            // Update the bio field
+            userRef.update("bio", bio).await()
+
+            "Bio updated successfully"
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating bio for user $userId: ${e.message}", e)
+            "Failed to update bio"
+        }
+    }
+
+
 }
-
-
-    // Other methods for fetching data can be added similarly
-
-
-
-//    suspend fun getAvatars() {
-//        val avatars = MutableLiveData<List<Avatar>>()
-//        try {
-//            val list = mutableListOf<Avatar>()
-//            val querySnapshot = avatarsCollection.get().await()
-//            for (document in querySnapshot.documents) {
-//                val name = document.getString("name") ?: ""
-//                // Assuming you store the resource ID as a string in Firestore
-//                val avatarId = document.getLong("url") ?: -1L
-//
-//                list.add(Avatar(avatarId.toInt(), name))
-//                Log.d(TAG, list.toString())
-//            }
-//            _avatarList.value = list
-//        } catch (e: Exception) {
-//            Log.d(TAG, "eXCEPTION: $e.localizedMessage!!")
-//        }
-//
-//    }
-
-//        fun getFollowingTopicList(userId: String): List<FollowingTopic> {
-//
-//            return emptyList()
-//        }
-
-//    fun getFollowingTopicIdListForUser(userId: Long): List<Long> {
-//        return
-//    }
-
-
-//    private fun getUserById(userId: Long): User {
-//        Log.d("Anonify : Repo.getUserByID", getUsers().toString())
-//        return getUsers().find { it.userId == userId }!!
-//    }
-
-//val followingTopicList  = doc.toObject(FollowingTopic::class.java)
-//        .addOnSuccessListener { documentSnapshot ->
-//            if (documentSnapshot.exists()) {
-//
-//                for (doc in documentSnapshot.data!!.entries) {
-//                    val topic = doc.key
-//                    val followedData = doc.value as Map<*, *> // Assuming the value is a Map<String, Any>
-//                    val followedAt = followedData["followedAt"] as Long
-//                    followingTopics.add(FollowingTopic(topic = topic, followedAt = followedAt))
-//
-////                    val followedAt = doc.value. as Long
-////                    followingTopics.add(FollowingTopic(topic = topic, followedAt = followedAt))
-// Navigate to home fragment
-//        .addOnFailureListener { e ->
-//            // Handle failure
-//            Log.e("SignInFragment", "Error fetching following topics: ${e.message}", e)
-//            // Navigate to chooseAvatarFragment
-//
-//        }
-
-// Get all topics from repository
-//        fun getTopics(): List<Topic> {
-//            return listOf()
-//        }
-
-
-//
-
-
-//    val avatarList = listOf<Avatar>(
-//        Avatar(R.drawable.dinosaur, "Moki"),
-//        Avatar(R.drawable.dog, "Jinto"),
-//        Avatar(R.drawable.panda, "Yarri"),
-//        Avatar(R.drawable.rabbit, "Zink"),
-//        Avatar(R.drawable.bear, "Loki"),
-//        Avatar(R.drawable.cat, "Yolo"),
-//        Avatar(R.drawable.octopus, "Kairo"),
-//        Avatar(R.drawable.owl, "Lumi"),
-//        Avatar(R.drawable.deer, "Yara"),
-//        Avatar(R.drawable.tiger, "Lokai"),
-//        Avatar(R.drawable.shark, "Soli"),
-//        Avatar(R.drawable.elephant, "Juno"),
-//        Avatar(R.drawable.lion, "Simba"),
-//        Avatar(R.drawable.wolf, "Jinx"),
-//        Avatar(R.drawable.sloth, "Zinna"),
-//        Avatar(R.drawable.rabbit2, "Lexa"),
-//        Avatar(R.drawable.llama, "Lyric"),
-//        Avatar(R.drawable.penguin, "Zolar")
-//    )
 

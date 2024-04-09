@@ -76,15 +76,7 @@ class HomeFragment : Fragment(), Utils {
         postRv.adapter = adapter
 
         AppRepository.postList.observe(viewLifecycleOwner){ posts ->
-//            val userTopics = userViewModel.getUser()?.topics ?: emptyList()
-//            val filteredPosts = posts.filter { post ->
-//                userTopics.any { topic ->
-//                    post.hashtag == topic.name
-//                }
-//            }
-//            val adapter = PostRecyclerViewAdapter(requireContext(), posts, userViewModel.getUser()!!)
 
-//            loading.visibility = View.GONE
             shimmerPosts.stopShimmer()
             shimmerPosts.visibility = View.GONE
             postRv.visibility = View.VISIBLE
