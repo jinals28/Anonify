@@ -8,7 +8,6 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
@@ -23,8 +22,6 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.coroutines.launch
-import java.lang.Long
 
 class ChooseTopicFragment : Fragment(), Utils {
 
@@ -66,18 +63,17 @@ class ChooseTopicFragment : Fragment(), Utils {
         fabNext = binding!!.btnnext
 
 //        val userId = userViewModel.getUser()!!.userId
-        val userId = 1L
+        val userId = userViewModel.getUserId()
 
 //        fabNext = binding!!.nextBtn
 
 //        val topicList = resources.getStringArray(R.array.topic_names).toList()
 
-        val topics : List<Topic> = listOf()
+        val topics : List<Topic> = AppRepository.topicList
 
-        AppRepository.topicsList.observe(viewLifecycleOwner){list ->
-            topicAdapter = TopicRecyclerViewAdapter(requireContext(), list, followingTopicList, userId)
-            topicRv.adapter = topicAdapter
-        }
+        topicAdapter = TopicRecyclerViewAdapter(requireContext(), topics, followingTopicList, userId)
+        topicRv.adapter = topicAdapter
+
 //
 //        topicList.forEachIndexed { index, name ->
 //            val topic = Topics(id = index, name = name)

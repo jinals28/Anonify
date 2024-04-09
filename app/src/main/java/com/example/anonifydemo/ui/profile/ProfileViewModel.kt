@@ -3,10 +3,12 @@ package com.example.anonifydemo.ui.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.anonifydemo.ui.dataClasses.ActiveUser
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.DisplaySaved
 import com.example.anonifydemo.ui.repository.AppRepository
+import kotlinx.coroutines.launch
 
 class ProfileViewModel : ViewModel() {
 
@@ -39,5 +41,11 @@ class ProfileViewModel : ViewModel() {
 
     fun getSavedPost(){
         _postList.value = savedList
+    }
+
+    fun deleteUser(userId: String) {
+        viewModelScope.launch {
+            AppRepository.deleteUser(userId)
+        }
     }
 }

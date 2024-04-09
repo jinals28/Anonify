@@ -75,7 +75,7 @@ object AppRepository : Utils {
 
     //TODO: Figure out what to do about topics list, should it be stored permannetly in the app like this or should it be fetched for the first time and then stored in app always.
     //Topics table
-    private var topicList = mutableListOf(
+    var topicList = mutableListOf(
         Topic("#Entertainment"),
         Topic("#Social"),
         Topic("#FashionAndBeauty"),
@@ -1070,6 +1070,11 @@ object AppRepository : Utils {
             Log.e(TAG, "Error updating bio for user $userId: ${e.message}", e)
             "Failed to update bio"
         }
+    }
+
+    suspend fun deleteUser(userId: String) {
+
+
     }
 
 

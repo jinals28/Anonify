@@ -10,15 +10,13 @@ import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemAddTopicBinding
 import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.Topic
-import com.example.anonifydemo.ui.dataClasses.User
-import com.example.anonifydemo.ui.dataClasses.UserViewModel
 
 
 class TopicRecyclerViewAdapter(
     val context: Context,
     val topicList: List<Topic>,
     val followingTopicList: MutableList<FollowingTopic>,
-    val userId : Long
+    val userId: String
 ) : RecyclerView.Adapter<TopicRecyclerViewAdapter.ViewHolder>() {
     inner class ViewHolder(val binding : ItemAddTopicBinding) : RecyclerView.ViewHolder(binding.root) {
         private val topicName = binding.addtopic

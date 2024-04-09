@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity()  {
 
     private var auth = Firebase.auth
 
+    private var user : ActiveUser? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         Thread.sleep(1000)
@@ -57,16 +59,22 @@ class MainActivity : AppCompatActivity()  {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        lifecycleScope.launch {
-            AppRepository.getTopics()
+        user = getActiveUser()
+
+        if (user!= null){
+            lifecycleScope.launch{
+                AppRepository.getFollowingTopicsForUser(user!!.uid)
+            }
         }
 
+        lifecycleScope.launch {
 
+            AppRepository.getTopics()
 
-
+        }
     }
 
-    fun getActiveUser(): ActiveUser? {
+    private fun getActiveUser(): ActiveUser? {
         val sharedPreferences = this.getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val uid = sharedPreferences.getString("uid", null)
         return if (uid != null) {
@@ -75,12 +83,11 @@ class MainActivity : AppCompatActivity()  {
             val avatarName = sharedPreferences.getString("avatarName", "")
             val avatarUrl = sharedPreferences.getInt("avatarUrl", 0)
             val followingTopicsSet = sharedPreferences.getStringSet("followingTopics", setOf()) ?: setOf()
-            val followingTopicsList = followingTopicsSet.map { FollowingTopic(it, -1) }
             val followingTopicsCount = sharedPreferences.getLong("followingTopicsCount", 0)
             ActiveUser(uid = uid,
                 email = email!!,
                 createdAt = createdAt!!,
-                avatar = Avatar(url = avatarUrl, name = avatarName!!), followingTopics = followingTopicsList, followingTopicsCount = followingTopicsCount)
+                avatar = Avatar(url = avatarUrl, name = avatarName!!), followingTopics = mutableListOf(), followingTopicsCount = followingTopicsCount)
         } else {
             null
         }
@@ -101,11 +108,13 @@ class MainActivity : AppCompatActivity()  {
 //        if (AuthenticationUtil.isLoggedIn(this)) {
 //            navController.navigate(R.id.navigation_home)
 //        }
-        val user = getActiveUser()
-        if (user != null){
-            userViewModel.setUser(user)
+
+
+        if (user != null) {
+            userViewModel.setUser(user!!)
             navController.navigate(R.id.navigation_home)
         }
+
 
 //        bottomNavigationView.itemIconTintList = getColorStateList(R.color.bottom_navigation_icon_selector)
         navController.addOnDestinationChangedListener{ _, destination, _ ->

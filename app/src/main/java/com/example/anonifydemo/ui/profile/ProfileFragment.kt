@@ -1,5 +1,6 @@
 package com.example.anonifydemo.ui.profile
 
+import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -166,9 +167,9 @@ class ProfileFragment : Fragment() {
 
         val item1 = bottomview.findViewById<LinearLayout>(R.id.layoutnotiication)
         val item2 = bottomview.findViewById<LinearLayout>(R.id.layoutHashMng)
-        val item3 = bottomview.findViewById<LinearLayout>(R.id.layoutContact)
-        val item4 = bottomview.findViewById<LinearLayout>(R.id.layoutDelete)
-        val item5 = bottomview.findViewById<LinearLayout>(R.id.layoutLogOut)
+        val contactMe = bottomview.findViewById<LinearLayout>(R.id.layoutContact)
+        val deleteUser = bottomview.findViewById<LinearLayout>(R.id.layoutDelete)
+        val logOut = bottomview.findViewById<LinearLayout>(R.id.layoutLogOut)
 
         item1.setOnClickListener {
             Toast.makeText(requireContext(), "notification", Toast.LENGTH_SHORT).show()
@@ -178,16 +179,31 @@ class ProfileFragment : Fragment() {
             Toast.makeText(requireContext(), "hashtag management", Toast.LENGTH_SHORT).show()
           //  dialog.dismiss()
         }
-        item3.setOnClickListener {
+        contactMe.setOnClickListener {
             Toast.makeText(requireContext(), "contact us", Toast.LENGTH_SHORT).show()
             contactUs()
            // dialog.dismiss()
         }
-        item4.setOnClickListener {
+        deleteUser.setOnClickListener {
+            val alertDialogBuilder = AlertDialog.Builder(requireContext())
+            alertDialogBuilder.setTitle("Confirm Deletion")
+            alertDialogBuilder.setMessage("Are you sure you want to delete your account?")
+            alertDialogBuilder.setPositiveButton("Yes") { dialog, _ ->
+                viewModel.deleteUser(userId)
+                Toast.makeText(requireContext(), "Deleting account...", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            alertDialogBuilder.setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+            viewModel.deleteUser(userId)
+
             Toast.makeText(requireContext(), "delete account", Toast.LENGTH_SHORT).show()
           //  dialog.dismiss()
         }
-        item5.setOnClickListener {
+        logOut.setOnClickListener {
                     //logout code
                 removeActiveUser()
                 AuthenticationUtil.logout(requireContext())
