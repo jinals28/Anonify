@@ -21,10 +21,10 @@ class CreatePostViewModel : ViewModel() {
     val topicList: LiveData<List<FollowingTopic>> = _topicList
 
 //    private val postManager = PostManager.getInstance()
+    private var followingTopicList = mutableListOf<FollowingTopic>()
 
-    init {
-
-
+    suspend fun getFollowinTopics(userId: String){
+        followingTopicList = AppRepository.getFollowingTopicsForUser(userId)
     }
 
 //    fun set(topicList: List<String>) {
@@ -34,7 +34,7 @@ class CreatePostViewModel : ViewModel() {
 
     fun generateSuggestions(input: String) {
         Log.d("com.example.anonifydemo.ui.dataClasses.Post View Model", input)
-        _topicList.value = AppRepository.followingTopicList.filter { it.topic.startsWith(input, ignoreCase = true) }.toList()
+        _topicList.value = followingTopicList.filter { it.topic.startsWith(input, ignoreCase = true) }.toList()
 //        _topicList.value = AppRepository.getTopics().filter { it.name.startsWith(input, ignoreCase = true) }.toList()
         Log.d("com.example.anonifydemo.ui.dataClasses.Post View Model", _topicList.value.toString())
     }

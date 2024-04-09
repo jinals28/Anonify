@@ -219,7 +219,7 @@ class ProfileFragment : Fragment() {
         dialog.window?.setGravity (Gravity. BOTTOM)
     }
 
-    private fun removeActiveUser() {
+    fun removeActiveUser() {
         val sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.clear()

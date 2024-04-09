@@ -59,32 +59,43 @@ class MainActivity : AppCompatActivity()  {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+//        removeActiveUser()
 
-        user = getActiveUser()
+        lifecycleScope.launch {
 
-        if (user!= null){
-            lifecycleScope.launch{
-                AppRepository.getFollowingTopicsForUser(user!!.uid)
-            }
+            user = getActiveUser()
+
         }
+//        if (user!= null){
+//            lifecycleScope.launch{
+//                AppRepository.getFollowingTopicsForUser(user!!.uid)
+//            }
+//        }
 
     }
 
-    private fun getActiveUser(): ActiveUser? {
+    fun removeActiveUser() {
+        val sharedPreferences = this.getSharedPreferences("user_data", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+    }
+    private suspend fun getActiveUser(): ActiveUser? {
         val sharedPreferences = this.getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val uid = sharedPreferences.getString("uid", null)
         return if (uid != null) {
-            val email = sharedPreferences.getString("email", "")
-            val createdAt = sharedPreferences.getLong("createdAt", 0)
-            val avatarName = sharedPreferences.getString("avatarName", "")
-            val avatarUrl = sharedPreferences.getInt("avatarUrl", 0)
-            val followingTopicsSet = sharedPreferences.getStringSet("followingTopics", setOf()) ?: setOf()
-            val followingTopicsList = followingTopicsSet.map { FollowingTopic(it, -1) }
-            val followingTopicsCount = sharedPreferences.getLong("followingTopicsCount", 0)
-            ActiveUser(uid = uid,
-                email = email!!,
-                createdAt = createdAt!!,
-                avatar = Avatar(url = avatarUrl, name = avatarName!!), followingTopics = followingTopicsList, followingTopicsCount = followingTopicsCount)
+            AppRepository.getUser(userId = uid)
+//            val email = sharedPreferences.getString("email", "")
+//            val createdAt = sharedPreferences.getLong("createdAt", 0)
+//            val avatarName = sharedPreferences.getString("avatarName", "")
+//            val avatarUrl = sharedPreferences.getInt("avatarUrl", 0)
+//            val followingTopicsSet = sharedPreferences.getStringSet("followingTopics", setOf()) ?: setOf()
+//            val followingTopicsList = followingTopicsSet.map { FollowingTopic(it, -1) }
+//            val followingTopicsCount = sharedPreferences.getLong("followingTopicsCount", 0)
+//            ActiveUser(uid = uid,
+//                email = email!!,
+//                createdAt = createdAt!!,
+//                avatar = Avatar(url = avatarUrl, name = avatarName!!), followingTopics = followingTopicsList, followingTopicsCount = followingTopicsCount)
         } else {
             null
         }
@@ -108,6 +119,7 @@ class MainActivity : AppCompatActivity()  {
 
 
         if (user != null) {
+            Log.d("Anonify User", user.toString())
             userViewModel.setUser(user!!)
             navController.navigate(R.id.navigation_home)
         }

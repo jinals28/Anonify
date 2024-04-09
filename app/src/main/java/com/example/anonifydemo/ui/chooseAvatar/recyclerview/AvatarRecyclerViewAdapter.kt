@@ -73,6 +73,7 @@ class AvatarRecyclerViewAdapter(
         Log.d("Anonify : AvatarRv", avatar.toString())
         holder.imgAvatar.setOnClickListener {
                 userViewModel.updateUserAvatarUrl(avatar)
+
                 Toast.makeText(holder.itemView.context, "Welcome ${avatar.name}", Toast.LENGTH_LONG).show()
             if (userViewModel.getUser()!!.followingTopics.isNotEmpty()){
                 if (holder.itemView.findNavController().currentDestination!!.id == R.id.chooseAvatarFragment){
@@ -89,4 +90,5 @@ class AvatarRecyclerViewAdapter(
 
         }
     }
+
 }

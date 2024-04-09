@@ -14,6 +14,7 @@ import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.databinding.FragmentCreatePostBinding
 import com.example.anonifydemo.ui.dataClasses.ActiveUser
@@ -22,6 +23,7 @@ import com.google.android.material.chip.Chip
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.utils.Utils
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.launch
 
 class CreatePostFragment : Fragment(), Utils {
 
@@ -61,7 +63,13 @@ class CreatePostFragment : Fragment(), Utils {
         _binding=FragmentCreatePostBinding.inflate(layoutInflater, container, false)
 
 
+        userId = userViewModel.getUserId()
 
+        lifecycleScope.launch {
+
+            postViewModel.getFollowinTopics(userId)
+
+        }
         return binding!!.root
     }
 

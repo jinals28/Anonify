@@ -110,14 +110,24 @@ class communityProfileFragment : Fragment() {
             when(btnfollow.text){
                 "Follow" ->{
                     viewModel.followCommunity(userId = userId, topicName)
+                    updateList(topicName)
                     btnfollow.text = "Following"
                 }
                 "Following" -> {
                     viewModel.unfollowCommunity(userId, topicName)
+                    deleteList(topicName)
                     btnfollow.text = "Follow"
                 }
             }
         }
+    }
+
+    private fun deleteList(topicName: String) {
+
+    }
+
+    private fun updateList(topicName: String) {
+        TODO("Not yet implemented")
     }
 
 }

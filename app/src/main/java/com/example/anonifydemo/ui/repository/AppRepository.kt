@@ -930,17 +930,20 @@ object AppRepository : Utils {
             val avatarName = userRef.getString("avatar") ?: ""
             val bio = userRef.getString("bio") ?: ""
             val advicePointCount = userRef.getLong("advicePoint") ?: 0L
-            val followingTopic = followingTopics.document(userId).get().await()
-            val followingTopicSize = followingTopic.data!!.size.toLong()
+//            val followingTopic = userRef.co(userId).get().await()
+//            val followingTopicSize = followingTopic.data!!.size.toLong()
             val url = avatarList.find { it.name == avatarName }!!.url
             val postCount = userRef.getLong("postCount") ?: 0L
+
+            val list = getFollowingTopicsForUser(userId)
 
             return ActiveUser(
                 avatar = Avatar(url, avatarName),
                 advicePointCount = advicePointCount,
-                followingTopicsCount = followingTopicSize,
+                followingTopicsCount = list.size.toLong(),
                 postCount = postCount,
-                bio = bio
+                bio = bio,
+                followingTopics = list
             )
         }else {
             return null

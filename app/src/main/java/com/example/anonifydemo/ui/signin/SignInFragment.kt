@@ -177,9 +177,7 @@ class SignInFragment : Fragment(), Utils {
                     followingTopics = list,
                     followingTopicsCount = list.size.toLong()
                 )
-                userViewModel.setUser(
-                    user
-                )
+                userViewModel.setUser(user)
                 storeActiveUser(user)
                 toast(requireContext(), "Welcome User!!")
                 if (it.second!!.first.avatar != "") {
@@ -203,13 +201,13 @@ class SignInFragment : Fragment(), Utils {
         val sharedPreferences = requireContext().getSharedPreferences("user_data", android.content.Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("uid", user.uid)
-        editor.putString("email", user.email)
-        editor.putLong("createdAt", user.createdAt)
-        editor.putString("avatarName", user.avatar.name)
-        editor.putInt("avatarUrl", user.avatar.url)
-        val followingTopicsSet = user.followingTopics.map { it.topic }.toSet()
-        editor.putStringSet("followingTopics", followingTopicsSet)
-        editor.putLong("followingTopicsCount", user.followingTopicsCount)
+//        editor.putString("email", user.email)
+//        editor.putLong("createdAt", user.createdAt)
+//        editor.putString("avatarName", user.avatar.name)
+//        editor.putInt("avatarUrl", user.avatar.url)
+//        val followingTopicsSet = user.followingTopics.map { it.topic }.toSet()
+//        editor.putStringSet("followingTopics", followingTopicsSet)
+//        editor.putLong("followingTopicsCount", user.followingTopicsCount)
         editor.apply()
     }
 

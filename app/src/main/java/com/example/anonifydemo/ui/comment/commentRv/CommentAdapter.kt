@@ -138,9 +138,18 @@ class CommentAdapter(val context: Context, private val userId : String) :
                         R.id.report -> {
                             // Handle report post action
                             Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "reported")
-                            hideComment()
-                            reportUserComment(comment)
-                            reportUser(comment.userId)
+                            if (comment.userId == userId) {
+                                Snackbar.make(
+                                    itemView,
+                                    "A user cannot report himself",
+                                    Snackbar.ANIMATION_MODE_SLIDE
+                                ).show()
+                            } else {
+                                Snackbar.make(itemView, "User Reported", Snackbar.ANIMATION_MODE_SLIDE).show()
+                                hideComment()
+                                reportUserComment(comment)
+                                reportUser(comment.userId)
+                            }
                             true
                         }
 
