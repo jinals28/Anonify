@@ -112,7 +112,6 @@ class MainActivity : AppCompatActivity()  {
             navController.navigate(R.id.navigation_home)
         }
 
-
 //        bottomNavigationView.itemIconTintList = getColorStateList(R.color.bottom_navigation_icon_selector)
         navController.addOnDestinationChangedListener{ _, destination, _ ->
             when(destination.id){
