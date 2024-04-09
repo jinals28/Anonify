@@ -42,6 +42,10 @@ object AppRepository : Utils {
 
     const val TAG = "Anonify: USER_REPOSITORY"
 
+    private val _hidePostList = mutableListOf<String>()
+
+    private val _hideCommentList = mutableListOf<String>()
+
     private val _commentsLiveData = MutableLiveData<List<DisplayComment>>()
     val commentsLiveData: LiveData<List<DisplayComment>> get() = _commentsLiveData
 
@@ -315,40 +319,48 @@ object AppRepository : Utils {
     suspend fun fetchPosts(userId: String, followingTopicsList: List<FollowingTopic>) {
 //        log("In Fetch Posts")
             val posts = mutableListOf<DisplayPost>()
+        _hidePostList.clear()
+        val userRef = users.document(userId).collection("reportedPosts").get().await()
+        for (doc in userRef){
+            _hidePostList.add(doc.id)
+        }
 
         val followingTopic = followingTopicsList.map { it.topic }
             try {
                 val querySnapshot: QuerySnapshot = postsList.whereIn("topicName", followingTopic).orderBy("postCreatedAt", Query.Direction.DESCENDING).get().await()
                 for (document in querySnapshot.documents) {
 //                    log("App REpo: Post Id: ${document.id}")
-                    val postedUserId = document.getString("userId") ?: ""
-                    val topicName = document.getString("topicName") ?: ""
-                    val postContent = document.getString("postContent") ?: ""
-                    val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
-                    val likeCount = document.getLong("likeCount") ?: 0L
-                    val commentCount = document.getLong("commentCount") ?: 0L
-                    val avatarName = fetchAvatarName(postedUserId)
+                    if (!_hidePostList.contains(document.id)) {
+
+                        val postedUserId = document.getString("userId") ?: ""
+                        val topicName = document.getString("topicName") ?: ""
+                        val postContent = document.getString("postContent") ?: ""
+                        val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
+                        val likeCount = document.getLong("likeCount") ?: 0L
+                        val commentCount = document.getLong("commentCount") ?: 0L
+                        val avatarName = fetchAvatarName(postedUserId)
 //                    log("Avatar name from userId: $avatarName")
-                    val url = avatarList.find { it.name == avatarName }!!.url
+                        val url = avatarList.find { it.name == avatarName }!!.url
 
-                    val likedByUser = isPostLikedByCurrentUser(document.id, userId)
+                        val likedByUser = isPostLikedByCurrentUser(document.id, userId)
 
-                    val savedByUser = isSavedByUser(document.id, userId)
+                        val savedByUser = isSavedByUser(document.id, userId)
 
-                    val post = DisplayPost(
-                        postId = document.id,
-                        userId = postedUserId,
-                        postContent = postContent,
-                        topicName = topicName,
-                        likeCount = likeCount,
-                        avatarName = avatarName,
-                        avatarUrl = url,
-                        likedByCurrentUser = likedByUser,
-                        commentCount = commentCount,
-                        isSavedByUser = savedByUser
-                    )
-                    posts.add(post)
+                        val post = DisplayPost(
+                            postId = document.id,
+                            userId = postedUserId,
+                            postContent = postContent,
+                            topicName = topicName,
+                            likeCount = likeCount,
+                            avatarName = avatarName,
+                            avatarUrl = url,
+                            likedByCurrentUser = likedByUser,
+                            commentCount = commentCount,
+                            isSavedByUser = savedByUser
+                        )
+                        posts.add(post)
 //                    log("App Repo, ${posts.toString()}")
+                    }
                 }
                 _postList.value = posts
             } catch (e: Exception) {
@@ -533,7 +545,7 @@ object AppRepository : Utils {
     suspend fun fetchPost(userId : String, postId: String): DisplayPost? {
 
         try {
-            fetchComments(postId)
+            fetchComments(userId, postId)
             val document: DocumentSnapshot = postsList.document(postId).get().await()
 
                 val postedUserId = document.getString("userId") ?: ""
@@ -570,7 +582,7 @@ object AppRepository : Utils {
         return null
     }
 
-    suspend fun addCommentToPost(comment: Comment, showSnackbar: (String) -> Unit, onNext: (List<DisplayComment>) -> Unit) {
+    suspend fun addCommentToPost(userId: String, comment: Comment, showSnackbar: (String) -> Unit, onNext: (List<DisplayComment>) -> Unit) {
 
         try {
             // Add comment to Comment Collection and obtain the generated document ID
@@ -596,7 +608,7 @@ object AppRepository : Utils {
                     .await()
 
                 postRef.update("commentCount", FieldValue.increment(1)).await()
-                val commentList = fetchComments(comment.postId)
+                val commentList = fetchComments(userId, comment.postId)
                 onNext(commentList)
                 // Show success Snackbar
                 showSnackbar("Comment added successfully")
@@ -615,7 +627,7 @@ object AppRepository : Utils {
         }
     }
 
-    suspend fun fetchComments(postId: String) : List<DisplayComment> {
+    suspend fun fetchComments(userId: String, postId: String) : List<DisplayComment> {
 
         val commentList = mutableListOf<DisplayComment>()
 
@@ -623,14 +635,24 @@ object AppRepository : Utils {
 
         val deferred = CompletableDeferred<List<String>>()
 
-        try {
+        val userRef = users.document(userId).collection("reportedComments")
 
+
+
+        try {
+            _hideCommentList.clear()
+            val reportedCommentsId = userRef.get().await()
+            for (doc in reportedCommentsId){
+                _hideCommentList.add(doc.id)
+            }
             val snapshot = commentCollection.orderBy("commentedAt", Query.Direction.DESCENDING).get().await()
             for (document in snapshot.documents) {
                 val commentId = document.id
-                val comment = fetchCommentObject(commentId)
-                if (comment != null) {
-                    commentList.add(comment)
+                if (!_hideCommentList.contains(commentId)) {
+                    val comment = fetchCommentObject(commentId)
+                    if (comment != null) {
+                        commentList.add(comment)
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -662,6 +684,7 @@ object AppRepository : Utils {
                     val advicePointByUser = isAdvicePointByUser(userId, commentId)
                     val comment = DisplayComment(
                         userName = userName,
+                        userId = userId,
                         avatarUrl = url,
                         postContent = commentText,
                         likeCount = commentLikeCount,
@@ -849,11 +872,13 @@ object AppRepository : Utils {
 
     }
 
-    suspend fun reportPost(coroutineScope: CoroutineScope, userId: String, postId: String) {
+    suspend fun reportPost(coroutineScope: CoroutineScope,userId: String,  postUserId: String, postId: String) {
         try {
             var updatedReportedCount = 0L
             // Get the post document reference
             val postRef = postsList.document(postId)
+
+            val userRef = users.document(userId)
 
             // Update reported count by 1 using Firestore transaction
             Firebase.firestore.runTransaction { transaction ->
@@ -863,11 +888,19 @@ object AppRepository : Utils {
                 transaction.update(postRef, "reportedCount", updatedReportedCount)
                 if (updatedReportedCount >= 5) {
                     coroutineScope.launch {
-                        increaseReportCount(userId)
+                        increaseReportCount(postUserId)
                     }
                     transaction.delete(postRef)
 
                 }
+                val userPostsCollection = userRef.collection("reportedPosts")
+
+                // Add the postId to the user's posts subcollection
+                val reportedPost = hashMapOf(
+                    "postId" to postId,
+                    "reportedAt" to System.currentTimeMillis()
+                )
+                userPostsCollection.document(postId).set(reportedPost)
             }.addOnSuccessListener {
                 Log.d(TAG, "Report count updated for post: $postId")
                 // Check if reported count is 5, and if so, permanently delete the post
@@ -877,6 +910,46 @@ object AppRepository : Utils {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error reporting post: $postId, ${e.message}", e)
+        }
+    }
+
+    suspend fun reportComment(coroutineScope: CoroutineScope, userId : String,  commentOfUserId: String, commentId: String) {
+        try {
+            var updatedReportedCount = 0L
+            // Get the post document reference
+            val postRef = commentCollection.document(commentId)
+
+            val userRef = users.document(userId)
+
+            // Update reported count by 1 using Firestore transaction
+            Firebase.firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(postRef)
+                val currentReportedCount = snapshot.getLong("reportedCount") ?: 0
+                updatedReportedCount = currentReportedCount + 1
+                transaction.update(postRef, "reportedCount", updatedReportedCount)
+                if (updatedReportedCount >= 5) {
+                    coroutineScope.launch {
+                        increaseReportCount(commentOfUserId)
+                    }
+                    transaction.delete(postRef)
+                }
+                val userPostsCollection = userRef.collection("reportedComments")
+
+                // Add the postId to the user's posts subcollection
+                val reportedComment = hashMapOf(
+                    "commentId" to commentId,
+                    "reportedAt" to System.currentTimeMillis()
+                )
+                userPostsCollection.document(commentId).set(reportedComment)
+            }.addOnSuccessListener {
+                Log.d(TAG, "Report count updated for post: $commentId")
+                // Check if reported count is 5, and if so, permanently delete the post
+
+            }.addOnFailureListener { e ->
+                Log.e(TAG, "Failed to update report count for post: $commentId, ${e.message}", e)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error reporting post: $commentId, ${e.message}", e)
         }
     }
 
@@ -1016,6 +1089,10 @@ object AppRepository : Utils {
         }
 
         return userPosts
+    }
+
+    fun addInHiddenComment(commentId: String) {
+        _hideCommentList.add(commentId)
     }
 
 

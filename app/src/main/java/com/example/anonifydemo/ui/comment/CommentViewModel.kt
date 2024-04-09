@@ -25,9 +25,8 @@ class CommentViewModel : ViewModel() {
     suspend fun getPostById(userId: String, postId: String){
         viewModelScope.launch {
             _post.value = AppRepository.fetchPost(userId, postId)
-            _commentLiveData.value = AppRepository.fetchComments(postId)
+            _commentLiveData.value = AppRepository.fetchComments(userId, postId)
         }
-
 
     }
 
@@ -39,7 +38,7 @@ class CommentViewModel : ViewModel() {
             commentText = commentText,
             commentedAt = System.currentTimeMillis()
         )
-        AppRepository.addCommentToPost(comment, onSuccess) {
+        AppRepository.addCommentToPost(userId, comment, onSuccess) {
                 viewModelScope.launch {
                     val post = _post.value!!.copy(commentCount = it.size.toLong())
                     _post.value = post

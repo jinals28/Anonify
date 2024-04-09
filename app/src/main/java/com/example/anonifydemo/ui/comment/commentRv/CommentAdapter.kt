@@ -23,6 +23,7 @@ import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.repository.AppRepository
+import com.google.android.material.snackbar.Snackbar
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -104,24 +105,40 @@ class CommentAdapter(val context: Context, private val userId : String) :
             }
             commentOption.setOnClickListener {
                 val popupMenu = PopupMenu(context, commentOption)
-                popupMenu.menuInflater.inflate(R.menu.post_popup_menu, popupMenu.menu)
+                popupMenu.menuInflater.inflate(R.menu.comment_popup_menu, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
-                        R.id.block -> {
+                        R.id.reportComment -> {
                             // Handle block post action
                             Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "blocked")
+                            if (comment.userId == userId) {
+                                Snackbar.make(
+                                    itemView,
+                                    "A user cannot report his own comment",
+                                    Snackbar.ANIMATION_MODE_SLIDE
+                                ).show()
+                            } else {
+                                Snackbar.make(itemView, "Comment Reported", Snackbar.ANIMATION_MODE_SLIDE).show()
+                                hideComment()
+                                reportUserComment(comment)
+                            }
                             true
                         }
 
                         R.id.report -> {
                             // Handle report post action
                             Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "reported")
+                            hideComment()
+                            reportUserComment(comment)
+                            reportUser(comment.userId)
                             true
                         }
 
                         R.id.hide -> {
                             // Handle hide post action
                             Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "hide post")
+                            hideComment()
+
 ////                            val position = adapterPosition
 ////                            // Check if the position is valid
 ////                            if (position != RecyclerView.NO_POSITION) {
@@ -143,6 +160,44 @@ class CommentAdapter(val context: Context, private val userId : String) :
                 popupMenu.show()
             }
 
+        }
+
+        private fun reportUser(userId: String) {
+            coroutineScope.launch {
+                AppRepository.reportUser(userId)
+            }
+        }
+
+        private fun reportUserComment(comment: DisplayComment) {
+            coroutineScope.launch {
+
+                AppRepository.reportComment(this, userId, comment.userId, comment.commentId)
+            }
+        }
+
+
+        private fun hideComment() {
+            val position = adapterPosition
+            // Check if the position is valid
+            if (position != RecyclerView.NO_POSITION) {
+                // Apply animation
+                val animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right)
+                itemView.startAnimation(animation)
+                // Remove the item from the list
+                removeItem(position)
+
+            }
+        }
+
+        private fun removeItem(position: Int) {
+            if (position != RecyclerView.NO_POSITION) {
+                // Remove the item from the list
+                // Notify the adapter about the item removal
+                val newList = currentList.toMutableList()
+                newList.removeAt(position)
+                // Submit the new list to the ListAdapter
+                submitList(newList)
+            }
         }
 
         private fun toggleAdviceComment(comment: DisplayComment) {

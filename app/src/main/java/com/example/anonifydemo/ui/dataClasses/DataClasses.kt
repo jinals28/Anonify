@@ -56,6 +56,7 @@ data class Comment(
 
 data class DisplayComment(
     val userName: String,
+    val userId : String,
     val avatarUrl: Int, // Assuming it's the resource ID of the avatar image
     val postContent: String,
     var likeCount: Long,

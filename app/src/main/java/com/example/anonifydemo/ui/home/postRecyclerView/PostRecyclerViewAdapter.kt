@@ -147,6 +147,8 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
                                 hidePost()
                                 reportUserPost(post)
                             }
+                            hidePost()
+                            reportUserPost(post)
                             true
                         }
                         R.id.report -> {
@@ -161,6 +163,7 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
                             } else {
                                 Snackbar.make(it, "User Reported", Snackbar.ANIMATION_MODE_SLIDE).show()
                                 hidePost()
+                                reportUserPost(post)
                                 reportUser(userId)
                             }
                             true
@@ -169,7 +172,6 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
                             // Handle hide post action
                             Log.d("Anonify : $TAG", "hide post")
                             hidePost()
-
                             true
                         }
                         else -> false
@@ -200,7 +202,7 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
         private fun reportUserPost(post: DisplayPost) {
 
             coroutineScope.launch {
-                AppRepository.reportPost(this, userId, post.postId)
+                AppRepository.reportPost(this, userId,post.userId,  post.postId)
             }
 
 
