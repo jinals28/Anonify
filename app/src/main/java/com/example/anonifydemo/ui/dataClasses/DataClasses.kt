@@ -14,6 +14,13 @@ data class ActiveUser(
     var bio : String = ""
 )
 
+data class DisplayCommunity(
+    val communityName : String,
+    val followerCount : Long = 0,
+    val postCount : Long = 0,
+    val isFollowedByUser : Boolean = false
+)
+
 data class Like(
     val likeId: String = "", // Room: Long (Primary key)
     val userId: String= "", // Room: Long (Foreign key)
@@ -102,3 +109,4 @@ data class AdvicePoints(
     val commentId: Long, // Room: Long (Foreign key)
     val advicePointAt: Date // Firebase: Timestamp, Room: Long (timestamp converted to milliseconds)
 )
+

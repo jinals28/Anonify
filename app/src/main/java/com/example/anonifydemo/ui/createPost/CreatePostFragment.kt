@@ -97,7 +97,6 @@ class CreatePostFragment : Fragment(), Utils {
 
         postViewModel.setTopicList(activeUser!!.followingTopics)
 
-        log(activeUser.followingTopics.toString())
 
        postViewModel.topicList.observe(viewLifecycleOwner){ suggestionsList ->
            log("suggestionList ${suggestionsList.toString()}")

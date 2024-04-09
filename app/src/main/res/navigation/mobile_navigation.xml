@@ -115,6 +115,9 @@
         <action
             android:id="@+id/action_homeFragment_to_profile2Fragment"
             app:destination="@id/profile2Fragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_communityProfileFragment"
+            app:destination="@id/communityProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_post"
@@ -143,7 +146,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchCommunityFragment"
-        android:name="com.example.anonifydemo.ui.community.searchCommunityFragment"
+        android:name="com.example.anonifydemo.ui.community.search.searchCommunityFragment"
         android:label="fragment_search_community"
         tools:layout="@layout/fragment_search_community" >
         <action
@@ -164,6 +167,10 @@
 <!--        <action-->
 <!--            android:id="@+id/action_communityProfileFragment_to_searchCommunityFragment"-->
 <!--            app:destination="@id/searchCommunityFragment" />-->
+        <argument
+            android:name="communityName"
+            app:argType="string"
+            android:defaultValue=""/>
     </fragment>
     <fragment
         android:id="@+id/createCommunityFragment"
@@ -184,6 +191,12 @@
             android:name="postId"
             app:argType="string"
             android:defaultValue="" />
+        <action
+            android:id="@+id/action_commentFragment_to_profile2Fragment"
+            app:destination="@id/profile2Fragment" />
+        <action
+            android:id="@+id/action_commentFragment_to_communityProfileFragment"
+            app:destination="@id/communityProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"

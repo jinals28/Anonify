@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity()  {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         user = getActiveUser()
 
         if (user!= null){

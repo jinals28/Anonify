@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ItemPostBinding
+import com.example.anonifydemo.ui.comment.CommentFragmentDirections
 import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.DisplaySaved
@@ -120,10 +121,38 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
             }
 
             userName.setOnClickListener {
-                if (it.findNavController().currentDestination!!.id == R.id.navigation_home){
-                    val action =
-                        HomeFragmentDirections.actionHomeFragmentToProfile2Fragment(userId = post.userId)
-                    it.findNavController().navigate(action)
+                when(it.findNavController().currentDestination!!.id){
+                    R.id.commentFragment -> {
+                        val action =
+                            CommentFragmentDirections.actionCommentFragmentToProfile2Fragment(userId = post.userId)
+                        it.findNavController().navigate(action)
+                    }
+                    R.id.navigation_home ->{
+                        val action =
+                            HomeFragmentDirections.actionHomeFragmentToProfile2Fragment(userId = post.userId)
+                        it.findNavController().navigate(action)
+                    }
+                    else -> {}
+                }
+            }
+
+            txtHashtag.setOnClickListener {
+                Log.d("Anonify : RB", post.topicName)
+                when(it.findNavController().currentDestination!!.id){
+                    R.id.commentFragment -> {
+                        val action =
+                            CommentFragmentDirections.actionCommentFragmentToCommunityProfileFragment(communityName = post.topicName)
+                        it.findNavController().navigate(action)
+                    }
+                    R.id.navigation_home ->{
+                        val action =
+                            HomeFragmentDirections.actionNavigationHomeToCommunityProfileFragment(communityName = post.topicName)
+                        it.findNavController().navigate(action)
+                    }
+                    else -> {
+
+                    }
+
                 }
 
             }

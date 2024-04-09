@@ -12,6 +12,7 @@ import com.example.anonifydemo.ui.dataClasses.Comment
 import com.example.anonifydemo.ui.dataClasses.DisplayAdvicePoint
 import com.example.anonifydemo.ui.dataClasses.DisplayComment
 import com.example.anonifydemo.ui.dataClasses.DisplayCommentLike
+import com.example.anonifydemo.ui.dataClasses.DisplayCommunity
 import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.DisplaySaved
@@ -63,6 +64,8 @@ object AppRepository : Utils {
 
     private val commentCollection = Firebase.firestore.collection("comments")
 
+    private val communityCollection = Firebase.firestore.collection("community")
+
     private var _topicList = MutableLiveData<List<Topic>>()
 
     val topicsList: LiveData<List<Topic>> = _topicList
@@ -84,15 +87,15 @@ object AppRepository : Utils {
         Topic("#CollegeStories"),
         Topic("#TravelTopics"),
         Topic("#Technology"),
-        Topic("#Career"),
+//        Topic("#Career"),
         Topic("#Anxiety"),
         Topic("#Family"),
         Topic("#Sports"),
         Topic("#Addiction"),
         Topic("#Advice"),
         Topic("#Aging"),
-        Topic("#BadHabits"),
-        Topic("#BodyShaming"),
+//        Topic("#BadHabits"),
+//        Topic("#BodyShaming"),
         Topic("#TimeManagement"),
         Topic("#Racism"),
         Topic("#Other")
@@ -120,6 +123,13 @@ object AppRepository : Utils {
     )
 
     var followingTopicList = mutableListOf<FollowingTopic>()
+
+    suspend fun addCommunities(){
+        topicList.forEach {
+            communityCollection.document(it.name)
+                .set(it.toMap()).await()
+        }
+    }
 
     suspend fun addUser(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         Log.d(TAG, "Add user")
@@ -158,55 +168,38 @@ object AppRepository : Utils {
     }
 
     suspend fun getFollowingTopicsForUser(userId: String): MutableList<FollowingTopic> {
-        Log.d(TAG, "Repo getFollowing")
         var followingTopics = mutableListOf<FollowingTopic>()
-        try{
-        val docRef = Firebase.firestore.collection("followingTopics").document(userId)
-        val doc = docRef.get().await()
-        if (doc.exists()) {
-            val data = doc.data
-            if (data != null) {
-                for ((topic, topicData) in data) {
-                    if (topicData is Map<*, *>) {
-                        val followedAt = topicData["followedAt"] as? Long
-                        if (followedAt != null) {
-                            followingTopics.add(
-                                FollowingTopic(
-                                    topic = topic,
-                                    followedAt = followedAt
-                                )
-                            )
-                        }else{
-                            // Handle missing or invalid followedAt data
-                            Log.e(
-                                TAG,
-                                "Invalid followedAt data for topic: $topic"
-                            )
-                        }
-                    }else {
-                        // Handle unexpected topic data format
-                        Log.e(
-                            TAG,
-                            "Unexpected data format for topic: $topic"
+        try {
+            // Get a reference to the user's followingTopics subcollection
+            val docRef = Firebase.firestore.collection("users").document(userId)
+                .collection("followingTopics")
+
+            val querySnapshot = docRef.get().await()
+            for (document in querySnapshot.documents) {
+                val topic = document.id // Document ID is the topic name
+                val followedAt = document.getLong("followedAt")
+                if (followedAt != null) {
+                    followingTopics.add(
+                        FollowingTopic(
+                            topic = topic,
+                            followedAt = followedAt
                         )
-                    }
+                    )
+                } else {
+                    // Handle missing or invalid followedAt data
+                    Log.e(
+                        TAG,
+                        "Invalid followedAt data for topic: $topic"
+                    )
                 }
-            }else {
-                // Handle null data
-                Log.e(TAG, "Null data received for user: $userId")
             }
-            } else {
-            // Handle non-existent document
-            Log.e(TAG, "No following topics found for user: $userId")
+        } catch (e: Exception) {
+            // Handle exceptions
+            Log.e(TAG, "Error fetching following topics for user: $userId", e)
         }
-        } catch (e: Exception)
-    {
-        // Handle exceptions
-        Log.e(TAG, "Error fetching following topics for user: $userId", e)
-    }
         Log.d(TAG, followingTopics.toString())
         followingTopicList = followingTopics
-    return followingTopics
+        return followingTopics
 }
 
     suspend fun getUserByUid(uid: String): Pair<User, List<FollowingTopic>> {
@@ -221,14 +214,43 @@ object AppRepository : Utils {
     }
 
     suspend fun saveSelectedTopics(selectedTopics: List<FollowingTopic>, userId: String) {
-        val userDocRef = followingTopics.document(userId)
+        val batch = firestore.batch()
+
+        val userDocRef = users.document(userId).collection("followingTopics")
 
         // Create a map of topics with their followed timestamps
         val topicsMap = selectedTopics.associateBy { it.topic } // Assuming topic is unique
 
         // Save the map to Firestore
-        userDocRef.set(topicsMap)
 
+
+        selectedTopics.forEach { topic ->
+            val doc = userDocRef.document(topic.topic)
+
+            val topicRef = communityCollection.document(topic.topic)
+            val followedAt = hashMapOf(
+                "topicName" to topic.topic,
+                "followedAt" to topic.followedAt
+            )
+            batch.set(doc, followedAt)
+            batch.update(topicRef, "follower", FieldValue.increment(1))
+
+            val userData = hashMapOf(
+                "userId" to userId,
+                "followedAt" to topic.followedAt
+            )
+            val userSubcollectionRef = topicRef.collection("users").document(userId)
+            batch.set(userSubcollectionRef, userData)
+        }
+
+        // Commit the batched write
+        try {
+            batch.commit().await()
+            // Batched write successful
+        } catch (e: Exception) {
+            // Error handling
+            Log.e(TAG, "Error saving selected topics: $e")
+        }
 
     }
 
@@ -240,7 +262,12 @@ object AppRepository : Utils {
         )
     }
 
-
+    private fun Topic.toMap(): Map<String, Any?> {
+        return mapOf(
+            "follower" to 0,
+            "posts" to 0,
+        )
+    }
 
     suspend fun updateUserAvatar(userId: String, avatar: String) {
             try {
@@ -342,39 +369,43 @@ object AppRepository : Utils {
     }
 
     suspend fun addPost(post: Post) {
+        val batch = firestore.batch()
                 try {
-                    // Get a reference to the posts collection
+//
+//
+        val postDocRef = postsList.add(post).await()
+        val postId = postDocRef.id
 
+        // Get a reference to the user's document
+        val userRef = users.document(post.userId)
 
-                    // Add the post to the posts collection
-                    val postDocRef = postsList.add(post).await()
-                    val postId = postDocRef.id
+        // Create a reference to the user's posts subcollection
+        val userPostsCollection = userRef.collection("posts")
 
-                    // Get a reference to the user's document
-                    val userRef = users.document(post.userId)
+        // Add the postId to the user's posts subcollection
+        val postData = hashMapOf(
+            "postId" to postId,
+            "postedAt" to post.postCreatedAt
+        )
+        batch.set(userPostsCollection.document(postId), postData)
 
-                    // Create a reference to the user's posts subcollection
-                    val userPostsCollection = userRef.collection("posts")
+        // Increment postCount for the user
+        batch.update(userRef, "postCount", FieldValue.increment(1))
 
-                    // Add the postId to the user's posts subcollection
-                    val postData = hashMapOf(
-                        "postId" to postId,
-                        "postedAt" to post.postCreatedAt
-                    )
-                    userPostsCollection.document(postId).set(postData)
+        // Increment post count for each topic and add postId to the communityCollection
+            val topicRef = communityCollection.document(post.topicName)
+            val topicPostsCollection = topicRef.collection("posts")
 
-                    // Increment postCount for the user
-                    userRef.update("postCount", FieldValue.increment(1))
-                        .addOnSuccessListener {
-                            Log.d("AppRepository", "Post added successfully")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e("AppRepository", "Error updating postCount", e)
-                        }
-                } catch (e: Exception) {
-                    Log.e("AppRepository", "Exception adding post", e)
-                }
-            }
+            batch.set(topicPostsCollection.document(postId), postData)
+            batch.update(topicRef, "posts", FieldValue.increment(1))
+                    
+        // Commit the batched write
+        batch.commit().await()
+        Log.d("AppRepository", "Post added successfully")
+    } catch (e: Exception) {
+        Log.e("AppRepository", "Exception adding post", e)
+    }
+    }
 
     suspend fun updatesLikes(userId: String, userLikes: MutableList<DisplayLike>) {
 
@@ -662,6 +693,21 @@ object AppRepository : Utils {
         val commentLikeRef = commentCollection
             .document(commentId)
             .collection("commentLikes")
+            .document(userId)
+
+        return try {
+            val documentSnapshot = commentLikeRef.get().await()
+            documentSnapshot.exists()
+        } catch (e: Exception) {
+            // Handle exceptions, such as Firestore errors
+            false
+        }
+    }
+
+    suspend fun isCommunityFollowedByUser(userId: String, community: String): Boolean {
+        val commentLikeRef = communityCollection
+            .document(community)
+            .collection("users")
             .document(userId)
 
         return try {
@@ -1093,6 +1139,157 @@ object AppRepository : Utils {
                 Log.e(TAG, "Error querying comments: $e")
             }
 
+    }
+
+    suspend fun getCommunity(topicName: String, userId: String): DisplayCommunity? {
+
+        val comRef = communityCollection.document(topicName)
+
+        var displayCommunity: DisplayCommunity? = null
+        try {
+            val communityDoc = comRef.get().await()
+            if (communityDoc.exists()) {
+                val communityName = communityDoc.id ?: ""
+                val followerCount = communityDoc.getLong("follower") ?: 0L
+                val postCount = communityDoc.getLong("posts") ?: 0L
+
+                // Check if the current user follows this community
+                val isFollowedByUser = isCommunityFollowedByUser(userId, topicName)
+
+                displayCommunity = DisplayCommunity(
+                    communityName = communityName,
+                    followerCount = followerCount,
+                    postCount = postCount,
+                    isFollowedByUser = isFollowedByUser
+                )
+            }
+        } catch (e: Exception) {
+            // Handle exception
+        }
+        log("display community ${displayCommunity.toString()}")
+        return displayCommunity
+    }
+
+    suspend fun getCommunityPosts(userId : String, topicName: String): List<DisplayPost>? {
+
+        val comPostsCollection = communityCollection.document(topicName).collection("posts")
+        val postIds = mutableListOf<String>()
+
+        try {
+            // Fetch all documents from the user's posts subcollection
+            val querySnapshot = comPostsCollection.get().await()
+
+            // Extract the post IDs from the documents
+            for (document in querySnapshot.documents) {
+                val postId = document.getString("postId")
+                log("get User Posts : postId $postId")
+                if (postId != null) {
+                    postIds.add(postId)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("AppRepository", "Error fetching user posts", e)
+        }
+
+        // Fetch the posts from the postsList collection using the retrieved post IDs
+        val userPosts = mutableListOf<DisplayPost>()
+
+
+        for (postId in postIds) {
+            try {
+                val document = postsList.document(postId).get().await()
+                if (document.exists()) {
+                    val postedUserId = document.getString("userId") ?: ""
+                    val topicName = document.getString("topicName") ?: ""
+                    val postContent = document.getString("postContent") ?: ""
+                    val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
+                    val likeCount = document.getLong("likeCount") ?: 0L
+                    val commentCount = document.getLong("commentCount") ?: 0L
+                    val avatarName = fetchAvatarName(postedUserId)
+//                    log("Avatar name from userId: $avatarName")
+                    val url = avatarList.find { it.name == avatarName }!!.url
+
+                    val likedByUser = isPostLikedByCurrentUser(document.id, userId)
+
+                    val savedByUser = isSavedByUser(document.id, userId)
+
+                    val post = DisplayPost(
+                        postId = document.id,
+                        userId = postedUserId,
+                        postContent = postContent,
+                        topicName = topicName,
+                        likeCount = likeCount,
+                        avatarName = avatarName,
+                        avatarUrl = url,
+                        likedByCurrentUser = likedByUser,
+                        commentCount = commentCount,
+                        isSavedByUser = savedByUser
+                    )
+
+                    log("posts in getUser ${post.toString()}")
+                    post?.let { userPosts.add(it) }
+                }
+            } catch (e: Exception) {
+                Log.e("AppRepository", "Error fetching post with ID $postId", e)
+            }
+        }
+
+        return userPosts
+
+    }
+
+    suspend fun followCommunity(userId: String, topicName: String) {
+        val communityRef = communityCollection.document(topicName)
+        val userRef = firestore.collection("users").document(userId)
+
+        val followerData = hashMapOf(
+            "userId" to userId,
+            "followedAt" to FieldValue.serverTimestamp()
+        )
+
+        try {
+            // Add the user to the followers subcollection of the community
+            communityRef.collection("users").document(userId).set(followerData).await()
+
+            // Increment the follower count in the community document
+            communityRef.update("follower", FieldValue.increment(1)).await()
+
+            // Update user's followingTopics collection
+            updateUserFollowingTopics(userId, topicName, true)
+        } catch (e: Exception) {
+            // Handle exception
+        }
+    }
+
+    suspend fun unfollowCommunity(userId: String, topicName: String) {
+        val communityRef = firestore.collection("communities").document(topicName)
+        val userRef = firestore.collection("users").document(userId)
+
+        try {
+            // Remove the user from the followers subcollection of the community
+            communityRef.collection("users").document(userId).delete().await()
+
+            // Decrement the follower count in the community document
+            communityRef.update("follower", FieldValue.increment(-1)).await()
+
+            // Update user's followingTopics collection
+            updateUserFollowingTopics(userId, topicName, false)
+        } catch (e: Exception) {
+            // Handle exception
+        }
+    }
+
+    suspend fun updateUserFollowingTopics(userId: String, topicName: String, follow: Boolean) {
+        val userRef = users.document(userId)
+        val followingTopicsRef = userRef.collection("followingTopics").document(topicName)
+
+        if (follow) {
+            // If following, add the topic to the user's followingTopics collection
+            followingTopicsRef.set(hashMapOf("followedAt" to FieldValue.serverTimestamp())).await()
+        } else {
+            // If unfollowing, remove the topic from the user's followingTopics collection
+            followingTopicsRef.delete().await()
+        }
     }
 
 

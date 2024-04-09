@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/windowBackground"
     android:orientation="vertical"
-    tools:context=".ui.community.searchCommunityFragment">
+    tools:context=".ui.community.search.searchCommunityFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

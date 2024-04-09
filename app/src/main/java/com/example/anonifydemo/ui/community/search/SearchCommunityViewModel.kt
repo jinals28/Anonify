@@ -1,4 +1,4 @@
-package com.example.anonifydemo.ui.community
+package com.example.anonifydemo.ui.community.search
 
 import androidx.lifecycle.ViewModel
 

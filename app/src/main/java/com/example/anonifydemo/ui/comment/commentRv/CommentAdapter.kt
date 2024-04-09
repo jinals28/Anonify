@@ -10,11 +10,13 @@ import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.RowCommentBinding
+import com.example.anonifydemo.ui.comment.CommentFragmentDirections
 import com.example.anonifydemo.ui.dataClasses.Comment
 import com.example.anonifydemo.ui.dataClasses.DisplayAdvicePoint
 import com.example.anonifydemo.ui.dataClasses.DisplayComment
@@ -94,6 +96,14 @@ class CommentAdapter(val context: Context, private val userId : String) :
             setLikeButtonState(comment.likedByUser)
             setAdvicePointState(comment.advicePointByUser)
 
+            userName.setOnClickListener {
+                if (it.findNavController().currentDestination!!.id == R.id.commentFragment) {
+
+                    val action = CommentFragmentDirections.actionCommentFragmentToProfile2Fragment(userId)
+                    it.findNavController().navigate(action)
+                }
+                }
+
             btnLike.setOnClickListener {
 
                 toggleComment(comment)
@@ -139,18 +149,7 @@ class CommentAdapter(val context: Context, private val userId : String) :
                             Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "hide post")
                             hideComment()
 
-////                            val position = adapterPosition
-////                            // Check if the position is valid
-////                            if (position != RecyclerView.NO_POSITION) {
-////                                // Apply animation
-////                                val animation = AnimationUtils.loadAnimation(
-////                                    context,
-////                                    android.R.anim.slide_out_right
-////                                )
-////                                itemView.startAnimation(animation)
-//                                // Remove the item from the list
-//                                //removeItem(position)
-//                            }
+////
                             true
                         }
 
