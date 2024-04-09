@@ -1,41 +1,29 @@
 package com.example.anonifydemo.ui.activity
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 //import androidx.credentials.CredentialManager
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.ActivityMainBinding
 import com.example.anonifydemo.ui.dataClasses.ActiveUser
-import com.example.anonifydemo.ui.dataClasses.Avatar
-import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.repository.AppRepository
-import com.example.anonifydemo.ui.utils.AuthenticationUtil
 
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 class MainActivity : AppCompatActivity()  {
 
@@ -61,11 +49,6 @@ class MainActivity : AppCompatActivity()  {
 
 //        removeActiveUser()
 
-        lifecycleScope.launch {
-
-            user = getActiveUser()
-
-        }
 //        if (user!= null){
 //            lifecycleScope.launch{
 //                AppRepository.getFollowingTopicsForUser(user!!.uid)
@@ -80,25 +63,26 @@ class MainActivity : AppCompatActivity()  {
         editor.clear()
         editor.apply()
     }
-    private suspend fun getActiveUser(): ActiveUser? {
+    private fun getActiveUser(): String {
         val sharedPreferences = this.getSharedPreferences("user_data", Context.MODE_PRIVATE)
-        val uid = sharedPreferences.getString("uid", null)
-        return if (uid != null) {
-            AppRepository.getUser(userId = uid)
-//            val email = sharedPreferences.getString("email", "")
-//            val createdAt = sharedPreferences.getLong("createdAt", 0)
-//            val avatarName = sharedPreferences.getString("avatarName", "")
-//            val avatarUrl = sharedPreferences.getInt("avatarUrl", 0)
-//            val followingTopicsSet = sharedPreferences.getStringSet("followingTopics", setOf()) ?: setOf()
-//            val followingTopicsList = followingTopicsSet.map { FollowingTopic(it, -1) }
-//            val followingTopicsCount = sharedPreferences.getLong("followingTopicsCount", 0)
-//            ActiveUser(uid = uid,
-//                email = email!!,
-//                createdAt = createdAt!!,
-//                avatar = Avatar(url = avatarUrl, name = avatarName!!), followingTopics = followingTopicsList, followingTopicsCount = followingTopicsCount)
-        } else {
-            null
-        }
+        return sharedPreferences.getString("uid", null)
+        //            val email = sharedPreferences.getString("email", "")
+        //            val createdAt = sharedPreferences.getLong("createdAt", 0)
+        //            val avatarName = sharedPreferences.getString("avatarName", "")
+        //            val avatarUrl = sharedPreferences.getInt("avatarUrl", 0)
+        //            val followingTopicsSet = sharedPreferences.getStringSet("followingTopics", setOf()) ?: setOf()
+        //            val followingTopicsList = followingTopicsSet.map { FollowingTopic(it, -1) }
+        //            val followingTopicsCount = sharedPreferences.getLong("followingTopicsCount", 0)
+        //            ActiveUser(uid = uid,
+        //                email = email!!,
+        //                createdAt = createdAt!!,
+        //                avatar = Avatar(url = avatarUrl, name = avatarName!!), followingTopics = followingTopicsList, followingTopicsCount = followingTopicsCount)
+            ?: ""
+    }
+
+    suspend fun loadHome(userId : String) {
+        user = AppRepository.getUser(userId = userId)
+        userViewModel.setUser(user!!)
     }
 
 
@@ -118,9 +102,13 @@ class MainActivity : AppCompatActivity()  {
 //        }
 
 
-        if (user != null) {
+        val userId = getActiveUser()
+
+        if (userId != "") {
             Log.d("Anonify User", user.toString())
-            userViewModel.setUser(user!!)
+            lifecycleScope.launch {
+                loadHome(userId)
+            }
             navController.navigate(R.id.navigation_home)
         }
 
