@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity()  {
         setContentView(binding.root)
 
         lifecycleScope.launch {
-//            AppRepository.getTopics()
+            AppRepository.getTopics()
 //            AppRepository.fetchPosts()
         }
 //        val resourceId = R.drawable.dog
