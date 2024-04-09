@@ -1,10 +1,12 @@
 package com.example.anonifydemo.ui.profile
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,15 +16,16 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentProfileBinding
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
-import com.example.anonifydemo.ui.signin.SignInFragmentDirections
 import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import de.hdodenhof.circleimageview.CircleImageView
+
 
 class ProfileFragment : Fragment() {
 
@@ -102,29 +105,24 @@ class ProfileFragment : Fragment() {
         val item4 = bottomview.findViewById<LinearLayout>(R.id.layoutDelete)
         val item5 = bottomview.findViewById<LinearLayout>(R.id.layoutLogOut)
 
-        // Set OnClickListener for each item
         item1.setOnClickListener {
-            // Handle click on item 1
             Toast.makeText(requireContext(), "notification", Toast.LENGTH_SHORT).show()
-           // dialog.dismiss() // Dismiss the dialog if needed
+           // dialog.dismiss()
         }
         item2.setOnClickListener {
-            // Handle click on item 1
             Toast.makeText(requireContext(), "hashtag management", Toast.LENGTH_SHORT).show()
-          //  dialog.dismiss() // Dismiss the dialog if needed
+          //  dialog.dismiss()
         }
         item3.setOnClickListener {
-            // Handle click on item 1
-            Toast.makeText(requireContext(), "contacct us", Toast.LENGTH_SHORT).show()
-           // dialog.dismiss() // Dismiss the dialog if needed
+            Toast.makeText(requireContext(), "contact us", Toast.LENGTH_SHORT).show()
+            contactUs()
+           // dialog.dismiss()
         }
         item4.setOnClickListener {
-            // Handle click on item 1
             Toast.makeText(requireContext(), "delete account", Toast.LENGTH_SHORT).show()
-          //  dialog.dismiss() // Dismiss the dialog if needed
+          //  dialog.dismiss()
         }
             item5.setOnClickListener {
-                // Handle click on item 1
                     //logout code
                 AuthenticationUtil.logout(requireContext())
                 AuthenticationUtil.clearRememberMe(requireContext())
@@ -132,11 +130,10 @@ class ProfileFragment : Fragment() {
                 goToSignInFragment()
                  // Dismiss the dialog if needed
             }
-        dialog.show();
+        dialog.show()
 
         dialog.window?.setLayout (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color. TRANSPARENT))
-       // dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity (Gravity. BOTTOM)
     }
     private fun goToSignInFragment() {
@@ -151,4 +148,27 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(action)
         }
     }
+    private fun contactUs(){
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + "sumansdjic@gmail.com"))
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback or Issue Report")
+            intent.putExtra(Intent.EXTRA_TEXT, "Please describe your feedback or issue here about our app.")
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(requireContext(), "gmail app not found", Toast.LENGTH_SHORT).show()
+        }
+    }
+//        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+//            data = Uri.parse("mailto:sumansdjic@gmail.com")
+//            putExtra(Intent.EXTRA_SUBJECT, "Feedback or Issue Report")
+//            putExtra(Intent.EXTRA_TEXT, "Please describe your feedback or issue here about our app.")
+//        }
+//
+//        if (emailIntent.resolveActivity(requireActivity().packageManager) != null) {
+//            startActivity(emailIntent)
+//        } else {
+//            // Handle case where no email app is available
+//            Toast.makeText(requireContext(), "gmail app not found", Toast.LENGTH_SHORT).show()
+//        }
+//    }
 }

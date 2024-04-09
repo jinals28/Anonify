@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
@@ -44,6 +46,7 @@ class Profile2Fragment : Fragment(), Utils {
     private lateinit var advicePointCount : TextView
     private lateinit var postBtn : Button
     private lateinit var rv : RecyclerView
+    private lateinit var img_back : ImageButton
 
     private lateinit var adapter : PostRecyclerViewAdapter
 
@@ -71,6 +74,7 @@ class Profile2Fragment : Fragment(), Utils {
         advicePointCount = binding!!.txtviews
         postCount = binding!!.txtpo
         rv = binding!!.rv
+        img_back =binding!!.imgBack
 
         adapter = PostRecyclerViewAdapter(requireContext(), userViewModel.getUserId())
 
@@ -94,10 +98,18 @@ class Profile2Fragment : Fragment(), Utils {
             log("profile fragment $it")
             adapter.submitList(it.toMutableList())
         }
+        img_back.setOnClickListener {
+            goToHome()
+        }
 
 
     }
-
+    private fun  goToHome() {
+        val navController = findNavController()
+        if (findNavController().currentDestination!!.id == R.id.profile2Fragment) {
+            navController.popBackStack()
+        }
+    }
 
 
 }

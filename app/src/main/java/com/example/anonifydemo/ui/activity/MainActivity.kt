@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity()  {
         bottomNavigationView.setupWithNavController(navController)
 
         bottomNavigationView.itemIconTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.btn))
-//remember me
+        //remember me
 //        if (AuthenticationUtil.isLoggedIn(this)) {
 //            navController.navigate(R.id.navigation_home)
 //        }

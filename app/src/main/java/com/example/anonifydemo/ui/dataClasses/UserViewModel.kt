@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.anonifydemo.ui.repository.AppRepository
 import kotlinx.coroutines.launch
 
-class UserViewModel : ViewModel() {
+class  UserViewModel : ViewModel() {
 
     private val _user = MutableLiveData<ActiveUser>()
 
@@ -47,7 +47,6 @@ fun updateUserAvatarUrl(avatar: Avatar) {
         viewModelScope.launch {
             // Save selected topics to Firestore
             AppRepository.saveSelectedTopics(selectedTopics, _user.value!!.uid)
-
             // Update the local cache
             val currentUser = _user.value ?: ActiveUser()
             val updatedUser = currentUser.copy(followingTopics = selectedTopics)
