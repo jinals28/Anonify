@@ -201,8 +201,7 @@ class ProfileFragment : Fragment() {
             }
             val alertDialog = alertDialogBuilder.create()
             alertDialog.show()
-
-          //  dialog.dismiss()
+            dialog.dismiss()
         }
         logOut.setOnClickListener {
                     //logout code
