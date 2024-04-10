@@ -1137,6 +1137,7 @@ object AppRepository : Utils {
 
         batch.commit()
             .addOnSuccessListener {
+                disableAccount(userId)
                 onNext("Deleted Successfully")
             }
 
