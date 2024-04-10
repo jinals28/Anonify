@@ -171,7 +171,7 @@ object AppRepository : Utils {
         var followingTopics = mutableListOf<FollowingTopic>()
         try {
             // Get a reference to the user's followingTopics subcollection
-            val docRef = Firebase.firestore.collection("users").document(userId)
+            val docRef = users.document(userId)
                 .collection("followingTopics")
 
             val querySnapshot = docRef.get().await()
@@ -258,7 +258,8 @@ object AppRepository : Utils {
         return mapOf(
             "uid" to uid,
             "email" to email,
-            "createdAt" to createdAt
+            "createdAt" to createdAt,
+            "bio" to bio
         )
     }
 
@@ -370,7 +371,7 @@ object AppRepository : Utils {
 
     suspend fun addPost(post: Post) {
         val batch = firestore.batch()
-                try {
+        try {
 //
 //
         val postDocRef = postsList.add(post).await()
@@ -626,11 +627,11 @@ object AppRepository : Utils {
                     "userId" to userId
                 )
                 batch.set(commentLikeRef, likeData)
-                batch.update(commentRef, "likeCount", FieldValue.increment(1))
+                batch.update(commentRef, "commentLikeCount", FieldValue.increment(1))
             } else {
                 // Unliked, remove the like
                 batch.delete(commentLikeRef)
-                batch.update(commentRef, "likeCount", FieldValue.increment(-1))
+                batch.update(commentRef, "commentLikeCount", FieldValue.increment(-1))
             }
         }
 
@@ -938,6 +939,7 @@ object AppRepository : Utils {
             val list = getFollowingTopicsForUser(userId)
 
             return ActiveUser(
+                uid = userId,
                 avatar = Avatar(url, avatarName),
                 advicePointCount = advicePointCount,
                 followingTopicsCount = list.size.toLong(),
@@ -1015,7 +1017,6 @@ object AppRepository : Utils {
 
         return userPosts
     }
-
 
     suspend fun getSavedPosts(userId: String): List<DisplayPost>? {
 
@@ -1098,7 +1099,7 @@ object AppRepository : Utils {
         }
     }
 
-    suspend fun deleteUser(userId: String) {
+    suspend fun deleteUser(userId: String, onNext : (String) -> Unit) {
 
         val batch = firestore.batch()
 
@@ -1106,16 +1107,10 @@ object AppRepository : Utils {
             .get()
             .addOnSuccessListener { querySnapshot ->
                 for (document in querySnapshot.documents) {
-                    batch.delete(document.reference)
+                    val docRef = postsList.document(document.id)
+                    batch.delete(docRef)
                 }
                 // Commit the batch delete operation for posts
-                batch.commit()
-                    .addOnSuccessListener {
-                        Log.d(TAG, "Posts deleted successfully")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e(TAG, "Error deleting posts: $e")
-                    }
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "Error querying posts: $e")
@@ -1123,23 +1118,26 @@ object AppRepository : Utils {
 
 
         // Delete comments of the user
-        firestore.collection("comments").whereEqualTo("userId", userId)
+        commentCollection.whereEqualTo("userId", userId)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 for (document in querySnapshot.documents) {
-                    batch.delete(document.reference)
+                    val docRef = commentCollection.document(document.id)
+                    batch.delete(docRef)
                 }
-                // Commit the batch delete operation for comments
-                batch.commit()
-                    .addOnSuccessListener {
-                        Log.d(TAG, "Comments deleted successfully")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e(TAG, "Error deleting comments: $e")
-                    }
+
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "Error querying comments: $e")
+            }
+
+        val userRef = users.document(userId)
+
+        batch.delete(userRef)
+
+        batch.commit()
+            .addOnSuccessListener {
+                onNext("Deleted Successfully")
             }
 
     }
@@ -1241,13 +1239,13 @@ object AppRepository : Utils {
 
     }
 
-    suspend fun followCommunity(userId: String, topicName: String) {
-        val communityRef = communityCollection.document(topicName)
+    suspend fun followCommunity(userId: String, topicName: FollowingTopic) {
+        val communityRef = communityCollection.document(topicName.topic)
         val userRef = firestore.collection("users").document(userId)
 
         val followerData = hashMapOf(
             "userId" to userId,
-            "followedAt" to FieldValue.serverTimestamp()
+            "followedAt" to topicName.followedAt
         )
 
         try {
@@ -1264,8 +1262,8 @@ object AppRepository : Utils {
         }
     }
 
-    suspend fun unfollowCommunity(userId: String, topicName: String) {
-        val communityRef = firestore.collection("communities").document(topicName)
+    suspend fun unfollowCommunity(userId: String, topicName: FollowingTopic) {
+        val communityRef = firestore.collection("communities").document(topicName.topic)
         val userRef = firestore.collection("users").document(userId)
 
         try {
@@ -1282,13 +1280,13 @@ object AppRepository : Utils {
         }
     }
 
-    suspend fun updateUserFollowingTopics(userId: String, topicName: String, follow: Boolean) {
+    suspend fun updateUserFollowingTopics(userId: String, topicName: FollowingTopic, follow: Boolean) {
         val userRef = users.document(userId)
-        val followingTopicsRef = userRef.collection("followingTopics").document(topicName)
+        val followingTopicsRef = userRef.collection("followingTopics").document(topicName.topic)
 
         if (follow) {
             // If following, add the topic to the user's followingTopics collection
-            followingTopicsRef.set(hashMapOf("followedAt" to FieldValue.serverTimestamp())).await()
+            followingTopicsRef.set(hashMapOf("followedAt" to topicName.followedAt)).await()
         } else {
             // If unfollowing, remove the topic from the user's followingTopics collection
             followingTopicsRef.delete().await()

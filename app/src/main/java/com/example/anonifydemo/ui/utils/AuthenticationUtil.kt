@@ -220,27 +220,39 @@ object AuthenticationUtil : Utils {
 //        }
 //    }
 
-    suspend fun signInWithEmailAndPassword(email: String, password: String): FirebaseUser {
-        return withContext(Dispatchers.IO) {
-            log("AuthenticationUtil, signInWithEmailAndPassword")
-            val authResult = auth.signInWithEmailAndPassword(email, password).await()
-            authResult.user ?: throw IllegalStateException("User not found")
+    suspend fun signInWithEmailAndPassword(email: String, password: String, onSuccess: (FirebaseUser) -> Unit, onFailure: (Exception) -> Unit){
+            try {
+                log("AuthenticationUtil, signInWithEmailAndPassword")
+                val authResult = auth.signInWithEmailAndPassword(email, password).await()
+                if (authResult.user != null) {
+                    onSuccess(authResult.user!!)
+                } else {
+                    onFailure(IllegalStateException("Invalid Password or Email"))
+                }
+            } catch (e: Exception) {
+                onFailure(e) // Pass the exception to the onFailure callback
+            }
         }
-    }
+
 
     suspend fun signUpWithEmailAndPassword(
         email: String,
         password: String,
-        onSuccess: (FirebaseUser) -> Unit,
+        onSuccess: (User) -> Unit,
         onFailure: (Exception) -> Unit
-    ): User {
-        val authResult = auth.createUserWithEmailAndPassword(email, password).await()
-        val currentUser = authResult.user ?: throw IllegalStateException("User is null")
-        return User(
-            uid = currentUser.uid,
-            email = currentUser.email ?: "",
-            createdAt = System.currentTimeMillis()
-        )
+    ) {
+        try {
+
+            val authResult = auth.createUserWithEmailAndPassword(email, password).await()
+            val currentUser = authResult.user ?: throw IllegalStateException("User is null")
+            onSuccess(User(
+                uid = currentUser.uid,
+                email = currentUser.email ?: "",
+                createdAt = System.currentTimeMillis()
+            ))
+        }catch (e: Exception){
+                onFailure(e)
+        }
 
     }
 

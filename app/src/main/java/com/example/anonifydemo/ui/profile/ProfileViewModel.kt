@@ -43,9 +43,9 @@ class ProfileViewModel : ViewModel() {
         _postList.value = savedList
     }
 
-    fun deleteUser(userId: String) {
+    fun deleteUser(userId: String, onNext : (String) -> Unit) {
         viewModelScope.launch {
-            AppRepository.deleteUser(userId)
+            AppRepository.deleteUser(userId, onNext)
         }
     }
 }

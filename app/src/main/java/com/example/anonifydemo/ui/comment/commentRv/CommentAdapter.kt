@@ -135,7 +135,7 @@ class CommentAdapter(val context: Context, private val userId : String) :
                             true
                         }
 
-                        R.id.report -> {
+                        R.id.reportUser -> {
                             // Handle report post action
                             Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "reported")
                             if (comment.userId == userId) {
@@ -153,7 +153,7 @@ class CommentAdapter(val context: Context, private val userId : String) :
                             true
                         }
 
-                        R.id.hide -> {
+                        R.id.hideComment -> {
                             // Handle hide post action
                             Log.d("Anonify : ${PostRecyclerViewAdapter.TAG}", "hide post")
                             hideComment()

@@ -56,14 +56,22 @@ class SignInViewModel : ViewModel(), Utils {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     fun signInWithEmailAndPassword(context: Context, email: String, password: String) {
+        var uid = ""
         log("in sign in viewmodel, signinwithemailandpassword")
         coroutineScope.launch {
             try {
-                val firebaseUser = AuthenticationUtil.signInWithEmailAndPassword(email, password)
-                val pair= AppRepository.getUserByUid(firebaseUser.uid)
-                _signInResult.value = Pair(true, pair)
+                 AuthenticationUtil.signInWithEmailAndPassword(email, password, {
+                    uid = it.uid
+
+                }){
+                    _isFailure.value = it
+                }
+                if (uid != ""){
+                    val pair= AppRepository.getUserByUid(uid)
+                    _signInResult.value = Pair(true, pair)
+                }
             } catch (e: Exception) {
-                _signInError.value = e
+                _isFailure.value = e
             }
         }
     }

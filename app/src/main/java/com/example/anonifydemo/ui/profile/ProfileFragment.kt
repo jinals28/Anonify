@@ -189,8 +189,11 @@ class ProfileFragment : Fragment() {
             alertDialogBuilder.setTitle("Confirm Deletion")
             alertDialogBuilder.setMessage("Are you sure you want to delete your account?")
             alertDialogBuilder.setPositiveButton("Yes") { dialog, _ ->
-                viewModel.deleteUser(userId)
-                Toast.makeText(requireContext(), "Deleting account...", Toast.LENGTH_SHORT).show()
+                viewModel.deleteUser(userId){
+                    Toast.makeText(requireContext(), "Deleting account...", Toast.LENGTH_SHORT).show()
+                    goToSignInFragment()
+                    removeActiveUser()
+                }
                 dialog.dismiss()
             }
             alertDialogBuilder.setNegativeButton("No") { dialog, _ ->
@@ -198,9 +201,7 @@ class ProfileFragment : Fragment() {
             }
             val alertDialog = alertDialogBuilder.create()
             alertDialog.show()
-            viewModel.deleteUser(userId)
 
-            Toast.makeText(requireContext(), "delete account", Toast.LENGTH_SHORT).show()
           //  dialog.dismiss()
         }
         logOut.setOnClickListener {
@@ -219,7 +220,7 @@ class ProfileFragment : Fragment() {
         dialog.window?.setGravity (Gravity. BOTTOM)
     }
 
-    fun removeActiveUser() {
+    private fun removeActiveUser() {
         val sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.clear()

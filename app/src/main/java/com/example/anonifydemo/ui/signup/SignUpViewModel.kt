@@ -49,27 +49,23 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun signUpWithEmailAndPassword(context: Context, email: String, password: String) {
+        var user : User? = null
         viewModelScope.launch {
 //            auth = AuthenticationUtil.getInstance(context)
-            val user = AuthenticationUtil.signUpWithEmailAndPassword(email = email, password = password, onSuccess =
+            AuthenticationUtil.signUpWithEmailAndPassword(email = email, password = password, onSuccess =
             { firebaseUser ->
-                val user = User(
+                user = User(
                     email = firebaseUser.email ?: "",
                     uid = firebaseUser.uid,
                     createdAt = System.currentTimeMillis(),
                     avatar = ""
                 )
 
-//            AppRepository.addUser(User(
-////                userId = AppRepository.getUsers().size.toLong() + 1,
-//                email = it.email!!,
-//                uid = it.uid,
-//                createdAt = System.currentTimeMillis()
-//            ))
             }, onFailure = {
                 _isFailure.value = it
             })
-            addUserToFirestore(user)
+            user?.let { addUserToFirestore(it) }
+
         }
 
 

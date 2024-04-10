@@ -1,5 +1,6 @@
 package com.example.anonifydemo.ui.dataClasses
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,6 +21,7 @@ class  UserViewModel : ViewModel() {
     val followingTopic : LiveData<List<FollowingTopic>> = _followingTopicList
 
     fun setUser(user : ActiveUser){
+        Log.d("Anonify : UserViewModel", user.toString())
         _followingTopicList.value = user.followingTopics
         _user.value = user
     }
@@ -67,6 +69,50 @@ fun updateUserAvatarUrl(avatar: Avatar) {
 
     fun getUserId() : String {
         return  _user.value!!.uid
+    }
+
+    fun addTopic(topicName: FollowingTopic) {
+        // Get the current list of following topics
+        val currentTopics = _followingTopicList.value?.toMutableList() ?: mutableListOf()
+
+        // Create a new following topic with the given name and a dummy timestamp
+
+        // Add the new topic to the list
+        currentTopics.add(topicName)
+
+        // Update the LiveData with the new list of following topics
+        _followingTopicList.value = currentTopics
+
+        // Also, update the user object if needed
+        val currentUser = _user.value
+        if (currentUser != null) {
+            val updatedUser = currentUser.copy(followingTopics = currentTopics)
+            _user.value = updatedUser
+        }
+
+    }
+
+    fun removeTopic(topicName: String) {
+
+        val currentTopics = _followingTopicList.value?.toMutableList() ?: mutableListOf()
+
+        // Find the index of the topic to be deleted
+        val index = currentTopics.indexOfFirst { it.topic == topicName }
+
+        // If the topic is found, remove it from the list
+        if (index != -1) {
+            currentTopics.removeAt(index)
+
+            // Update the LiveData with the modified list of following topics
+            _followingTopicList.value = currentTopics
+
+            // Also, update the user object if needed
+            val currentUser = _user.value
+            if (currentUser != null) {
+                val updatedUser = currentUser.copy(followingTopics = currentTopics)
+                _user.value = updatedUser
+            }
+        }
     }
 }
 

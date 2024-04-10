@@ -103,7 +103,7 @@ class CreatePostFragment : Fragment(), Utils {
 
 //        uid = userViewModel.getUser()!!.uid
 
-        postViewModel.setTopicList(activeUser!!.followingTopics)
+        postViewModel.setTopicList(activeUser.followingTopics)
 
 
        postViewModel.topicList.observe(viewLifecycleOwner){ suggestionsList ->

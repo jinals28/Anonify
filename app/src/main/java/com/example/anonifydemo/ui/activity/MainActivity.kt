@@ -39,13 +39,40 @@ class MainActivity : AppCompatActivity()  {
 
     private var user : ActiveUser? = null
 
+    var userId : String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
-        Thread.sleep(1000)
+
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+
+        userId = getActiveUser()
+        userViewModel.setUser(
+            ActiveUser(
+                uid = userId
+            )
+        )
+
+
+        lifecycleScope.launch {
+            try {
+                // Fetch user data )
+//                if (userId.isNotEmpty()) {
+//                    user = AppRepository.getUser(userId = userId)
+//                    userViewModel.setUser(user!!)
+//
+//                }
+                // Data fetched successfully, navigate to the home fragment
+            } catch (e: Exception) {
+                // Handle errors, e.g., display error message on splash screen
+                Log.e("Anonify MainActivity", "Error fetching user data: ${e.message}", e)
+            }
+        }
 
 //        removeActiveUser()
 
@@ -81,8 +108,7 @@ class MainActivity : AppCompatActivity()  {
     }
 
     suspend fun loadHome(userId : String) {
-        user = AppRepository.getUser(userId = userId)
-        userViewModel.setUser(user!!)
+
     }
 
 
@@ -101,42 +127,44 @@ class MainActivity : AppCompatActivity()  {
 //            navController.navigate(R.id.navigation_home)
 //        }
 
-
-        val userId = getActiveUser()
-
-        if (userId != "") {
-            Log.d("Anonify User", user.toString())
-            lifecycleScope.launch {
-                loadHome(userId)
+        when(userId) {
+            "" -> {
+                navController.navigate(R.id.loginFragment)
             }
-            navController.navigate(R.id.navigation_home)
+            else ->{
+                navController.navigate(R.id.navigation_home)
+            }
         }
+
+
 
 //        bottomNavigationView.itemIconTintList = getColorStateList(R.color.bottom_navigation_icon_selector)
-        navController.addOnDestinationChangedListener{ _, destination, _ ->
-            when(destination.id){
+                    navController.addOnDestinationChangedListener{ _, destination, _ ->
+                when(destination.id){
 
-                R.id.onboardFragment,
-                R.id.loginFragment,
-                R.id.signInFragment,
-                R.id.chooseAvatarFragment,
-                R.id.chooseTopic,
-                R.id.signUpFragment,
-                R.id.commentFragment,
-                R.id.searchCommunityFragment,
-                R.id.createCommunityFragment,
-                R.id.communityProfileFragment,
-                R.id.editProfileFragment,
-                R.id.profile2Fragment->{
-                    bottomNavigationView.visibility = View.GONE
-                }
-                else -> {
-                    bottomNavigationView.visibility = View.VISIBLE
+                    R.id.onboardFragment,
+                    R.id.loginFragment,
+                    R.id.signInFragment,
+                    R.id.chooseAvatarFragment,
+                    R.id.chooseTopic,
+                    R.id.signUpFragment,
+                    R.id.commentFragment,
+                    R.id.searchCommunityFragment,
+                    R.id.createCommunityFragment,
+                    R.id.communityProfileFragment,
+                    R.id.editProfileFragment,
+                    R.id.profile2Fragment->{
+                        bottomNavigationView.visibility = View.GONE
+                    }
+                    else -> {
+                        bottomNavigationView.visibility = View.VISIBLE
+                    }
+
                 }
 
             }
 
-        }
+
 
 //       if (auth.currentUser != null){
 //           Log

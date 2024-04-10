@@ -176,8 +176,6 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
                                 hidePost()
                                 reportUserPost(post)
                             }
-                            hidePost()
-                            reportUserPost(post)
                             true
                         }
                         R.id.report -> {

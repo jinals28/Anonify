@@ -76,8 +76,9 @@ class editProfileFragment : Fragment() {
 
             viewModel.updateBio(userId, bio){
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                goToProfileFragment()
             }
-            goToProfileFragment()
+
 
         }
 

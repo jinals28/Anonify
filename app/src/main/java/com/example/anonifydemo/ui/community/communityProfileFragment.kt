@@ -1,6 +1,5 @@
 package com.example.anonifydemo.ui.community
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,11 +16,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentCommunityProfileBinding
-import com.example.anonifydemo.databinding.FragmentSignInBinding
+import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
-import com.example.anonifydemo.ui.signin.SignInFragmentDirections
-import com.google.android.gms.common.SignInButton
 import kotlinx.coroutines.launch
 
 class communityProfileFragment : Fragment() {
@@ -106,15 +103,17 @@ class communityProfileFragment : Fragment() {
         }
 
         btnfollow.setOnClickListener {
-
+            val topic = FollowingTopic(topic = topicName,
+                followedAt = System.currentTimeMillis())
             when(btnfollow.text){
                 "Follow" ->{
-                    viewModel.followCommunity(userId = userId, topicName)
-                    updateList(topicName)
+
+                    viewModel.followCommunity(userId = userId, topic)
+                    updateList(topic)
                     btnfollow.text = "Following"
                 }
                 "Following" -> {
-                    viewModel.unfollowCommunity(userId, topicName)
+                    viewModel.unfollowCommunity(userId, topic)
                     deleteList(topicName)
                     btnfollow.text = "Follow"
                 }
@@ -123,11 +122,11 @@ class communityProfileFragment : Fragment() {
     }
 
     private fun deleteList(topicName: String) {
-
+        userViewModel.removeTopic(topicName)
     }
 
-    private fun updateList(topicName: String) {
-        TODO("Not yet implemented")
+    private fun updateList(topicName: FollowingTopic) {
+        userViewModel.addTopic(topicName)
     }
 
 }

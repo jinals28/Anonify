@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentHomeBinding
+import com.example.anonifydemo.ui.activity.MainActivity
 import com.example.anonifydemo.ui.dataClasses.ActiveUser
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
@@ -54,12 +55,12 @@ class HomeFragment : Fragment(), Utils {
 
         user = userViewModel.getUser()!!
 
-        log("home fragment, oncreate")
-
         lifecycleScope.launch {
-            log("home followingTopics ${user.followingTopics}")
+            user = AppRepository.getUser(userViewModel.getUserId())!!
+            userViewModel.setUser(user)
             AppRepository.fetchPosts(user.uid, user.followingTopics)
         }
+
 
         return binding.root
     }
