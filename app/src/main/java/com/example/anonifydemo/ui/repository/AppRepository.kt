@@ -447,6 +447,35 @@ object AppRepository : Utils {
 
     }
 
+    suspend fun likedAt(postId: String, userId: String): String {
+        return try {
+            val doc = postsList
+                .document(postId)
+                .collection("likes")
+                .document(userId)
+                .get()
+                .await()
+
+            val likedAtMillis = doc.getLong("likedAt") ?: 0L
+            val currentTimeMillis = System.currentTimeMillis()
+
+            val elapsedTimeMillis = currentTimeMillis - likedAtMillis
+
+            // Calculate elapsed time in minutes and hours
+            val minutes = (elapsedTimeMillis / (1000 * 60)) % 60
+            val hours = (elapsedTimeMillis / (1000 * 60 * 60)) % 24
+
+            when {
+                hours > 0 -> "$hours ${if (hours == 1L) "hour" else "hours"} ago"
+                minutes > 0 -> "$minutes ${if (minutes == 1L) "minute" else "minutes"} ago"
+                else -> "Just now"
+            }
+        } catch (e: Exception) {
+            // Handle exceptions, such as Firestore errors or parsing errors
+            "Error: ${e.message}"
+        }
+    }
+
     //For Comment Fragment
     suspend fun fetchPost(userId : String, postId: String): DisplayPost? {
 
@@ -925,7 +954,6 @@ object AppRepository : Utils {
     }
 
     suspend fun getUser(userId: String): ActiveUser? {
-
         val userRef = users.document(userId).get().await()
         if (userRef.exists()) {
             val avatarName = userRef.getString("avatar") ?: ""
