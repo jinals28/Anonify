@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.anonifydemo.R
 import com.example.anonifydemo.databinding.FragmentEditProfileBinding
 import com.example.anonifydemo.databinding.FragmentOnboardBinding
+import com.example.anonifydemo.ui.dataClasses.Avatar
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.HomeFragmentDirections
 import de.hdodenhof.circleimageview.CircleImageView
@@ -41,7 +42,7 @@ class editProfileFragment : Fragment() {
     private lateinit var btnedit:Button
     private var avatarId : Long = -1L
 
-    private var avatar : Int = -1
+    private var avatar : Avatar = Avatar()
 
     private var userId : String= ""
 
@@ -60,15 +61,24 @@ class editProfileFragment : Fragment() {
        // editemail = binding!!.txteditemail
         editbio = binding!!.txteditbio
        // lblemail = binding!!.lblemail
+
         lblbio = binding!!.lblbio
+
         btnback = binding!!.btnback
+
         editavatar =binding!!.editavatar
+
         editimgusr = binding!!.editimgusr
+
         editusrnm = binding!!.editusrnm
+
         btnedit=binding!!.btnedit
 
-        avatar = userViewModel.getUser()!!.avatar.url
-        editimgusr.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
+        avatar = userViewModel.getUser()!!.avatar
+
+        editimgusr.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar.url))
+
+        editusrnm.text = avatar.name
 
         btnedit.setOnClickListener{
             //update profile
