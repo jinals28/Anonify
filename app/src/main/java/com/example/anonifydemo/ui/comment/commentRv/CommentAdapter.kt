@@ -37,11 +37,13 @@ import kotlinx.coroutines.launch
 class CommentAdapter(val context: Context, private val userId : String) :
     ListAdapter<DisplayComment, CommentAdapter.CommentViewHolder>(CommentDiffCallback()) {
 
+        private var initialUserLikes : MutableList<DisplayCommentLike> = mutableListOf()
+
+    private var initialAdvicePoints : MutableList<DisplayAdvicePoint> = mutableListOf()
+
     private var userLikes: MutableList<DisplayCommentLike> = mutableListOf()
 
     private var advicePointsList: MutableList<DisplayAdvicePoint> = mutableListOf()
-
-
 
     init {
         updateLikesList()
@@ -49,10 +51,12 @@ class CommentAdapter(val context: Context, private val userId : String) :
     }
 
     private fun updateAdvicePointsList() {
+        initialAdvicePoints.clear()
         advicePointsList.clear()
         currentList.forEach { comment ->
-            advicePointsList.add(DisplayAdvicePoint(comment.commentId, -1L, comment.advicePointByUser))
+            initialAdvicePoints.add(DisplayAdvicePoint(comment.commentId, -1L, comment.advicePointByUser))
         }
+        advicePointsList = initialAdvicePoints.map { it.copy() }.toMutableList()
     }
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -69,10 +73,14 @@ class CommentAdapter(val context: Context, private val userId : String) :
     }
 
     private fun updateLikesList() {
+        initialUserLikes.clear()
         userLikes.clear()
         currentList.forEach { comment ->
-            userLikes.add(DisplayCommentLike(comment.commentId, -1L, comment.likedByUser))
+            initialUserLikes.add(DisplayCommentLike(comment.commentId, -1L, comment.likedByUser))
         }
+        Log.d("Anonify : Comment Adapter", "currentList ${currentList.toString()}")
+        Log.d("Anonify : Comment Adapter", "initialUserList ${initialUserLikes.toString()}")
+        userLikes = initialUserLikes.map { it.copy() }.toMutableList()
     }
 
     inner class CommentViewHolder(binding : RowCommentBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -183,7 +191,6 @@ class CommentAdapter(val context: Context, private val userId : String) :
             }
         }
 
-
         private fun hideComment() {
             val position = adapterPosition
             // Check if the position is valid
@@ -232,7 +239,11 @@ class CommentAdapter(val context: Context, private val userId : String) :
         }
 
         private suspend fun updateAdviceToDatabase(userLikes: MutableList<DisplayAdvicePoint>) {
-            AppRepository.updateAdvicePoints(userId, userLikes)
+            val changedLikes = advicePointsList.filter { like ->
+                val initialLike = initialAdvicePoints.find { it.commentId == like.commentId }
+                initialLike?.given != like.given
+            }
+            AppRepository.updateAdvicePoints(userId, changedLikes.toMutableList())
         }
 
         private fun likePost(comment: DisplayComment) {
@@ -268,7 +279,6 @@ class CommentAdapter(val context: Context, private val userId : String) :
                 advicepPointGivenAt = System.currentTimeMillis()
             }
         }
-
         private fun setAdvicePointCountText(advicePointCount: Long) {
                 noAdvicePoint.text = advicePointCount.toString()
         }
@@ -325,8 +335,14 @@ class CommentAdapter(val context: Context, private val userId : String) :
         }
 
         private suspend fun updateLikesToDatabase(userLikes: MutableList<DisplayCommentLike>) {
-
-            AppRepository.updateCommentLikes(userId, userLikes)
+            val changedLikes = userLikes.filter { like ->
+                val initialLike = initialUserLikes.find { it.commentId == like.commentId }
+                initialLike?.liked != like.liked
+            }
+            Log.d("Anonify : CommentAdapter ", " initialLikes ${initialUserLikes.toString()} ")
+            Log.d("Anonify : CommentAdapter ", " userLikes ${userLikes.toString()} ")
+            Log.d("Anonify : CommentAdapter ", " Likes ${changedLikes.toString()} ")
+            AppRepository.updateCommentLikes(userId, changedLikes.toMutableList())
         }
 
         private fun setLikeCountText(likeCount: Long) {

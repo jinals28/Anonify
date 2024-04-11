@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -131,15 +132,19 @@ class ProfileFragment : Fragment() {
 
         viewModel.list.observe(viewLifecycleOwner){
             postAdapter.submitList(it.toMutableList())
-//            if (it.isEmpty()) {
-//                shimmerrv.stopShimmer()
-//                shimmerrv.visibility = View.GONE
-//                txtnopost.visibility = View.VISIBLE
-//            } else {
-//                   shimmerrv.stopShimmer()
-//                   shimmerrv.visibility = View.GONE
-//                   rv.visibility = View.VISIBLE
-//            }
+            if (it.isEmpty()) {
+                shimmerrv.stopShimmer()
+                shimmerrv.visibility = View.GONE
+                txtnopost.visibility = View.VISIBLE
+
+            } else {
+                   shimmerrv.stopShimmer()
+                   shimmerrv.visibility = View.GONE
+                    txtnopost.visibility = View.GONE
+                   rv.visibility = View.VISIBLE
+            }
+
+
         }
 
         btnpost.setOnClickListener {
@@ -154,7 +159,6 @@ class ProfileFragment : Fragment() {
             //function for edit profile fragment
             goToEditProfileFragment()
         }
-
         btnsettings.setOnClickListener{
             showBottomSheetDialog()
         }

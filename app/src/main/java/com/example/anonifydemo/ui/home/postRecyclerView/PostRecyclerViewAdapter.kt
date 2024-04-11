@@ -35,14 +35,19 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
 
     var savedPost : MutableList<DisplaySaved> = mutableListOf()
 
+    var initialUserLikes: MutableList<DisplayLike> = mutableListOf()
+
+    var initialSavedPost : MutableList<DisplaySaved> = mutableListOf()
+
     init {
         updateUserLikes()
         updateSavedList()
     }
 
     private fun updateSavedList() {
+        initialSavedPost.clear()
         savedPost.clear()
-        savedPost = currentList.map {
+        initialSavedPost = currentList.map {
 
             DisplaySaved(
                 postId = it.postId,
@@ -51,17 +56,20 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
             )
 
         }.toMutableList()
+        savedPost = initialSavedPost.map { it.copy() }.toMutableList()
     }
 
     private fun updateUserLikes() {
+        initialUserLikes.clear()
         userLikes.clear()
-        userLikes = currentList.map {
+        initialUserLikes = currentList.map {
             DisplayLike(
                 postId = it.postId,
                 likedAt = -1L,
                 liked = it.likedByCurrentUser
             )
         }.toMutableList()
+        userLikes = initialUserLikes.map { it.copy() }.toMutableList()
     }
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -70,7 +78,7 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
 
     inner class PostViewHolder(binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
-            private val txtHashtag = binding.txtHashtag
+        private val txtHashtag = binding.txtHashtag
         private val txtPostContent = binding.txtpost
         private val userName = binding.txtusrnm
         private val userAvatar = binding.imgUsr
@@ -159,7 +167,11 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
 
             moreOptions.setOnClickListener{
                 val popupMenu = PopupMenu(context, moreOptions)
-                popupMenu.menuInflater.inflate(R.menu.post_popup_menu, popupMenu.menu)
+                if (it.findNavController().currentDestination!!.id == R.id.navigation_profile){
+                    popupMenu.menuInflater.inflate(R.menu.mypost_popup_menu, popupMenu.menu)
+                }else {
+                    popupMenu.menuInflater.inflate(R.menu.post_popup_menu, popupMenu.menu)
+                }
                 popupMenu.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
                         R.id.block -> {
@@ -201,11 +213,22 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
                             hidePost()
                             true
                         }
+                        R.id.delete -> {
+                            deletePost(post)
+                            true
+                        }
                         else -> false
                     }
                 }
                 popupMenu.show()
             }
+        }
+
+        private fun deletePost(post: DisplayPost){
+            coroutineScope.launch {
+                AppRepository.deletePost(post)
+            }
+
         }
 
         private fun reportUser(userId: String) {
@@ -354,7 +377,11 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
         }
         private suspend fun updateLikesToDatabase(userLikes: MutableList<DisplayLike>) {
             Log.d(TAG, "in updateLikes ${userLikes.toString()}")
-            AppRepository.updatesLikes(userId, userLikes)
+            val changedLikes = userLikes.filter { like ->
+                val initialLike = initialUserLikes.find { it.postId == like.postId }
+                initialLike?.liked != like.liked
+            }
+            AppRepository.updatesLikes(userId, changedLikes.toMutableList())
         }
     }
 

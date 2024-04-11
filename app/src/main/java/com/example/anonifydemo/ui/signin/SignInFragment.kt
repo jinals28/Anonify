@@ -173,17 +173,27 @@ class SignInFragment : Fragment(), Utils {
                 userViewModel.setUser(user)
                 storeActiveUser(user)
                 toast(requireContext(), "Welcome User!!")
+
+                //TODO: AFTER SIGNING IN IF UID IS PRESENT THEN CHECK IF AVATAR AND TOPIC IS SET OR NOT THEN NAVIGATE
                 if (it.second!!.first.avatar != "") {
+
                     if (it.second!!.second.isNotEmpty()) {
                         viewModel.fetchPosts(it.second.first.uid, it.second.second)
                         goToHomeFragment()
-                    } else {
-                        goToChooseTopicFragment()
                     }
+
+                    else {
+
+                        goToChooseTopicFragment()
+
+                    }
+
                 } else {
                     goToChooseAvatarFragment()
                 }
+
             }
+
             viewModel.isFailure.observe(viewLifecycleOwner) { e ->
                 handleFailure(requireContext(), e)
             }

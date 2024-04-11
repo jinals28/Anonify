@@ -300,36 +300,34 @@ object AppRepository : Utils {
 
     suspend fun fetchPosts(userId: String, followingTopicsList: List<FollowingTopic>) {
 //        log("In Fetch Posts")
-            val posts = mutableListOf<DisplayPost>()
+        val posts = mutableListOf<DisplayPost>()
         _hidePostList.clear()
         val userRef = users.document(userId).collection("reportedPosts").get().await()
         for (doc in userRef){
             _hidePostList.add(doc.id)
         }
-
         val followingTopic = followingTopicsList.map { it.topic }
         log("followingTopics ${followingTopic.toString()}")
-            try {
-                val querySnapshot: QuerySnapshot = postsList.whereIn("topicName", followingTopic).orderBy("postCreatedAt", Query.Direction.DESCENDING).get().await()
-                for (document in querySnapshot.documents) {
+        try {
+            val querySnapshot: QuerySnapshot = postsList.whereIn("topicName", followingTopic).orderBy("postCreatedAt", Query.Direction.DESCENDING).get().await()
+            for (document in querySnapshot.documents) {
 //                    log("App REpo: Post Id: ${document.id}")
-                    if (!_hidePostList.contains(document.id)) {
+                if (!_hidePostList.contains(document.id)) {
 
-                        val postedUserId = document.getString("userId") ?: ""
-                        val topicName = document.getString("topicName") ?: ""
-                        val postContent = document.getString("postContent") ?: ""
-                        val postCreatedAt = document.getLong("postCreatedAt") ?: -1L
-                        val likeCount = document.getLong("likeCount") ?: 0L
-                        val commentCount = document.getLong("commentCount") ?: 0L
-                        val avatarName = fetchAvatarName(postedUserId)
+                    val postedUserId = document.getString("userId") ?: ""
+                    val topicName = document.getString("topicName") ?: ""
+                    val postContent = document.getString("postContent") ?: ""
+                    val likeCount = document.getLong("likeCount") ?: 0L
+                    val commentCount = document.getLong("commentCount") ?: 0L
+                    val avatarName = fetchAvatarName(postedUserId)
 //                    log("Avatar name from userId: $avatarName")
-                        val url = avatarList.find { it.name == avatarName }!!.url
+                    val url = avatarList.find { it.name == avatarName }!!.url
 
-                        val likedByUser = isPostLikedByCurrentUser(postId = document.id, userId = userId)
+                    val likedByUser = isPostLikedByCurrentUser(postId = document.id, userId = userId)
 
-                        val savedByUser = isSavedByUser(postId = document.id, userId = userId)
+                    val savedByUser = isSavedByUser(postId = document.id, userId = userId)
 
-                        val post = DisplayPost(
+                    val post = DisplayPost(
                             postId = document.id,
                             userId = postedUserId,
                             postContent = postContent,
@@ -341,7 +339,7 @@ object AppRepository : Utils {
                             commentCount = commentCount,
                             isSavedByUser = savedByUser
                         )
-                        posts.add(post)
+                    posts.add(post)
 //                    log("App Repo, ${posts.toString()}")
                     }
                 }
@@ -608,7 +606,7 @@ object AppRepository : Utils {
                 if (document.exists()) {
                     val userId = document.getString("userId") ?: ""
                     val commentText = document.getString("commentText") ?: ""
-                    val commentLikeCount = document.getLong("likeCount") ?: 0L
+                    val commentLikeCount = document.getLong("commentLikeCount") ?: 0L
                     val advicePointCount = document.getLong("advicePointCount") ?: 0L
                     val userName = fetchAvatarName(userId)
                     val url = avatarList.find { it.name == userName }!!.url
@@ -677,7 +675,7 @@ object AppRepository : Utils {
 
     }
 
-    fun updateAdvicePoints(userId: String, userLikes: MutableList<DisplayAdvicePoint>) {
+    suspend fun updateAdvicePoints(userId: String, userLikes: MutableList<DisplayAdvicePoint>) {
         val batch = Firebase.firestore.batch()
 
         userLikes.forEach { like ->
@@ -691,7 +689,10 @@ object AppRepository : Utils {
             val userRef = users.document(userId)
 
             if (like.given) {
+
+                val isLikedByUser = isAdvicePointByUser(commentId = like.commentId, userId = userId)
                 // Liked, add or update the like
+
                 val likeData = hashMapOf(
                     "advicePointGivenAt" to like.advicepPointGivenAt,
                     "userId" to userId
@@ -1320,6 +1321,44 @@ object AppRepository : Utils {
             // If unfollowing, remove the topic from the user's followingTopics collection
             followingTopicsRef.delete().await()
         }
+    }
+
+    suspend fun deletePost(post: DisplayPost) {
+
+        val batch = firestore.batch()
+
+        // Delete post from posts collection
+        val postRef = postsList.document(post.postId)
+        batch.delete(postRef)
+
+        // Delete post from user's posts subcollection
+        val userPostRef = users.document(post.userId).collection("posts").document(post.postId)
+        batch.delete(userPostRef)
+
+        // Delete comments related to the post
+        val commentsRef = commentCollection.whereEqualTo("postId", post.postId)
+        commentsRef.get().addOnSuccessListener { snapshot ->
+            for (doc in snapshot.documents) {
+                val commentRef = commentCollection.document(doc.id)
+                batch.delete(commentRef)
+            }
+        }.addOnFailureListener { exception ->
+            // Handle error
+        }
+
+        // Delete post from community subcollection by topicName
+        val communityPostRef = communityCollection.document(post.topicName)
+            .collection("posts").document(post.postId)
+        batch.delete(communityPostRef)
+
+        // Commit the batch
+        batch.commit().addOnSuccessListener {
+            // Post, user posts, comments, and community post deleted successfully
+        }.addOnFailureListener { exception ->
+            // Handle error
+        }
+
+
     }
 
 

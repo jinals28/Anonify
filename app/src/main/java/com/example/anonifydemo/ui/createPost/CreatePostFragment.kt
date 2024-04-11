@@ -62,7 +62,6 @@ class CreatePostFragment : Fragment(), Utils {
 
         _binding=FragmentCreatePostBinding.inflate(layoutInflater, container, false)
 
-
         userId = userViewModel.getUserId()
 
         lifecycleScope.launch {
@@ -77,9 +76,6 @@ class CreatePostFragment : Fragment(), Utils {
         super.onViewCreated(view, savedInstanceState)
 
         activeUser = userViewModel.getUser()!!
-//        suggestionList = resources.getStringArray(R.array.topic_names).toList()
-
-//        postViewModel.set(suggestionList)
 
         suggestionRv = binding!!.suggestionsRecyclerView
 
