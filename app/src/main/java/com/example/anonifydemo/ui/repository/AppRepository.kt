@@ -395,7 +395,11 @@ object AppRepository : Utils {
             val topicRef = communityCollection.document(post.topicName)
             val topicPostsCollection = topicRef.collection("posts")
 
-            batch.set(topicPostsCollection.document(postId), postData)
+            val postCommunityData = hashMapOf(
+                "postId" to postId,
+                "postedAt" to post.postCreatedAt
+            )
+            batch.set(topicPostsCollection.document(postId), postCommunityData)
             batch.update(topicRef, "posts", FieldValue.increment(1))
                     
         // Commit the batched write
@@ -1130,45 +1134,111 @@ object AppRepository : Utils {
 
     suspend fun deleteUser(userId: String, onNext : (String) -> Unit) {
 
+//        val batch = firestore.batch()
+//
+//        postsList.whereEqualTo("userId", userId)
+//            .get()
+//            .addOnSuccessListener { querySnapshot ->
+//                for (document in querySnapshot.documents) {
+//                    val docRef = postsList.document(document.id)
+//                    batch.delete(docRef)
+//                }
+//                // Commit the batch delete operation for posts
+//            }
+//            .addOnFailureListener { e ->
+//                Log.e(TAG, "Error querying posts: $e")
+//            }
+//
+//
+//        // Delete comments of the user
+//        commentCollection.whereEqualTo("userId", userId)
+//            .get()
+//            .addOnSuccessListener { querySnapshot ->
+//                for (document in querySnapshot.documents) {
+//                    val docRef = commentCollection.document(document.id)
+//                    batch.delete(docRef)
+//                }
+//
+//            }
+//            .addOnFailureListener { e ->
+//                Log.e(TAG, "Error querying comments: $e")
+//            }
+//
+//        val userRef = users.document(userId)
+//
+//        batch.delete(userRef)
+//
+//        batch.commit()
+//            .addOnSuccessListener {
+//                disableAccount(userId)
+//                onNext("Deleted Successfully")
+//            }
         val batch = firestore.batch()
 
-        postsList.whereEqualTo("userId", userId)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                for (document in querySnapshot.documents) {
-                    val docRef = postsList.document(document.id)
-                    batch.delete(docRef)
-                }
-                // Commit the batch delete operation for posts
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Error querying posts: $e")
-            }
+        // Delete user posts and related data
+        val userPostsQuerySnapshot = firestore.collection("posts").whereEqualTo("userId", userId).get().await()
+        for (postDoc in userPostsQuerySnapshot.documents) {
+            val postId = postDoc.id
 
-
-        // Delete comments of the user
-        commentCollection.whereEqualTo("userId", userId)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                for (document in querySnapshot.documents) {
-                    val docRef = commentCollection.document(document.id)
-                    batch.delete(docRef)
-                }
-
+            val communityId = postDoc.getString("topicName") ?: ""
+            if (communityId.isNotEmpty()) {
+                val communityRef = firestore.collection("community").document(communityId)
+                val communityPostRef = communityRef.collection("posts").document(postId)
+                batch.update(communityRef, "posts", FieldValue.increment(-1))
+                batch.delete(communityPostRef)
             }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Error querying comments: $e")
+//             Delete post likes subcollection
+            val postLikesRef = firestore.collection("posts").document(postId).collection("likes")
+            val postLikesQuerySnapshot = postLikesRef.get().await()
+            for (likeDoc in postLikesQuerySnapshot.documents) {
+                batch.delete(likeDoc.reference)
             }
 
-        val userRef = users.document(userId)
+            // Delete post comments subcollection
+            val postCommentsRef = firestore.collection("posts").document(postId).collection("comments")
+            val postCommentsQuerySnapshot = postCommentsRef.get().await()
+            for (commentDoc in postCommentsQuerySnapshot.documents) {
+                batch.delete(commentDoc.reference)
+            }
 
+            // Delete post document
+            batch.delete(postDoc.reference)
+        }
+
+        // Delete user comments
+        val userCommentsQuerySnapshot = firestore.collection("comments").whereEqualTo("userId", userId).get().await()
+        for (commentDoc in userCommentsQuerySnapshot.documents) {
+            batch.delete(commentDoc.reference)
+        }
+
+        // Delete user document
+        val userRef = firestore.collection("users").document(userId)
         batch.delete(userRef)
 
-        batch.commit()
-            .addOnSuccessListener {
-                disableAccount(userId)
-                onNext("Deleted Successfully")
-            }
+        // Remove user from followingTopics in other user documents
+        val followingTopicsQuerySnapshot = userRef.collection("followingTopics").get().await()
+        for (topicDoc in followingTopicsQuerySnapshot.documents) {
+            val communityId = topicDoc.id
+            val communityRef = firestore.collection("community").document(communityId)
+            batch.update(communityRef, "follower", FieldValue.increment(-1))
+            batch.delete(topicDoc.reference)
+        }
+
+        // Remove user from community users subcollection and decrement count
+        val communityQuerySnapshot = firestore.collection("community").get().await()
+        for (communityDoc in communityQuerySnapshot.documents) {
+            val communityId = communityDoc.id
+            val communityUsersRef = firestore.collection("community").document(communityId).collection("users").document(userId)
+
+            batch.delete(communityUsersRef)
+        }
+
+        // Commit the batch operation
+        batch.commit().await()
+
+        disableAccount(userId)
+        // Optional: Perform any additional actions after deletion
+        onNext("User deleted successfully")
 
     }
 
@@ -1337,26 +1407,36 @@ object AppRepository : Utils {
 
         // Delete comments related to the post
         val commentsRef = commentCollection.whereEqualTo("postId", post.postId)
-        commentsRef.get().addOnSuccessListener { snapshot ->
-            for (doc in snapshot.documents) {
-                val commentRef = commentCollection.document(doc.id)
-                batch.delete(commentRef)
-            }
-        }.addOnFailureListener { exception ->
-            // Handle error
+        val commentsQuerySnapshot = commentsRef.get().await()
+        for (doc in commentsQuerySnapshot.documents) {
+            val commentRef = commentCollection.document(doc.id)
+            batch.delete(commentRef)
         }
 
+        val communityRef = communityCollection.document(post.topicName)
         // Delete post from community subcollection by topicName
-        val communityPostRef = communityCollection.document(post.topicName)
-            .collection("posts").document(post.postId)
+
+          val communityPostRef = communityRef .collection("posts").document(post.postId)
+
+        batch.update(communityRef, "posts", FieldValue.increment(-1))
         batch.delete(communityPostRef)
 
-        // Commit the batch
-        batch.commit().addOnSuccessListener {
-            // Post, user posts, comments, and community post deleted successfully
-        }.addOnFailureListener { exception ->
-            // Handle error
+        val list = listOf(
+            "comments",
+            "likes"
+        )
+        list.forEach {
+            val subcollectionRef = postRef.collection(it)
+            val subcollectionQuerySnapshot = subcollectionRef.get().await()
+            for (doc in subcollectionQuerySnapshot.documents) {
+                val subDocRef = subcollectionRef.document(doc.id)
+                batch.delete(subDocRef)
+            }
         }
+
+
+        // Commit the batch
+        batch.commit().await()
 
 
     }

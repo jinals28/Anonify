@@ -208,12 +208,14 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
                             true
                         }
                         R.id.hide -> {
+
                             // Handle hide post action
                             Log.d("Anonify : $TAG", "hide post")
                             hidePost()
                             true
                         }
                         R.id.delete -> {
+                            hidePost()
                             deletePost(post)
                             true
                         }
