@@ -120,32 +120,7 @@
                     android:textColor="#D9D9D9"
                     android:textSize="12sp"
                     android:textStyle="bold" />
-                <View
-                    android:layout_width="20dp"
-                    android:layout_height="0dp" />
 
-                <ImageButton
-                    android:id="@+id/btncomment"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:background="@color/windowBackground"
-
-                    app:srcCompat="@drawable/comment2" />
-                <TextView
-                    android:id="@+id/Nocomment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:fontFamily="@font/montserrat_extralight"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:text="0"
-                    android:layout_marginTop="4dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="#D9D9D9"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"

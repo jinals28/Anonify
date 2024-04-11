@@ -102,7 +102,7 @@ class ProfileFragment : Fragment() {
 
         shimmerrv = binding!!.shimmerrv
 
-        shimmerrv.startShimmer()
+        //shimmerrv.startShimmer()
 
         postAdapter = PostRecyclerViewAdapter(requireContext(), userViewModel.getUserId())
 
@@ -131,23 +131,20 @@ class ProfileFragment : Fragment() {
 
         viewModel.list.observe(viewLifecycleOwner){
             postAdapter.submitList(it.toMutableList())
-            if (it.isEmpty()) {
-                shimmerrv.stopShimmer()
-                shimmerrv.visibility = View.GONE
-                txtnopost.visibility = View.VISIBLE
-
-            } else {
-                   shimmerrv.stopShimmer()
-                   shimmerrv.visibility = View.GONE
-                   rv.visibility = View.VISIBLE
-            }
-
-
+//            if (it.isEmpty()) {
+//                shimmerrv.stopShimmer()
+//                shimmerrv.visibility = View.GONE
+//                txtnopost.visibility = View.VISIBLE
+//            } else {
+//                   shimmerrv.stopShimmer()
+//                   shimmerrv.visibility = View.GONE
+//                   rv.visibility = View.VISIBLE
+//            }
         }
 
         btnpost.setOnClickListener {
             viewModel.getPost()
-    }
+        }
 
         btnsaved.setOnClickListener {
             viewModel.getSavedPost()
@@ -157,6 +154,7 @@ class ProfileFragment : Fragment() {
             //function for edit profile fragment
             goToEditProfileFragment()
         }
+
         btnsettings.setOnClickListener{
             showBottomSheetDialog()
         }
