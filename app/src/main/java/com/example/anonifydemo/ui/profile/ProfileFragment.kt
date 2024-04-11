@@ -58,9 +58,10 @@ class ProfileFragment : Fragment() {
     private lateinit var txtpo: TextView
     private lateinit var txtpoints: TextView
     private lateinit var btnpost: Button
-    private lateinit var shimmerpostrv: ShimmerFrameLayout
+    private lateinit var shimmerrv: ShimmerFrameLayout
     private lateinit var btnsaved: Button
-    private lateinit var layoutfollowing: LinearLayout
+    private lateinit var txtnopost : LinearLayout
+    //private lateinit var layoutfollowing: LinearLayout
     private var avatarId : Long = -1L
 
     private var avatar : Int = -1
@@ -95,10 +96,13 @@ class ProfileFragment : Fragment() {
         txtpoints = binding!!.txtpoints
         btnpost = binding!!.btnpost
         btnsaved = binding!!.btnsaved
+        txtnopost=binding!!.txtnopost
+
         rv = binding!!.rv
 
-        layoutfollowing = binding!!.layoutfollowing
-        shimmerpostrv = binding!!.shimmerpostrv
+        shimmerrv = binding!!.shimmerrv
+
+        shimmerrv.startShimmer()
 
         postAdapter = PostRecyclerViewAdapter(requireContext(), userViewModel.getUserId())
 
@@ -112,7 +116,6 @@ class ProfileFragment : Fragment() {
             avatar = user.avatar.url
 
             imgusr.setImageDrawable(ContextCompat.getDrawable(requireContext(), avatar))
-//        shimmerpostrv.startShimmer()
 
             txtusrnm.text = user.avatar.name
 
@@ -127,17 +130,26 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.list.observe(viewLifecycleOwner){
-//            shimmerpostrv.stopShimmer()
             postAdapter.submitList(it.toMutableList())
+            if (it.isEmpty()) {
+                shimmerrv.stopShimmer()
+                shimmerrv.visibility = View.GONE
+                txtnopost.visibility = View.VISIBLE
+
+            } else {
+                   shimmerrv.stopShimmer()
+                   shimmerrv.visibility = View.GONE
+                   rv.visibility = View.VISIBLE
+            }
+
+
         }
 
         btnpost.setOnClickListener {
-//            shimmerpostrv.startShimmer()
             viewModel.getPost()
-        }
+    }
 
         btnsaved.setOnClickListener {
-//            shimmerpostrv.startShimmer()
             viewModel.getSavedPost()
         }
 
@@ -147,9 +159,6 @@ class ProfileFragment : Fragment() {
         }
         btnsettings.setOnClickListener{
             showBottomSheetDialog()
-        }
-        layoutfollowing.setOnClickListener{
-            goToTopics()
         }
 
     }
@@ -228,12 +237,6 @@ class ProfileFragment : Fragment() {
     private fun goToSignInFragment() {
         if (findNavController().currentDestination!!.id == R.id.navigation_profile) {
             val action = ProfileFragmentDirections.actionNavigationProfileToSignInFragment()
-            findNavController().navigate(action)
-        }
-    }
-    private fun goToTopics() {
-        if (findNavController().currentDestination!!.id == R.id.navigation_profile) {
-            val action = ProfileFragmentDirections.actionNavigationProfileToChooseTopic()
             findNavController().navigate(action)
         }
     }

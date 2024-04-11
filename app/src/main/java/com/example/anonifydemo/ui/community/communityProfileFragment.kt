@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -19,6 +20,7 @@ import com.example.anonifydemo.databinding.FragmentCommunityProfileBinding
 import com.example.anonifydemo.ui.dataClasses.FollowingTopic
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
 import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
+import com.facebook.shimmer.ShimmerFrameLayout
 import kotlinx.coroutines.launch
 
 class communityProfileFragment : Fragment() {
@@ -29,7 +31,7 @@ class communityProfileFragment : Fragment() {
     private val args : communityProfileFragmentArgs by navArgs()
     private val binding get() = _binding
     private lateinit var btnback : ImageButton
-    private lateinit var btnoption : ImageButton
+   // private lateinit var btnoption : ImageButton
     private lateinit var btnfollow :Button
     private lateinit var txthashtagnm : TextView
     private lateinit var txtbio : TextView
@@ -39,6 +41,8 @@ class communityProfileFragment : Fragment() {
     private val viewModel: CommunityProfileViewModel by viewModels()
     private lateinit var adapter : PostRecyclerViewAdapter
 
+    private lateinit var shimmerpostrv: ShimmerFrameLayout
+    private lateinit var txtnopost : LinearLayout
     private var userId : String = ""
 
     private var topicName : String = ""
@@ -64,14 +68,17 @@ class communityProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnback = binding!!.btnback
-        btnoption = binding!!.btnoptions
+      //  btnoption = binding!!.btnoptions
         btnfollow = binding!!.btnFollow
         txthashtagnm = binding!!.txthashtagnm
         txtbio = binding!!.txtbio
         txtfollowers = binding!!.txtfollowers
         txtpo= binding!!.txtpo
+        txtnopost=binding!!.txtnopost
 
         rvPosts = binding!!.rvPosts
+        shimmerpostrv = binding!!.shimmerpostrv
+        shimmerpostrv.startShimmer()
 
         adapter = PostRecyclerViewAdapter(requireContext(), userViewModel.getUserId())
 
@@ -99,6 +106,18 @@ class communityProfileFragment : Fragment() {
         }
 
         viewModel.postList.observe(viewLifecycleOwner){
+            if (it.isEmpty()) {
+                shimmerpostrv.stopShimmer()
+                shimmerpostrv.visibility = View.GONE
+               // rvPosts.visibility = View.GONE
+                 txtnopost.visibility = View.VISIBLE
+            } else {
+                shimmerpostrv.stopShimmer()
+                shimmerpostrv.visibility = View.GONE
+                rvPosts.visibility = View.VISIBLE
+               // txtnopost.visibility = View.GONE
+              //  adapter.submitList(posts.toMutableList())
+            }
             adapter.submitList(it.toMutableList())
         }
 

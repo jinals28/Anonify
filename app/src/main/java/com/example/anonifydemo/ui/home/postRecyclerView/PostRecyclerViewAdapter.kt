@@ -70,7 +70,7 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
 
     inner class PostViewHolder(binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        private val txtHashtag = binding.txtHashtag
+            private val txtHashtag = binding.txtHashtag
         private val txtPostContent = binding.txtpost
         private val userName = binding.txtusrnm
         private val userAvatar = binding.imgUsr

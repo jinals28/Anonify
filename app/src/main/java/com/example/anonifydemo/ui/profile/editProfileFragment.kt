@@ -30,9 +30,9 @@ class editProfileFragment : Fragment() {
 
     private val viewModel : EditProfileViewModel by viewModels()
 
-    private lateinit var editemail: EditText
+  //  private lateinit var editemail: EditText
     private lateinit var editbio : EditText
-    private lateinit var lblemail:TextView
+ //   private lateinit var lblemail:TextView
     private lateinit var lblbio:TextView
     private lateinit var btnback:ImageButton
     private lateinit var editavatar:TextView
@@ -57,9 +57,9 @@ class editProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        editemail = binding!!.txteditemail
+       // editemail = binding!!.txteditemail
         editbio = binding!!.txteditbio
-        lblemail = binding!!.lblemail
+       // lblemail = binding!!.lblemail
         lblbio = binding!!.lblbio
         btnback = binding!!.btnback
         editavatar =binding!!.editavatar
@@ -86,9 +86,9 @@ class editProfileFragment : Fragment() {
             goToProfileFragment()
         }
 
-        editemail.setOnFocusChangeListener { _, hasFocus ->
-            handleFocusChange(hasFocus, editemail, lblemail)
-        }
+//        editemail.setOnFocusChangeListener { _, hasFocus ->
+//            handleFocusChange(hasFocus, editemail, lblemail)
+//        }
 
         editbio.setOnFocusChangeListener { _, hasFocus ->
             handleFocusChange(hasFocus, editbio, lblbio)

@@ -36,7 +36,7 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun getPost() {
-        _postList.value = postList
+            _postList.value = postList
     }
 
     fun getSavedPost(){
