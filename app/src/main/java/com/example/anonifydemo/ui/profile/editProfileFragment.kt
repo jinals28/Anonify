@@ -59,6 +59,7 @@ class editProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
        // editemail = binding!!.txteditemail
+
         editbio = binding!!.txteditbio
        // lblemail = binding!!.lblemail
 
