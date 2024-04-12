@@ -1403,7 +1403,9 @@ object AppRepository : Utils {
         batch.delete(postRef)
 
         // Delete post from user's posts subcollection
-        val userPostRef = users.document(post.userId).collection("posts").document(post.postId)
+        val userRef = users.document(post.userId)
+        val userPostRef = userRef.collection("posts").document(post.postId)
+        batch.update(userRef, "postCount", FieldValue.increment(-1))
         batch.delete(userPostRef)
 
         // Delete comments related to the post

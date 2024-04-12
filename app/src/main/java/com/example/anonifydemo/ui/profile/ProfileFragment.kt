@@ -35,6 +35,11 @@ import com.example.anonifydemo.ui.utils.AuthenticationUtil
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
@@ -48,6 +53,8 @@ class ProfileFragment : Fragment() {
     private val userViewModel : UserViewModel by activityViewModels()
 
     private val viewModel : ProfileViewModel by viewModels()
+
+    private var feedUpdateJob: Job? = null
 
     private lateinit var editprofile: Button
     private lateinit var btnsettings: ImageButton
@@ -135,12 +142,12 @@ class ProfileFragment : Fragment() {
             if (it.isEmpty()) {
                 shimmerrv.stopShimmer()
                 shimmerrv.visibility = View.GONE
-                txtnopost.visibility = View.VISIBLE
+               // txtnopost.visibility = View.VISIBLE
 
             } else {
                    shimmerrv.stopShimmer()
                    shimmerrv.visibility = View.GONE
-                    txtnopost.visibility = View.GONE
+                    //txtnopost.visibility = View.GONE
                    rv.visibility = View.VISIBLE
             }
 
@@ -164,6 +171,38 @@ class ProfileFragment : Fragment() {
         }
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        startFeedUpdates()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopFeedUpdates()
+    }
+
+    private fun stopFeedUpdates() {
+        // Cancel the coroutine job when the activity is paused
+        feedUpdateJob?.cancel()
+
+    }
+
+    private fun startFeedUpdates() {
+        feedUpdateJob = CoroutineScope(Dispatchers.Main).launch {
+            while (isActive) {
+                // Call the suspend function to update the home feed
+                updateHomeFeed()
+                // Delay for 5 seconds before the next update
+                delay(1000L)
+            }
+        }
+    }
+
+    private suspend fun updateHomeFeed() {
+        viewModel.getUser(userId)
+    }
+
     private fun goToEditProfileFragment() {
         if (findNavController().currentDestination!!.id == R.id.navigation_profile) {
             val action = ProfileFragmentDirections.actionProfileFragmentToEditProfileFragment()
