@@ -19,6 +19,7 @@ import com.example.anonifydemo.ui.dataClasses.DisplayLike
 import com.example.anonifydemo.ui.dataClasses.DisplayPost
 import com.example.anonifydemo.ui.dataClasses.DisplaySaved
 import com.example.anonifydemo.ui.home.HomeFragmentDirections
+import com.example.anonifydemo.ui.profile.ProfileFragmentDirections
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
@@ -120,9 +121,13 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
             }
 
             commentButton.setOnClickListener {
-                if (it.findNavController().currentDestination!!.id == R.id.navigation_home || it.findNavController().currentDestination!!.id == R.id.navigation_profile){
+                if (it.findNavController().currentDestination!!.id == R.id.navigation_home){
                     val action =
                         HomeFragmentDirections.actionHomeFragmentToCommentFragment(postId = post.postId)
+                    it.findNavController().navigate(action)
+                }else if(it.findNavController().currentDestination!!.id == R.id.navigation_profile){
+                    val action =
+                        ProfileFragmentDirections.actionNavigationProfileToCommentFragment(postId = post.postId)
                     it.findNavController().navigate(action)
                 }
 
@@ -216,6 +221,7 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
                         }
                         R.id.delete -> {
                             hidePost()
+
                             deletePost(post)
                             true
                         }
@@ -248,7 +254,7 @@ class PostRecyclerViewAdapter(val context : Context, val userId : String
                 itemView.startAnimation(animation)
                 // Remove the item from the list
                 removeItem(position)
-            }
+                notifyItemRemoved(position)}
         }
 
         private fun reportUserPost(post: DisplayPost) {

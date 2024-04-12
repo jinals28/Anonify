@@ -200,6 +200,7 @@ class CommentAdapter(val context: Context, private val userId : String) :
                 itemView.startAnimation(animation)
                 // Remove the item from the list
                 removeItem(position)
+                notifyItemRemoved(position)
 
             }
         }

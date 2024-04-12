@@ -194,7 +194,7 @@ class ProfileFragment : Fragment() {
                 // Call the suspend function to update the home feed
                 updateHomeFeed()
                 // Delay for 5 seconds before the next update
-                delay(1000L)
+                delay(3000L)
             }
         }
     }

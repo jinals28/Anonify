@@ -143,6 +143,9 @@
         <action
             android:id="@+id/action_navigation_profile_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_navigation_profile_to_commentFragment"
+            app:destination="@id/commentFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchCommunityFragment"
