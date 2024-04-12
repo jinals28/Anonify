@@ -1,6 +1,8 @@
 package com.example.anonifydemo.ui.activity
 
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.anonifydemo.R
+import com.example.anonifydemo.broadcast.UninstallBroadcastReceiver
 import com.example.anonifydemo.databinding.ActivityMainBinding
 import com.example.anonifydemo.ui.dataClasses.ActiveUser
 import com.example.anonifydemo.ui.dataClasses.UserViewModel
@@ -50,29 +53,17 @@ class MainActivity : AppCompatActivity()  {
         setContentView(binding.root)
 
 
-
-        userId = getActiveUser()
-        userViewModel.setUser(
-            ActiveUser(
-                uid = userId
+        userId = getActiveUser() ?: "null"
+        if (userId != "null") {
+            userViewModel.setUser(
+                ActiveUser(
+                    uid = userId
+                )
             )
-        )
-
-
-        lifecycleScope.launch {
-            try {
-                // Fetch user data )
-//                if (userId.isNotEmpty()) {
-//                    user = AppRepository.getUser(userId = userId)
-//                    userViewModel.setUser(user!!)
-//
-//                }
-                // Data fetched successfully, navigate to the home fragment
-            } catch (e: Exception) {
-                // Handle errors, e.g., display error message on splash screen
-                Log.e("Anonify MainActivity", "Error fetching user data: ${e.message}", e)
-            }
         }
+
+        registerUninstallReceiver()
+
 
 //        removeActiveUser()
 
@@ -90,7 +81,7 @@ class MainActivity : AppCompatActivity()  {
         editor.clear()
         editor.apply()
     }
-    private fun getActiveUser(): String {
+    private fun getActiveUser(): String? {
         val sharedPreferences = this.getSharedPreferences("user_data", Context.MODE_PRIVATE)
         return sharedPreferences.getString("uid", null)
         //            val email = sharedPreferences.getString("email", "")
@@ -104,7 +95,7 @@ class MainActivity : AppCompatActivity()  {
         //                email = email!!,
         //                createdAt = createdAt!!,
         //                avatar = Avatar(url = avatarUrl, name = avatarName!!), followingTopics = followingTopicsList, followingTopicsCount = followingTopicsCount)
-            ?: ""
+
     }
 
     suspend fun loadHome(userId : String) {
@@ -130,6 +121,9 @@ class MainActivity : AppCompatActivity()  {
         when(userId) {
             "" -> {
                 navController.navigate(R.id.loginFragment)
+            }
+            "null" -> {
+
             }
             else ->{
                 navController.navigate(R.id.navigation_home)
@@ -170,5 +164,12 @@ class MainActivity : AppCompatActivity()  {
 //           Log
 //            findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.action_onboardFragment_to_chooseAvatarFragment)
 //       }
+    }
+
+    private fun registerUninstallReceiver() {
+        val filter = IntentFilter(Intent.ACTION_PACKAGE_REMOVED)
+        filter.addDataScheme("package")
+        val receiver = UninstallBroadcastReceiver()
+        registerReceiver(receiver, filter)
     }
 }

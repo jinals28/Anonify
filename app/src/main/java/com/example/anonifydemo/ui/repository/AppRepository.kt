@@ -946,6 +946,7 @@ object AppRepository : Utils {
                 // Log error
                 println("Error disabling account for user: $userId, ${e.message}")
             }
+
     }
 
     // Helper function to get the report count of a user

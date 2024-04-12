@@ -233,12 +233,12 @@ class ProfileFragment : Fragment() {
     private fun removeActiveUser() {
         val sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.clear()
+        editor.putString("uid", "")
         editor.apply()
     }
     private fun goToSignInFragment() {
         if (findNavController().currentDestination!!.id == R.id.navigation_profile) {
-            val action = ProfileFragmentDirections.actionNavigationProfileToSignInFragment()
+            val action = ProfileFragmentDirections.actionNavigationProfileToLoginFragment()
             findNavController().navigate(action)
         }
     }

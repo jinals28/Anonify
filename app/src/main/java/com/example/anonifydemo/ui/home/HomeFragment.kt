@@ -21,10 +21,16 @@ import com.example.anonifydemo.ui.home.postRecyclerView.PostRecyclerViewAdapter
 import com.example.anonifydemo.ui.repository.AppRepository
 import com.example.anonifydemo.ui.utils.Utils
 import com.facebook.shimmer.ShimmerFrameLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(), Utils {
 
+    private var feedUpdateJob: Job? = null
     private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and
@@ -96,6 +102,41 @@ class HomeFragment : Fragment(), Utils {
             val action = HomeFragmentDirections.actionHomeFragmentToSearchCommunityFragment()
             findNavController().navigate(action)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startFeedUpdates()
+    }
+
+    private fun startFeedUpdates() {
+        feedUpdateJob = CoroutineScope(Dispatchers.Main).launch {
+            while (isActive) {
+                // Call the suspend function to update the home feed
+                updateHomeFeed()
+                // Delay for 5 seconds before the next update
+                delay(5000L)
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopFeedUpdates()
+
+    }
+
+    private fun stopFeedUpdates() {
+        // Cancel the coroutine job when the activity is paused
+        feedUpdateJob?.cancel()
+
+    }
+
+
+    private suspend fun updateHomeFeed() {
+
+        AppRepository.fetchPosts(user.uid, user.followingTopics)
+
     }
 
 }
